@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBlue"
+    tools:context=".MainActivity4">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/hero_bg"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/register_subtitle"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_outline"
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="6dp"
+                android:text="@string/updated_today"
+                android:textColor="@color/darkBlue"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/card_bg" android:orientation="vertical" android:padding="20dp">
+            <EditText android:id="@+id/editText1" android:layout_width="match_parent" android:layout_height="52dp" android:autofillHints="username" android:background="@drawable/input_bg" android:hint="@string/username" android:inputType="textPersonName" android:paddingStart="14dp" android:paddingEnd="14dp" android:textColor="@color/textPrimary" android:textColorHint="@color/textSecondary" android:textSize="15sp" />
+            <EditText android:id="@+id/editText" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="12dp" android:autofillHints="password" android:background="@drawable/input_bg" android:hint="@string/password" android:inputType="textPassword" android:paddingStart="14dp" android:paddingEnd="14dp" android:textColor="@color/textPrimary" android:textColorHint="@color/textSecondary" android:textSize="15sp" />
+            <EditText android:id="@+id/editText2" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="12dp" android:autofillHints="password" android:background="@drawable/input_bg" android:hint="@string/re_enter_password" android:inputType="textPassword" android:paddingStart="14dp" android:paddingEnd="14dp" android:textColor="@color/textPrimary" android:textColorHint="@color/textSecondary" android:textSize="15sp" />
+            <Button android:id="@+id/button" android:layout_width="match_parent" android:layout_height="50dp" android:layout_marginTop="18dp" android:background="@drawable/button_primary" android:text="@string/sign_up" android:textAllCaps="false" android:textColor="@color/white" android:textSize="15sp" />
+            <Button android:id="@+id/button1" android:layout_width="match_parent" android:layout_height="50dp" android:layout_marginTop="10dp" android:background="@drawable/button_dark" android:text="@string/sign_in" android:textAllCaps="false" android:textColor="@color/white" android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

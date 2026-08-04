@@ -1,0 +1,30 @@
+PASS 1: contact ID is normalized
+PASS 2: contact name is normalized
+PASS 3: blank contact field is rejected
+PASS 4: service stores a contact copy
+PASS 5: lookup returns a contact snapshot
+PASS 6: duplicate contact ID is rejected with a specific exception
+PASS 7: missing contact uses Optional.empty
+PASS 8: contact update uses the service boundary
+PASS 9: invalid multi-field contact update is rejected
+PASS 10: failed contact update leaves stored state unchanged
+PASS 11: contact delete updates service state
+PASS 12: missing contact delete uses a specific exception
+PASS 13: service stores a task copy
+PASS 14: task update persists validated values
+PASS 15: invalid multi-field task update is rejected
+PASS 16: failed task update leaves stored state unchanged
+PASS 17: duplicate task ID is rejected
+PASS 18: task length limit is preserved
+PASS 19: appointment copies the input date
+PASS 20: appointment copies the output date
+PASS 21: past appointment is rejected against a deterministic clock
+PASS 22: service stores an appointment copy
+PASS 23: appointment update persists through the service
+PASS 24: invalid multi-field appointment update is rejected
+PASS 25: failed appointment update leaves stored state unchanged
+PASS 26: blank service identifier is rejected
+PASS: 26 software-design verification checks completed.
+
+Compilation: Java 17 compiler module with -Xlint:all; no compiler errors or warnings.
+JUnit sources: 97 test methods; syntax-parsed and compiler-checked against verification stubs.

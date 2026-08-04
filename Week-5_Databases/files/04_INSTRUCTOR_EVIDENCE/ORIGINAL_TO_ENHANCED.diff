@@ -1,0 +1,2307 @@
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/README_MILESTONE4.txt 02_ENHANCED_DATABASE_ARTIFACT/Project2/README_MILESTONE4.txt
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/README_MILESTONE4.txt	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/README_MILESTONE4.txt	2026-08-01 17:05:54.441430687 +0000
+@@ -0,0 +1,49 @@
++CS 499 MILESTONE FOUR - DATABASE ENHANCEMENT
++Madison Parker
++
++PROJECT PURPOSE
++This folder is the complete enhanced copy of my original CS 360 Android Weight Tracker. It keeps
++the same basic application and visual style while replacing the original unrelated text tables with
++a normalized SQLite design that connects each weight entry to the authenticated user.
++
++OPEN IN ANDROID STUDIO
++1. Extract the technical ZIP first.
++2. Open this Project2 folder.
++3. Allow Gradle to synchronize with Android SDK 35 and the included Gradle wrapper.
++4. Run the app on an API 28 or newer emulator or device.
++5. Run the local tests under app/src/test.
++6. Run DatabaseIntegrationTest under app/src/androidTest on an emulator or device.
++
++MANUAL REVIEW
++1. Register an account.
++2. Sign in with that account.
++3. Save at least two weight entries using YYYY-MM-DD dates.
++4. View history and confirm the newest date appears first.
++5. Update or delete an entry using its numeric entry ID.
++6. Register a second account and confirm that it cannot see or change the first account's records.
++
++PRIMARY DATABASE FILES
++- app/src/main/java/com/example/project/data/DatabaseContract.java
++- app/src/main/java/com/example/project/data/DBHelper.java
++- app/src/main/java/com/example/project/data/UserRepository.java
++- app/src/main/java/com/example/project/data/WeightEntryRepository.java
++- app/src/main/java/com/example/project/data/LegacyDataNormalizer.java
++- app/src/main/java/com/example/project/security/PasswordHasher.java
++- app/src/main/java/com/example/project/validation/InputValidator.java
++
++TEST FILES
++- app/src/test/java/com/example/project/security/PasswordHasherTest.java
++- app/src/test/java/com/example/project/validation/InputValidatorTest.java
++- app/src/test/java/com/example/project/data/LegacyDataNormalizerTest.java
++- app/src/androidTest/java/com/example/project/data/DatabaseIntegrationTest.java
++
++SCOPE NOTE
++The SMS settings screen came from the original project and remains a placeholder outside the
++Milestone Four database scope. Because it does not send messages, the enhanced manifest no longer
++requests the SEND_SMS permission. The main enhancement focuses on schema design, account
++ownership, authentication, CRUD operations, migration, reporting, and testing.
++
++VERIFICATION NOTE
++I completed final packaging and standalone checks on a Chromebook without the Android SDK. The
++full Android project and instrumentation tests are included for Android Studio. The evidence folder
++contains the commands and results for the database and pure-Java checks that I was able to run.
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/androidTest/java/com/example/project/ExampleInstrumentedTest.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/androidTest/java/com/example/project/ExampleInstrumentedTest.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/androidTest/java/com/example/project/ExampleInstrumentedTest.java	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/androidTest/java/com/example/project/ExampleInstrumentedTest.java	1970-01-01 00:00:00.000000000 +0000
+@@ -1,26 +0,0 @@
+-package com.example.project;
+-
+-import android.content.Context;
+-
+-import androidx.test.platform.app.InstrumentationRegistry;
+-import androidx.test.ext.junit.runners.AndroidJUnit4;
+-
+-import org.junit.Test;
+-import org.junit.runner.RunWith;
+-
+-import static org.junit.Assert.*;
+-
+-/**
+- * Instrumented test, which will execute on an Android device.
+- *
+- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+- */
+-@RunWith(AndroidJUnit4.class)
+-public class ExampleInstrumentedTest {
+-    @Test
+-    public void useAppContext() {
+-        // Context of the app under test.
+-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+-        assertEquals("com.example.project", appContext.getPackageName());
+-    }
+-}
+\ No newline at end of file
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/androidTest/java/com/example/project/data/DatabaseIntegrationTest.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/androidTest/java/com/example/project/data/DatabaseIntegrationTest.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/androidTest/java/com/example/project/data/DatabaseIntegrationTest.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/androidTest/java/com/example/project/data/DatabaseIntegrationTest.java	2026-08-01 16:10:42.000000000 +0000
+@@ -0,0 +1,118 @@
++package com.example.project.data;
++
++import static org.junit.Assert.assertEquals;
++import static org.junit.Assert.assertFalse;
++import static org.junit.Assert.assertNotEquals;
++import static org.junit.Assert.assertNotNull;
++import static org.junit.Assert.assertNull;
++import static org.junit.Assert.assertTrue;
++
++import android.content.Context;
++import android.database.Cursor;
++import android.database.sqlite.SQLiteDatabase;
++import androidx.test.ext.junit.runners.AndroidJUnit4;
++import androidx.test.platform.app.InstrumentationRegistry;
++import com.example.project.model.ProgressSummary;
++import com.example.project.model.UserSession;
++import java.io.File;
++import org.junit.After;
++import org.junit.Before;
++import org.junit.Test;
++import org.junit.runner.RunWith;
++
++@RunWith(AndroidJUnit4.class)
++public class DatabaseIntegrationTest {
++    private Context context;
++    private DBHelper helper;
++    private UserRepository users;
++    private WeightEntryRepository entries;
++
++    @Before
++    public void setUp() {
++        context = InstrumentationRegistry.getInstrumentation().getTargetContext();
++        context.deleteDatabase(DatabaseContract.DATABASE_NAME);
++        helper = new DBHelper(context);
++        users = new UserRepository(helper);
++        entries = new WeightEntryRepository(helper);
++    }
++
++    @After
++    public void tearDown() {
++        helper.close();
++        context.deleteDatabase(DatabaseContract.DATABASE_NAME);
++    }
++
++    @Test
++    public void passwordIsHashedAndAuthenticationUsesStoredVerifier() {
++        long userId = users.registerUser("Madison", "not-plain-text".toCharArray());
++        assertTrue(userId > 0);
++        try (Cursor cursor = helper.getReadableDatabase().rawQuery(
++                "SELECT password_hash, password_salt FROM users WHERE user_id = ?",
++                new String[]{String.valueOf(userId)})) {
++            assertTrue(cursor.moveToFirst());
++            assertNotEquals("not-plain-text", cursor.getString(0));
++            assertFalse(cursor.getString(1).isEmpty());
++        }
++        UserSession valid = users.authenticate("madison", "not-plain-text".toCharArray());
++        assertNotNull(valid);
++        assertNull(users.authenticate("madison", "incorrect".toCharArray()));
++    }
++
++    @Test
++    public void crudIsRestrictedToTheOwningUser() {
++        long owner = users.registerUser("owner", "password-one".toCharArray());
++        long other = users.registerUser("other", "password-two".toCharArray());
++        long entryId = entries.addEntry(owner, 140.0, "2026-07-01", "start");
++
++        assertNotNull(entries.getOwnedEntry(owner, entryId));
++        assertNull(entries.getOwnedEntry(other, entryId));
++        assertFalse(entries.updateEntry(other, entryId, 130.0, "2026-07-02", "blocked"));
++        assertFalse(entries.deleteEntry(other, entryId));
++        assertTrue(entries.updateEntry(owner, entryId, 139.0, "2026-07-02", "owner update"));
++        assertTrue(entries.deleteEntry(owner, entryId));
++    }
++
++    @Test
++    public void historySummaryAndCascadeDeleteAreCorrect() {
++        long userId = users.registerUser("progress_user", "password-three".toCharArray());
++        entries.addEntry(userId, 140.0, "2026-07-01", "first");
++        entries.addEntry(userId, 137.5, "2026-08-01", "latest");
++
++        assertEquals(2, entries.getHistory(userId).size());
++        assertEquals("2026-08-01", entries.getLatestEntry(userId).getEntryDate());
++        ProgressSummary summary = entries.getProgressSummary(userId);
++        assertEquals(2, summary.getEntryCount());
++        assertEquals(-2.5, summary.getChange(), 0.0001);
++
++        assertTrue(users.deleteUser(userId));
++        try (Cursor cursor = helper.getReadableDatabase().rawQuery(
++                "SELECT COUNT(*) FROM weight_entries WHERE user_id = ?",
++                new String[]{String.valueOf(userId)})) {
++            assertTrue(cursor.moveToFirst());
++            assertEquals(0, cursor.getInt(0));
++        }
++    }
++
++    @Test
++    public void versionOneDatabaseMigratesWithoutDroppingReadableRecords() {
++        helper.close();
++        context.deleteDatabase(DatabaseContract.DATABASE_NAME);
++        File file = context.getDatabasePath(DatabaseContract.DATABASE_NAME);
++        file.getParentFile().mkdirs();
++        SQLiteDatabase legacy = SQLiteDatabase.openOrCreateDatabase(file, null);
++        legacy.execSQL("CREATE TABLE users(username TEXT PRIMARY KEY, password TEXT)");
++        legacy.execSQL("CREATE TABLE Userdetails(name TEXT PRIMARY KEY, weight TEXT, date TEXT)");
++        legacy.execSQL("INSERT INTO users VALUES('Madison', 'legacy-password')");
++        legacy.execSQL("INSERT INTO Userdetails VALUES('Madison', '138.5', 'June 22, 2026')");
++        legacy.setVersion(1);
++        legacy.close();
++
++        helper = new DBHelper(context);
++        users = new UserRepository(helper);
++        entries = new WeightEntryRepository(helper);
++        UserSession migrated = users.authenticate("Madison", "legacy-password".toCharArray());
++        assertNotNull(migrated);
++        assertEquals(1, entries.getHistory(migrated.getUserId()).size());
++        assertEquals("2026-06-22", entries.getHistory(migrated.getUserId()).get(0).getEntryDate());
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/AndroidManifest.xml 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/AndroidManifest.xml
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/AndroidManifest.xml	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/AndroidManifest.xml	2026-08-01 17:05:54.441430687 +0000
+@@ -1,43 +1,33 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:tools="http://schemas.android.com/tools">
+-
+-    <uses-feature
+-        android:name="android.hardware.telephony"
+-        android:required="false" />
+-    <application
+-        android:allowBackup="true"
+-        android:dataExtractionRules="@xml/data_extraction_rules"
+-        android:fullBackupContent="@xml/backup_rules"
+-        android:icon="@mipmap/ic_launcher"
+-        android:label="@string/app_name"
+-        android:roundIcon="@mipmap/ic_launcher_round"
+-        android:supportsRtl="true"
+-        android:theme="@style/Theme.Project"
+-        tools:targetApi="31">
+-        <activity
+-            android:name=".MainActivity3"
+-            android:exported="false"
+-            android:label="@string/title_activity_main3"
+-            android:theme="@style/Theme.Project" />
+-        <activity
+-            android:name=".MainActivity4"
+-            android:exported="false" />
+-        <activity
+-            android:name=".MainActivity2"
+-            android:exported="false" />
+-        <activity
+-            android:name=".MainActivity"
+-            android:exported="true">
+-            <intent-filter>
+-                <action android:name="android.intent.action.MAIN" />
+-
+-                <category android:name="android.intent.category.LAUNCHER" />
+-            </intent-filter>
+-        </activity>
+-    </application>
+-    <uses-permission android:name="android.permission.SEND_SMS" />
+-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+-    <uses-permission android:name="android.permission.READ_SMS" />
+-    <uses-permission android:name="android.permission.WRITE_SMS" />
+-</manifest>
+\ No newline at end of file
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools">
++
++    <application
++        android:allowBackup="false"
++        android:icon="@mipmap/ic_launcher"
++        android:label="@string/app_name"
++        android:roundIcon="@mipmap/ic_launcher_round"
++        android:supportsRtl="true"
++        android:theme="@style/Theme.Project"
++        tools:targetApi="35">
++        <activity
++            android:name=".MainActivity3"
++            android:exported="false"
++            android:label="@string/title_activity_main3"
++            android:theme="@style/Theme.Project" />
++        <activity
++            android:name=".MainActivity4"
++            android:exported="false" />
++        <activity
++            android:name=".MainActivity2"
++            android:exported="false" />
++        <activity
++            android:name=".MainActivity"
++            android:exported="true">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++    </application>
++</manifest>
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/DBHelper.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/DBHelper.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/DBHelper.java	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/DBHelper.java	1970-01-01 00:00:00.000000000 +0000
+@@ -1,83 +0,0 @@
+-package com.example.project;
+-
+-import android.annotation.SuppressLint;
+-import android.content.ContentValues;
+-import android.content.Context;
+-import android.database.Cursor;
+-import android.database.sqlite.SQLiteDatabase;
+-import android.database.sqlite.SQLiteOpenHelper;
+-
+-public class DBHelper extends SQLiteOpenHelper {
+-    public DBHelper(Context context) {
+-        super(context, "Login.db", null, 1);
+-    }
+-    @Override
+-    public void onCreate(SQLiteDatabase MyDB) {
+-        MyDB.execSQL("create Table users(username TEXT primary key, password TEXT)");
+-        MyDB.execSQL("create Table Userdetails(name TEXT primary key, weight TEXT, date TEXT)");
+-    }
+-    @Override
+-    public void onUpgrade(SQLiteDatabase MyDB, int i, int i1) {
+-        MyDB.execSQL("drop Table if exists users");
+-        MyDB.execSQL("drop Table if exists Userdetails");
+-    }
+-    public Boolean insertuserdata(String name, String weight, String date)
+-    {
+-        SQLiteDatabase MyDB = this.getWritableDatabase();
+-        ContentValues contentValues = new ContentValues();
+-        contentValues.put("name", name);
+-        contentValues.put("weight", weight);
+-        contentValues.put("date", date);
+-        long result=MyDB.insert("Userdetails", null, contentValues);
+-        return result != -1;
+-    }
+-    public Boolean updateuserdata(String name, int weight, String date)
+-    {
+-        SQLiteDatabase MyDB = this.getWritableDatabase();
+-        ContentValues contentValues = new ContentValues();
+-        contentValues.put("name", name);
+-        contentValues.put("date", date);
+-        contentValues.put("weight", weight);
+-        @SuppressLint("Recycle") Cursor cursor = MyDB.rawQuery("Select * from Userdetails where name = ?", new String[]{name});
+-        if (cursor.getCount() > 0) {
+-            long result = MyDB.update("Userdetails", contentValues, "name=?", new String[]{name});
+-            return result != -1;
+-        } else {
+-            return false;
+-        }
+-    }
+-    public Boolean deletedata (String name)
+-    {
+-        SQLiteDatabase MyDB = this.getWritableDatabase();
+-        @SuppressLint("Recycle") Cursor cursor = MyDB.rawQuery("Select * from Userdetails where name = ?", new String[]{name});
+-        if (cursor.getCount() > 0) {
+-            long result = MyDB.delete("Userdetails", "name=?", new String[]{name});
+-            return result != -1;
+-        } else {
+-            return false;
+-        }
+-    }
+-    public Cursor getdata ()
+-    {
+-        SQLiteDatabase MyDB = this.getWritableDatabase();
+-        return MyDB.rawQuery("Select * from Userdetails", null);
+-    }
+-    public Boolean insertData(String username, String password){
+-        SQLiteDatabase MyDB = this.getWritableDatabase();
+-        ContentValues contentValues= new ContentValues();
+-        contentValues.put("username", username);
+-        contentValues.put("password", password);
+-        long result = MyDB.insert("users", null, contentValues);
+-        return result != -1;
+-    }
+-    public Boolean checkusername(String username) {
+-        SQLiteDatabase MyDB = this.getWritableDatabase();
+-        @SuppressLint("Recycle") Cursor cursor = MyDB.rawQuery("Select * from users where username = ?", new String[]{username});
+-        return cursor.getCount() > 0;
+-    }
+-    public Boolean checkusernamepassword(String username, String password){
+-        SQLiteDatabase MyDB = this.getWritableDatabase();
+-        @SuppressLint("Recycle") Cursor cursor = MyDB.rawQuery("Select * from users where username = ? and password = ?", new String[] {username,password});
+-        return cursor.getCount() > 0;
+-    }
+-}
+\ No newline at end of file
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/MainActivity.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/MainActivity.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/MainActivity.java	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/MainActivity.java	2026-08-01 16:10:42.000000000 +0000
+@@ -5,47 +5,64 @@
+ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.Toast;
+-
+ import androidx.appcompat.app.AppCompatActivity;
++import com.example.project.data.DBHelper;
++import com.example.project.data.UserRepository;
++import com.example.project.model.UserSession;
++import java.util.Arrays;
+ 
++/** Login screen. Successful authentication passes a stable user ID to the dashboard. */
+ public class MainActivity extends AppCompatActivity {
+-    EditText username, password;
+-    Button login, signup;
+-    DBHelper DB;
++    public static final String EXTRA_PREFILL_USERNAME = "prefill_username";
++
++    private DBHelper database;
++    private UserRepository users;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_main);
+ 
+-        username = (EditText) findViewById(R.id.editTextTextPersonName);
+-        password = (EditText) findViewById(R.id.editText);
+-        signup = (Button) findViewById(R.id.button2);
+-        login = (Button) findViewById(R.id.button);
+-        DB = new DBHelper(this);
+-
+-        login.setOnClickListener(v -> {
+-            String user = username.getText().toString();
+-            String pass = password.getText().toString();
+-
+-            if(user.equals("") || pass.equals(""))
+-                Toast.makeText(MainActivity.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
+-            else{
+-                Boolean checkuserpass = DB.checkusernamepassword(user, pass);
+-                if (checkuserpass){
+-                    Toast.makeText(MainActivity.this, "Successful Signin", Toast.LENGTH_SHORT).show();
+-                    Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+-                    startActivity(intent);
+-                }else{
+-                    Toast.makeText(MainActivity.this, "Invalid Login Information", Toast.LENGTH_SHORT).show();
++        EditText username = findViewById(R.id.editTextTextPersonName);
++        EditText password = findViewById(R.id.editText);
++        Button login = findViewById(R.id.button);
++        Button signup = findViewById(R.id.button2);
++        database = new DBHelper(this);
++        users = new UserRepository(database);
++
++        String prefill = getIntent().getStringExtra(EXTRA_PREFILL_USERNAME);
++        if (prefill != null) {
++            username.setText(prefill);
++        }
++
++        login.setOnClickListener(view -> {
++            String usernameText = username.getText().toString();
++            char[] passwordCharacters = password.getText().toString().toCharArray();
++            try {
++                UserSession session = users.authenticate(usernameText, passwordCharacters);
++                if (session == null) {
++                    Toast.makeText(this, "Invalid username or password.", Toast.LENGTH_SHORT).show();
++                    return;
+                 }
++                Intent dashboard = new Intent(this, MainActivity2.class);
++                dashboard.putExtra(MainActivity2.EXTRA_USER_ID, session.getUserId());
++                dashboard.putExtra(MainActivity2.EXTRA_USERNAME, session.getUsername());
++                startActivity(dashboard);
++                password.setText("");
++            } finally {
++                Arrays.fill(passwordCharacters, '\0');
+             }
+-
+-        });
+-        signup.setOnClickListener(v -> {
+-            Intent intent = new Intent(getApplicationContext(), MainActivity4.class);
+-            startActivity(intent);
+         });
++
++        signup.setOnClickListener(view ->
++                startActivity(new Intent(this, MainActivity4.class)));
+     }
+ 
+-}
+\ No newline at end of file
++    @Override
++    protected void onDestroy() {
++        if (database != null) {
++            database.close();
++        }
++        super.onDestroy();
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/MainActivity2.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/MainActivity2.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/MainActivity2.java	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/MainActivity2.java	2026-08-01 16:10:42.000000000 +0000
+@@ -1,95 +1,179 @@
+ package com.example.project;
+ 
+ import android.content.Intent;
+-import android.database.Cursor;
+ import android.os.Bundle;
+ import android.widget.Button;
+ import android.widget.EditText;
++import android.widget.TextView;
+ import android.widget.Toast;
+-
+ import androidx.appcompat.app.AlertDialog;
+ import androidx.appcompat.app.AppCompatActivity;
++import com.example.project.data.DBHelper;
++import com.example.project.data.WeightEntryRepository;
++import com.example.project.model.ProgressSummary;
++import com.example.project.model.WeightEntry;
++import java.time.LocalDate;
++import java.util.List;
++import java.util.Locale;
+ 
++/** Authenticated dashboard. Every database operation is restricted by user ID. */
+ public class MainActivity2 extends AppCompatActivity {
++    public static final String EXTRA_USER_ID = "authenticated_user_id";
++    public static final String EXTRA_USERNAME = "authenticated_username";
+ 
+-    EditText name, date, weight;
+-    Button insert, update, delete, view, settings;
+-    DBHelper DB;
++    private DBHelper database;
++    private WeightEntryRepository entries;
++    private long userId;
++    private TextView progressSummary;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+-        {
+-            setContentView(R.layout.activity_main2);
+-            settings = findViewById(R.id.button1);
+-            name = findViewById(R.id.name);
+-            weight = findViewById(R.id.weight);
+-            date = findViewById(R.id.date1);
+-            date.setText(getString(R.string.current_date));
+-            insert = findViewById(R.id.btnInsert);
+-            update = findViewById(R.id.btnUpdate);
+-            delete = findViewById(R.id.btnDelete);
+-            view = findViewById(R.id.btnView);
+-            DB = new DBHelper(this);
+-
+-
+-            settings.setOnClickListener(v -> {
+-                Intent intent = new Intent(getApplicationContext(), MainActivity3.class);
+-                startActivity(intent);
+-            });
+-
+-            insert.setOnClickListener(v -> {
+-                String nameTXT = name.getText().toString();
+-                String weightTXT = weight.getText().toString();
+-                String dateTXT = date.getText().toString();
+-
+-                Boolean checkinsertdata = DB.insertuserdata(nameTXT, weightTXT, dateTXT);
+-                if (checkinsertdata)
+-                    Toast.makeText(MainActivity2.this, "New Entry Inserted", Toast.LENGTH_SHORT).show();
+-                else
+-                    Toast.makeText(MainActivity2.this, "New Entry Not Inserted", Toast.LENGTH_SHORT).show();
+-            });
+-
+-            update.setOnClickListener(v -> {
+-                String nameTXT = name.getText().toString();
+-                String weightTXT = weight.getText().toString();
+-                String dateTXT = date.getText().toString();
+-
+-                Boolean checkupdatedata = DB.updateuserdata(nameTXT, Integer.parseInt(weightTXT), dateTXT);
+-                if (checkupdatedata)
+-                    Toast.makeText(MainActivity2.this, "Entry Updated", Toast.LENGTH_SHORT).show();
+-                else
+-                    Toast.makeText(MainActivity2.this, "Entry Not Updated", Toast.LENGTH_SHORT).show();
+-            });
+-
+-            delete.setOnClickListener(view -> {
+-                String nameTXT = name.getText().toString();
+-
+-                Boolean checkdeletedata = DB.deletedata(nameTXT);
+-                if (checkdeletedata)
+-                    Toast.makeText(MainActivity2.this, "Entry Deleted", Toast.LENGTH_SHORT).show();
+-                else
+-                    Toast.makeText(MainActivity2.this, "Entry Not Deleted", Toast.LENGTH_SHORT).show();
+-            });
+-
+-            view.setOnClickListener(view -> {
+-                Cursor res = DB.getdata();
+-                if (res.getCount() == 0) {
+-                    Toast.makeText(MainActivity2.this, "No Entry Exists", Toast.LENGTH_SHORT).show();
+-                    return;
+-                }
+-                StringBuilder buffer = new StringBuilder();
+-                while (res.moveToNext()) {
+-                    buffer.append("Name :").append(res.getString(0)).append("\n");
+-                    buffer.append("Weight :").append(res.getString(1)).append("\n");
+-                    buffer.append("Date :").append(res.getString(2)).append("\n\n");
+-                }
+-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this);
+-                builder.setCancelable(true);
+-                builder.setTitle("User Entries");
+-                builder.setMessage(buffer.toString());
+-                builder.show();
+-            });
++        userId = getIntent().getLongExtra(EXTRA_USER_ID, -1L);
++        String username = getIntent().getStringExtra(EXTRA_USERNAME);
++        if (userId <= 0 || username == null || username.trim().isEmpty()) {
++            Toast.makeText(this, "Please sign in before opening the dashboard.", Toast.LENGTH_LONG).show();
++            startActivity(new Intent(this, MainActivity.class));
++            finish();
++            return;
++        }
++
++        setContentView(R.layout.activity_main2);
++        database = new DBHelper(this);
++        entries = new WeightEntryRepository(database);
++
++        TextView currentUser = findViewById(R.id.currentUser);
++        progressSummary = findViewById(R.id.progressSummary);
++        EditText entryId = findViewById(R.id.entryId);
++        EditText weight = findViewById(R.id.weight);
++        EditText date = findViewById(R.id.date1);
++        EditText note = findViewById(R.id.note);
++        Button insert = findViewById(R.id.btnInsert);
++        Button update = findViewById(R.id.btnUpdate);
++        Button delete = findViewById(R.id.btnDelete);
++        Button view = findViewById(R.id.btnView);
++        Button settings = findViewById(R.id.button1);
++        Button logout = findViewById(R.id.btnLogout);
++
++        currentUser.setText(getString(R.string.signed_in_as, username));
++        date.setText(LocalDate.now().toString());
++        refreshSummary();
++
++        insert.setOnClickListener(button -> runDatabaseAction(() -> {
++            long newId = entries.addEntry(
++                    userId,
++                    parseWeight(weight),
++                    date.getText().toString(),
++                    note.getText().toString());
++            entryId.setText(String.valueOf(newId));
++            Toast.makeText(this, "Entry " + newId + " was saved.", Toast.LENGTH_SHORT).show();
++            refreshSummary();
++        }));
++
++        update.setOnClickListener(button -> runDatabaseAction(() -> {
++            boolean changed = entries.updateEntry(
++                    userId,
++                    parseEntryId(entryId),
++                    parseWeight(weight),
++                    date.getText().toString(),
++                    note.getText().toString());
++            Toast.makeText(
++                    this,
++                    changed ? "Entry updated." : "Entry was not found for this account.",
++                    Toast.LENGTH_SHORT).show();
++            refreshSummary();
++        }));
++
++        delete.setOnClickListener(button -> runDatabaseAction(() -> {
++            boolean removed = entries.deleteEntry(userId, parseEntryId(entryId));
++            Toast.makeText(
++                    this,
++                    removed ? "Entry deleted." : "Entry was not found for this account.",
++                    Toast.LENGTH_SHORT).show();
++            refreshSummary();
++        }));
++
++        view.setOnClickListener(button -> runDatabaseAction(this::showHistory));
++        settings.setOnClickListener(button ->
++                startActivity(new Intent(this, MainActivity3.class)));
++        logout.setOnClickListener(button -> {
++            startActivity(new Intent(this, MainActivity.class));
++            finish();
++        });
++    }
++
++    private void showHistory() {
++        List<WeightEntry> history = entries.getHistory(userId);
++        if (history.isEmpty()) {
++            Toast.makeText(this, "No weight entries exist for this account.", Toast.LENGTH_SHORT).show();
++            return;
++        }
++        StringBuilder message = new StringBuilder();
++        for (WeightEntry entry : history) {
++            message.append("Entry ID: ").append(entry.getEntryId()).append('\n');
++            message.append("Weight: ")
++                    .append(String.format(Locale.US, "%.1f", entry.getWeight()))
++                    .append('\n');
++            message.append("Date: ").append(entry.getEntryDate()).append('\n');
++            if (!entry.getNote().isEmpty()) {
++                message.append("Note: ").append(entry.getNote()).append('\n');
++            }
++            message.append('\n');
++        }
++        new AlertDialog.Builder(this)
++                .setTitle("Your Weight History")
++                .setMessage(message.toString())
++                .setPositiveButton("Close", null)
++                .show();
++    }
++
++    private void refreshSummary() {
++        ProgressSummary summary = entries.getProgressSummary(userId);
++        if (!summary.hasData()) {
++            progressSummary.setText(R.string.no_progress_data);
++            return;
++        }
++        progressSummary.setText(getString(
++                R.string.progress_summary,
++                summary.getEntryCount(),
++                summary.getFirstWeight(),
++                summary.getFirstDate(),
++                summary.getLatestWeight(),
++                summary.getLatestDate(),
++                summary.getChange()));
++    }
++
++    private long parseEntryId(EditText field) {
++        try {
++            return Long.parseLong(field.getText().toString().trim());
++        } catch (NumberFormatException exception) {
++            throw new IllegalArgumentException("Enter a numeric entry ID for update or delete.");
+         }
++    }
++
++    private double parseWeight(EditText field) {
++        try {
++            return Double.parseDouble(field.getText().toString().trim());
++        } catch (NumberFormatException exception) {
++            throw new IllegalArgumentException("Enter a numeric weight.");
++        }
++    }
++
++    private void runDatabaseAction(Runnable action) {
++        try {
++            action.run();
++        } catch (IllegalArgumentException exception) {
++            Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
++        } catch (RuntimeException exception) {
++            Toast.makeText(this, "The database operation could not be completed.", Toast.LENGTH_LONG).show();
++        }
++    }
++
++    @Override
++    protected void onDestroy() {
++        if (database != null) {
++            database.close();
+         }
+-    }
+\ No newline at end of file
++        super.onDestroy();
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/MainActivity4.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/MainActivity4.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/MainActivity4.java	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/MainActivity4.java	2026-08-01 16:10:42.000000000 +0000
+@@ -5,57 +5,61 @@
+ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.Toast;
+-
+ import androidx.appcompat.app.AppCompatActivity;
++import com.example.project.data.DBHelper;
++import com.example.project.data.UserRepository;
++import java.util.Arrays;
+ 
++/** Registration screen. It no longer provides a route around authentication. */
+ public class MainActivity4 extends AppCompatActivity {
++    private DBHelper database;
+ 
+-    EditText username, password, repassword;
+-    Button signup, signin;
+-    DBHelper DB;
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_main4);
+ 
+-        username = (EditText) findViewById(R.id.editText1);
+-        password = (EditText) findViewById(R.id.editText);
+-        repassword = (EditText) findViewById(R.id.editText2);
+-        signup = (Button) findViewById(R.id.button);
+-        signin = (Button) findViewById(R.id.button1);
+-        DB = new DBHelper(this);
++        EditText username = findViewById(R.id.editText1);
++        EditText password = findViewById(R.id.editText);
++        EditText repeatedPassword = findViewById(R.id.editText2);
++        Button signup = findViewById(R.id.button);
++        Button signin = findViewById(R.id.button1);
++        database = new DBHelper(this);
++        UserRepository users = new UserRepository(database);
+ 
+         signup.setOnClickListener(view -> {
+-            String user = username.getText().toString();
+-            String pass = password.getText().toString();
+-            String repass = repassword.getText().toString();
+-
+-            if(user.equals("")||pass.equals("")||repass.equals(""))
+-                Toast.makeText(MainActivity4.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
+-            else{
+-                if(pass.equals(repass)){
+-                    Boolean checkuser = DB.checkusername(user);
+-                    if(!checkuser){
+-                        Boolean insert = DB.insertData(user, pass);
+-                        if(insert){
+-                            Toast.makeText(MainActivity4.this, "Registered successfully", Toast.LENGTH_SHORT).show();
+-                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+-                            startActivity(intent);
+-                        }else{
+-                            Toast.makeText(MainActivity4.this, "Registration failed", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-                    else{
+-                        Toast.makeText(MainActivity4.this, "User already exists! please sign in", Toast.LENGTH_SHORT).show();
+-                    }
+-                }else{
+-                    Toast.makeText(MainActivity4.this, "Passwords not matching", Toast.LENGTH_SHORT).show();
++            String usernameText = username.getText().toString();
++            char[] passwordCharacters = password.getText().toString().toCharArray();
++            char[] repeatedCharacters = repeatedPassword.getText().toString().toCharArray();
++            try {
++                if (!Arrays.equals(passwordCharacters, repeatedCharacters)) {
++                    throw new IllegalArgumentException("Passwords do not match.");
+                 }
+-            } });
++                users.registerUser(usernameText, passwordCharacters);
++                Toast.makeText(this, "Account created. Please sign in.", Toast.LENGTH_SHORT).show();
++                Intent login = new Intent(this, MainActivity.class);
++                login.putExtra(MainActivity.EXTRA_PREFILL_USERNAME, usernameText.trim());
++                startActivity(login);
++                finish();
++            } catch (IllegalArgumentException exception) {
++                Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
++            } finally {
++                Arrays.fill(passwordCharacters, '\0');
++                Arrays.fill(repeatedCharacters, '\0');
++            }
++        });
+ 
+         signin.setOnClickListener(view -> {
+-            Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+-            startActivity(intent);
++            startActivity(new Intent(this, MainActivity.class));
++            finish();
+         });
+     }
+-}
+\ No newline at end of file
++
++    @Override
++    protected void onDestroy() {
++        if (database != null) {
++            database.close();
++        }
++        super.onDestroy();
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/DBHelper.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/DBHelper.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/DBHelper.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/DBHelper.java	2026-08-01 16:23:54.000000000 +0000
+@@ -0,0 +1,248 @@
++package com.example.project.data;
++
++import android.content.ContentValues;
++import android.content.Context;
++import android.database.Cursor;
++import android.database.sqlite.SQLiteDatabase;
++import android.database.sqlite.SQLiteOpenHelper;
++import android.util.Log;
++import com.example.project.security.PasswordHasher;
++import java.time.Instant;
++import java.util.HashMap;
++import java.util.Locale;
++import java.util.Map;
++
++/** Creates the normalized schema and migrates the original version-one database. */
++public final class DBHelper extends SQLiteOpenHelper {
++    private static final String TAG = "WeightTrackerDatabase";
++    private static final String LEGACY_USERS = "users_legacy";
++    private static final String LEGACY_ENTRIES = "userdetails_legacy";
++    private static final String LEGACY_IMPORT_USERNAME = "legacy_import";
++
++    public DBHelper(Context context) {
++        super(
++                context,
++                DatabaseContract.DATABASE_NAME,
++                null,
++                DatabaseContract.DATABASE_VERSION);
++    }
++
++    @Override
++    public void onConfigure(SQLiteDatabase database) {
++        super.onConfigure(database);
++        database.setForeignKeyConstraintsEnabled(true);
++    }
++
++    @Override
++    public void onCreate(SQLiteDatabase database) {
++        createVersionTwoSchema(database);
++    }
++
++    @Override
++    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
++        if (oldVersion < 2) {
++            migrateVersionOneToTwo(database);
++        }
++    }
++
++    private void createVersionTwoSchema(SQLiteDatabase database) {
++        database.execSQL(DatabaseContract.CREATE_USERS);
++        database.execSQL(DatabaseContract.CREATE_WEIGHT_ENTRIES);
++        database.execSQL(DatabaseContract.CREATE_MIGRATION_ISSUES);
++        database.execSQL(DatabaseContract.CREATE_HISTORY_INDEX);
++    }
++
++    private void migrateVersionOneToTwo(SQLiteDatabase database) {
++        boolean hasUsers = tableExists(database, "users");
++        boolean hasEntries = tableExists(database, "Userdetails");
++
++        if (hasUsers) {
++            database.execSQL("ALTER TABLE users RENAME TO " + LEGACY_USERS);
++        }
++        if (hasEntries) {
++            database.execSQL("ALTER TABLE Userdetails RENAME TO " + LEGACY_ENTRIES);
++        }
++
++        createVersionTwoSchema(database);
++        Map<String, Long> userIds = hasUsers
++                ? migrateLegacyUsers(database)
++                : new HashMap<>();
++        if (hasEntries) {
++            migrateLegacyEntries(database, userIds);
++        }
++
++        if (hasEntries) {
++            database.execSQL("DROP TABLE " + LEGACY_ENTRIES);
++        }
++        if (hasUsers) {
++            database.execSQL("DROP TABLE " + LEGACY_USERS);
++        }
++    }
++
++    private Map<String, Long> migrateLegacyUsers(SQLiteDatabase database) {
++        Map<String, Long> migrated = new HashMap<>();
++        try (Cursor cursor = database.query(
++                LEGACY_USERS,
++                new String[]{"username", "password"},
++                null,
++                null,
++                null,
++                null,
++                null)) {
++            int sequence = 1;
++            while (cursor.moveToNext()) {
++                String rawUsername = cursor.getString(0);
++                String rawPassword = cursor.getString(1);
++                String username = uniqueLegacyUsername(database, rawUsername, sequence++);
++                char[] password = rawPassword == null ? new char[0] : rawPassword.toCharArray();
++                if (password.length == 0) {
++                    password = ("legacy-unavailable-" + username).toCharArray();
++                }
++                PasswordHasher.HashResult hash = PasswordHasher.hash(password);
++                java.util.Arrays.fill(password, '\0');
++
++                ContentValues values = new ContentValues();
++                values.put(DatabaseContract.Users.USERNAME, username);
++                values.put(DatabaseContract.Users.PASSWORD_HASH, hash.getHash());
++                values.put(DatabaseContract.Users.PASSWORD_SALT, hash.getSalt());
++                values.put(DatabaseContract.Users.PASSWORD_ALGORITHM, hash.getAlgorithm());
++                values.put(DatabaseContract.Users.PASSWORD_ITERATIONS, hash.getIterations());
++                values.put(DatabaseContract.Users.CREATED_AT, Instant.now().toString());
++                long userId = database.insertOrThrow(DatabaseContract.Users.TABLE, null, values);
++                if (rawUsername != null && !rawUsername.trim().isEmpty()) {
++                    migrated.putIfAbsent(rawUsername.trim().toLowerCase(Locale.US), userId);
++                }
++            }
++        }
++        return migrated;
++    }
++
++    private void migrateLegacyEntries(SQLiteDatabase database, Map<String, Long> userIds) {
++        Long fallbackUserId = null;
++        try (Cursor cursor = database.query(
++                LEGACY_ENTRIES,
++                new String[]{"name", "weight", "date"},
++                null,
++                null,
++                null,
++                null,
++                null)) {
++            while (cursor.moveToNext()) {
++                String legacyName = cursor.getString(0);
++                String rawWeight = cursor.getString(1);
++                String rawDate = cursor.getString(2);
++                Double weight = LegacyDataNormalizer.parseWeight(rawWeight);
++                String entryDate = LegacyDataNormalizer.normalizeDate(rawDate);
++
++                if (weight == null || entryDate == null) {
++                    String reason = weight == null && entryDate == null
++                            ? "Weight and date could not be normalized."
++                            : weight == null
++                            ? "Weight could not be normalized."
++                            : "Date could not be normalized.";
++                    logMigrationIssue(database, legacyName, reason, rawWeight, rawDate);
++                    continue;
++                }
++
++                Long ownerId = legacyName == null
++                        ? null
++                        : userIds.get(legacyName.trim().toLowerCase(Locale.US));
++                if (ownerId == null) {
++                    if (fallbackUserId == null) {
++                        fallbackUserId = createLegacyImportAccount(database);
++                    }
++                    ownerId = fallbackUserId;
++                }
++
++                String timestamp = Instant.now().toString();
++                ContentValues values = new ContentValues();
++                values.put(DatabaseContract.WeightEntries.USER_ID, ownerId);
++                values.put(DatabaseContract.WeightEntries.WEIGHT, weight);
++                values.put(DatabaseContract.WeightEntries.ENTRY_DATE, entryDate);
++                values.put(
++                        DatabaseContract.WeightEntries.NOTE,
++                        legacyImportNote(legacyName));
++                values.put(DatabaseContract.WeightEntries.CREATED_AT, timestamp);
++                values.put(DatabaseContract.WeightEntries.UPDATED_AT, timestamp);
++                database.insertOrThrow(DatabaseContract.WeightEntries.TABLE, null, values);
++            }
++        }
++    }
++
++    private long createLegacyImportAccount(SQLiteDatabase database) {
++        String username = uniqueLegacyUsername(database, LEGACY_IMPORT_USERNAME, 1);
++        char[] unavailablePassword = ("unavailable-" + System.nanoTime()).toCharArray();
++        try {
++            PasswordHasher.HashResult hash = PasswordHasher.hash(unavailablePassword);
++            ContentValues values = new ContentValues();
++            values.put(DatabaseContract.Users.USERNAME, username);
++            values.put(DatabaseContract.Users.PASSWORD_HASH, hash.getHash());
++            values.put(DatabaseContract.Users.PASSWORD_SALT, hash.getSalt());
++            values.put(DatabaseContract.Users.PASSWORD_ALGORITHM, hash.getAlgorithm());
++            values.put(DatabaseContract.Users.PASSWORD_ITERATIONS, hash.getIterations());
++            values.put(DatabaseContract.Users.CREATED_AT, Instant.now().toString());
++            return database.insertOrThrow(DatabaseContract.Users.TABLE, null, values);
++        } finally {
++            java.util.Arrays.fill(unavailablePassword, '\0');
++        }
++    }
++
++    private String legacyImportNote(String legacyName) {
++        String label = legacyName == null || legacyName.trim().isEmpty()
++                ? "unnamed"
++                : legacyName.trim();
++        String prefix = "Imported from original record labeled: ";
++        int available = 250 - prefix.length();
++        return prefix + (label.length() <= available ? label : label.substring(0, available));
++    }
++
++    private void logMigrationIssue(
++            SQLiteDatabase database,
++            String identifier,
++            String reason,
++            String rawWeight,
++            String rawDate) {
++        ContentValues values = new ContentValues();
++        values.put(DatabaseContract.MigrationIssues.SOURCE_TABLE, "Userdetails");
++        values.put(DatabaseContract.MigrationIssues.SOURCE_IDENTIFIER, identifier);
++        values.put(DatabaseContract.MigrationIssues.REASON, reason);
++        values.put(DatabaseContract.MigrationIssues.RAW_WEIGHT, rawWeight);
++        values.put(DatabaseContract.MigrationIssues.RAW_DATE, rawDate);
++        values.put(DatabaseContract.MigrationIssues.CREATED_AT, Instant.now().toString());
++        database.insertOrThrow(DatabaseContract.MigrationIssues.TABLE, null, values);
++        Log.w(TAG, "Legacy record was preserved in migration_issues: " + reason);
++    }
++
++    private String uniqueLegacyUsername(
++            SQLiteDatabase database,
++            String rawUsername,
++            int sequence) {
++        String base = rawUsername == null ? "" : rawUsername.trim();
++        if (base.isEmpty()) {
++            base = "legacy_user_" + sequence;
++        }
++        String candidate = base;
++        int suffix = 1;
++        while (usernameExists(database, candidate)) {
++            candidate = base + "_legacy_" + suffix++;
++        }
++        return candidate;
++    }
++
++    private boolean usernameExists(SQLiteDatabase database, String username) {
++        try (Cursor cursor = database.rawQuery(
++                "SELECT 1 FROM " + DatabaseContract.Users.TABLE +
++                        " WHERE " + DatabaseContract.Users.USERNAME + " = ? COLLATE NOCASE LIMIT 1",
++                new String[]{username})) {
++            return cursor.moveToFirst();
++        }
++    }
++
++    private boolean tableExists(SQLiteDatabase database, String tableName) {
++        try (Cursor cursor = database.rawQuery(
++                "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?",
++                new String[]{tableName})) {
++            return cursor.moveToFirst();
++        }
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/DatabaseContract.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/DatabaseContract.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/DatabaseContract.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/DatabaseContract.java	2026-08-01 16:16:04.000000000 +0000
+@@ -0,0 +1,97 @@
++package com.example.project.data;
++
++/** Central names and SQL statements for the version-two database. */
++public final class DatabaseContract {
++    private DatabaseContract() {
++    }
++
++    public static final String DATABASE_NAME = "Login.db";
++    public static final int DATABASE_VERSION = 2;
++
++    public static final class Users {
++        public static final String TABLE = "users";
++        public static final String ID = "user_id";
++        public static final String USERNAME = "username";
++        public static final String PASSWORD_HASH = "password_hash";
++        public static final String PASSWORD_SALT = "password_salt";
++        public static final String PASSWORD_ALGORITHM = "password_algorithm";
++        public static final String PASSWORD_ITERATIONS = "password_iterations";
++        public static final String CREATED_AT = "created_at";
++
++        private Users() {
++        }
++    }
++
++    public static final class WeightEntries {
++        public static final String TABLE = "weight_entries";
++        public static final String ID = "entry_id";
++        public static final String USER_ID = "user_id";
++        public static final String WEIGHT = "weight";
++        public static final String ENTRY_DATE = "entry_date";
++        public static final String NOTE = "note";
++        public static final String CREATED_AT = "created_at";
++        public static final String UPDATED_AT = "updated_at";
++
++        private WeightEntries() {
++        }
++    }
++
++    public static final class MigrationIssues {
++        public static final String TABLE = "migration_issues";
++        public static final String ID = "issue_id";
++        public static final String SOURCE_TABLE = "source_table";
++        public static final String SOURCE_IDENTIFIER = "source_identifier";
++        public static final String REASON = "reason";
++        public static final String RAW_WEIGHT = "raw_weight";
++        public static final String RAW_DATE = "raw_date";
++        public static final String CREATED_AT = "created_at";
++
++        private MigrationIssues() {
++        }
++    }
++
++    public static final String CREATE_USERS =
++            "CREATE TABLE " + Users.TABLE + " (" +
++                    Users.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
++                    Users.USERNAME + " TEXT NOT NULL COLLATE NOCASE UNIQUE, " +
++                    Users.PASSWORD_HASH + " TEXT NOT NULL, " +
++                    Users.PASSWORD_SALT + " TEXT NOT NULL, " +
++                    Users.PASSWORD_ALGORITHM + " TEXT NOT NULL, " +
++                    Users.PASSWORD_ITERATIONS + " INTEGER NOT NULL CHECK(" +
++                    Users.PASSWORD_ITERATIONS + " > 0), " +
++                    Users.CREATED_AT + " TEXT NOT NULL" +
++                    ")";
++
++    public static final String CREATE_WEIGHT_ENTRIES =
++            "CREATE TABLE " + WeightEntries.TABLE + " (" +
++                    WeightEntries.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
++                    WeightEntries.USER_ID + " INTEGER NOT NULL, " +
++                    WeightEntries.WEIGHT + " REAL NOT NULL CHECK(" +
++                    WeightEntries.WEIGHT + " > 0 AND " + WeightEntries.WEIGHT + " <= 1500), " +
++                    WeightEntries.ENTRY_DATE + " TEXT NOT NULL CHECK(length(" +
++                    WeightEntries.ENTRY_DATE + ") = 10 AND date(" +
++                    WeightEntries.ENTRY_DATE + ") = " + WeightEntries.ENTRY_DATE + "), " +
++                    WeightEntries.NOTE + " TEXT NOT NULL DEFAULT '' CHECK(length(" +
++                    WeightEntries.NOTE + ") <= 250), " +
++                    WeightEntries.CREATED_AT + " TEXT NOT NULL, " +
++                    WeightEntries.UPDATED_AT + " TEXT NOT NULL, " +
++                    "FOREIGN KEY(" + WeightEntries.USER_ID + ") REFERENCES " +
++                    Users.TABLE + "(" + Users.ID + ") ON DELETE CASCADE" +
++                    ")";
++
++    public static final String CREATE_MIGRATION_ISSUES =
++            "CREATE TABLE " + MigrationIssues.TABLE + " (" +
++                    MigrationIssues.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
++                    MigrationIssues.SOURCE_TABLE + " TEXT NOT NULL, " +
++                    MigrationIssues.SOURCE_IDENTIFIER + " TEXT, " +
++                    MigrationIssues.REASON + " TEXT NOT NULL, " +
++                    MigrationIssues.RAW_WEIGHT + " TEXT, " +
++                    MigrationIssues.RAW_DATE + " TEXT, " +
++                    MigrationIssues.CREATED_AT + " TEXT NOT NULL" +
++                    ")";
++
++    public static final String CREATE_HISTORY_INDEX =
++            "CREATE INDEX idx_weight_entries_user_date ON " +
++                    WeightEntries.TABLE + "(" + WeightEntries.USER_ID + ", " +
++                    WeightEntries.ENTRY_DATE + " DESC, " + WeightEntries.ID + " DESC)";
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/LegacyDataNormalizer.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/LegacyDataNormalizer.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/LegacyDataNormalizer.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/LegacyDataNormalizer.java	2026-08-01 16:24:58.000000000 +0000
+@@ -0,0 +1,50 @@
++package com.example.project.data;
++
++import java.time.LocalDate;
++import java.time.format.DateTimeFormatter;
++import java.time.format.DateTimeParseException;
++import java.time.format.ResolverStyle;
++import java.util.List;
++import java.util.Locale;
++
++/** Converts the original text-only records into version-two values when possible. */
++public final class LegacyDataNormalizer {
++    private static final List<DateTimeFormatter> DATE_FORMATS = List.of(
++            DateTimeFormatter.ISO_LOCAL_DATE.withResolverStyle(ResolverStyle.STRICT),
++            DateTimeFormatter.ofPattern("MMMM d, uuuu", Locale.US)
++                    .withResolverStyle(ResolverStyle.STRICT),
++            DateTimeFormatter.ofPattern("M/d/uuuu", Locale.US)
++                    .withResolverStyle(ResolverStyle.STRICT),
++            DateTimeFormatter.ofPattern("MM/dd/uuuu", Locale.US)
++                    .withResolverStyle(ResolverStyle.STRICT));
++
++    private LegacyDataNormalizer() {
++    }
++
++    public static Double parseWeight(String rawWeight) {
++        if (rawWeight == null) {
++            return null;
++        }
++        try {
++            double parsed = Double.parseDouble(rawWeight.trim());
++            return Double.isFinite(parsed) && parsed > 0 && parsed <= 1500 ? parsed : null;
++        } catch (NumberFormatException exception) {
++            return null;
++        }
++    }
++
++    public static String normalizeDate(String rawDate) {
++        if (rawDate == null) {
++            return null;
++        }
++        String trimmed = rawDate.trim();
++        for (DateTimeFormatter formatter : DATE_FORMATS) {
++            try {
++                return LocalDate.parse(trimmed, formatter).toString();
++            } catch (DateTimeParseException ignored) {
++                // Try the next explicitly supported legacy format.
++            }
++        }
++        return null;
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/UserRepository.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/UserRepository.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/UserRepository.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/UserRepository.java	2026-08-01 16:10:42.000000000 +0000
+@@ -0,0 +1,76 @@
++package com.example.project.data;
++
++import android.content.ContentValues;
++import android.database.Cursor;
++import android.database.sqlite.SQLiteConstraintException;
++import android.database.sqlite.SQLiteDatabase;
++import com.example.project.model.UserSession;
++import com.example.project.security.PasswordHasher;
++import com.example.project.validation.InputValidator;
++import java.time.Instant;
++
++/** Account persistence and authentication. Plaintext passwords never enter SQLite. */
++public final class UserRepository {
++    private final DBHelper helper;
++
++    public UserRepository(DBHelper helper) {
++        this.helper = helper;
++    }
++
++    public long registerUser(String rawUsername, char[] password) {
++        String username = InputValidator.username(rawUsername);
++        InputValidator.password(password);
++        PasswordHasher.HashResult result = PasswordHasher.hash(password);
++
++        ContentValues values = new ContentValues();
++        values.put(DatabaseContract.Users.USERNAME, username);
++        values.put(DatabaseContract.Users.PASSWORD_HASH, result.getHash());
++        values.put(DatabaseContract.Users.PASSWORD_SALT, result.getSalt());
++        values.put(DatabaseContract.Users.PASSWORD_ALGORITHM, result.getAlgorithm());
++        values.put(DatabaseContract.Users.PASSWORD_ITERATIONS, result.getIterations());
++        values.put(DatabaseContract.Users.CREATED_AT, Instant.now().toString());
++        try {
++            return helper.getWritableDatabase().insertOrThrow(
++                    DatabaseContract.Users.TABLE,
++                    null,
++                    values);
++        } catch (SQLiteConstraintException exception) {
++            throw new IllegalArgumentException("That username already exists.", exception);
++        }
++    }
++
++    public UserSession authenticate(String rawUsername, char[] password) {
++        if (rawUsername == null || rawUsername.trim().isEmpty() || password == null) {
++            return null;
++        }
++        SQLiteDatabase database = helper.getReadableDatabase();
++        String sql = "SELECT " + DatabaseContract.Users.ID + ", " +
++                DatabaseContract.Users.USERNAME + ", " +
++                DatabaseContract.Users.PASSWORD_HASH + ", " +
++                DatabaseContract.Users.PASSWORD_SALT + ", " +
++                DatabaseContract.Users.PASSWORD_ALGORITHM + ", " +
++                DatabaseContract.Users.PASSWORD_ITERATIONS +
++                " FROM " + DatabaseContract.Users.TABLE +
++                " WHERE " + DatabaseContract.Users.USERNAME + " = ? COLLATE NOCASE LIMIT 1";
++        try (Cursor cursor = database.rawQuery(sql, new String[]{rawUsername.trim()})) {
++            if (!cursor.moveToFirst()) {
++                return null;
++            }
++            boolean valid = PasswordHasher.verify(
++                    password,
++                    cursor.getString(3),
++                    cursor.getString(2),
++                    cursor.getString(4),
++                    cursor.getInt(5));
++            return valid ? new UserSession(cursor.getLong(0), cursor.getString(1)) : null;
++        }
++    }
++
++    public boolean deleteUser(long userId) {
++        InputValidator.positiveId(userId, "User ID");
++        return helper.getWritableDatabase().delete(
++                DatabaseContract.Users.TABLE,
++                DatabaseContract.Users.ID + " = ?",
++                new String[]{String.valueOf(userId)}) == 1;
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/WeightEntryRepository.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/WeightEntryRepository.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/data/WeightEntryRepository.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/WeightEntryRepository.java	2026-08-01 16:10:42.000000000 +0000
+@@ -0,0 +1,187 @@
++package com.example.project.data;
++
++import android.content.ContentValues;
++import android.database.Cursor;
++import android.database.sqlite.SQLiteDatabase;
++import com.example.project.model.ProgressSummary;
++import com.example.project.model.WeightEntry;
++import com.example.project.validation.InputValidator;
++import java.time.Instant;
++import java.util.ArrayList;
++import java.util.Collections;
++import java.util.List;
++
++/** User-scoped CRUD and reporting queries for weight history. */
++public final class WeightEntryRepository {
++    private static final String[] PROJECTION = {
++            DatabaseContract.WeightEntries.ID,
++            DatabaseContract.WeightEntries.USER_ID,
++            DatabaseContract.WeightEntries.WEIGHT,
++            DatabaseContract.WeightEntries.ENTRY_DATE,
++            DatabaseContract.WeightEntries.NOTE
++    };
++
++    private final DBHelper helper;
++
++    public WeightEntryRepository(DBHelper helper) {
++        this.helper = helper;
++    }
++
++    public long addEntry(long userId, double weight, String entryDate, String note) {
++        InputValidator.positiveId(userId, "User ID");
++        double validWeight = InputValidator.weight(weight);
++        String validDate = InputValidator.isoDate(entryDate);
++        String validNote = InputValidator.note(note);
++        String timestamp = Instant.now().toString();
++
++        ContentValues values = new ContentValues();
++        values.put(DatabaseContract.WeightEntries.USER_ID, userId);
++        values.put(DatabaseContract.WeightEntries.WEIGHT, validWeight);
++        values.put(DatabaseContract.WeightEntries.ENTRY_DATE, validDate);
++        values.put(DatabaseContract.WeightEntries.NOTE, validNote);
++        values.put(DatabaseContract.WeightEntries.CREATED_AT, timestamp);
++        values.put(DatabaseContract.WeightEntries.UPDATED_AT, timestamp);
++        return helper.getWritableDatabase().insertOrThrow(
++                DatabaseContract.WeightEntries.TABLE,
++                null,
++                values);
++    }
++
++    public boolean updateEntry(
++            long userId,
++            long entryId,
++            double weight,
++            String entryDate,
++            String note) {
++        InputValidator.positiveId(userId, "User ID");
++        InputValidator.positiveId(entryId, "Entry ID");
++        ContentValues values = new ContentValues();
++        values.put(DatabaseContract.WeightEntries.WEIGHT, InputValidator.weight(weight));
++        values.put(DatabaseContract.WeightEntries.ENTRY_DATE, InputValidator.isoDate(entryDate));
++        values.put(DatabaseContract.WeightEntries.NOTE, InputValidator.note(note));
++        values.put(DatabaseContract.WeightEntries.UPDATED_AT, Instant.now().toString());
++        return helper.getWritableDatabase().update(
++                DatabaseContract.WeightEntries.TABLE,
++                values,
++                DatabaseContract.WeightEntries.ID + " = ? AND " +
++                        DatabaseContract.WeightEntries.USER_ID + " = ?",
++                new String[]{String.valueOf(entryId), String.valueOf(userId)}) == 1;
++    }
++
++    public boolean deleteEntry(long userId, long entryId) {
++        InputValidator.positiveId(userId, "User ID");
++        InputValidator.positiveId(entryId, "Entry ID");
++        return helper.getWritableDatabase().delete(
++                DatabaseContract.WeightEntries.TABLE,
++                DatabaseContract.WeightEntries.ID + " = ? AND " +
++                        DatabaseContract.WeightEntries.USER_ID + " = ?",
++                new String[]{String.valueOf(entryId), String.valueOf(userId)}) == 1;
++    }
++
++    public WeightEntry getOwnedEntry(long userId, long entryId) {
++        InputValidator.positiveId(userId, "User ID");
++        InputValidator.positiveId(entryId, "Entry ID");
++        try (Cursor cursor = helper.getReadableDatabase().query(
++                DatabaseContract.WeightEntries.TABLE,
++                PROJECTION,
++                DatabaseContract.WeightEntries.ID + " = ? AND " +
++                        DatabaseContract.WeightEntries.USER_ID + " = ?",
++                new String[]{String.valueOf(entryId), String.valueOf(userId)},
++                null,
++                null,
++                null,
++                "1")) {
++            return cursor.moveToFirst() ? map(cursor) : null;
++        }
++    }
++
++    public List<WeightEntry> getHistory(long userId) {
++        InputValidator.positiveId(userId, "User ID");
++        List<WeightEntry> entries = new ArrayList<>();
++        try (Cursor cursor = helper.getReadableDatabase().query(
++                DatabaseContract.WeightEntries.TABLE,
++                PROJECTION,
++                DatabaseContract.WeightEntries.USER_ID + " = ?",
++                new String[]{String.valueOf(userId)},
++                null,
++                null,
++                DatabaseContract.WeightEntries.ENTRY_DATE + " DESC, " +
++                        DatabaseContract.WeightEntries.ID + " DESC")) {
++            while (cursor.moveToNext()) {
++                entries.add(map(cursor));
++            }
++        }
++        return Collections.unmodifiableList(entries);
++    }
++
++    public WeightEntry getLatestEntry(long userId) {
++        InputValidator.positiveId(userId, "User ID");
++        try (Cursor cursor = helper.getReadableDatabase().query(
++                DatabaseContract.WeightEntries.TABLE,
++                PROJECTION,
++                DatabaseContract.WeightEntries.USER_ID + " = ?",
++                new String[]{String.valueOf(userId)},
++                null,
++                null,
++                DatabaseContract.WeightEntries.ENTRY_DATE + " DESC, " +
++                        DatabaseContract.WeightEntries.ID + " DESC",
++                "1")) {
++            return cursor.moveToFirst() ? map(cursor) : null;
++        }
++    }
++
++    public ProgressSummary getProgressSummary(long userId) {
++        InputValidator.positiveId(userId, "User ID");
++        String sql = "SELECT " +
++                "COUNT(*) AS entry_count, " +
++                "(SELECT " + DatabaseContract.WeightEntries.WEIGHT +
++                " FROM " + DatabaseContract.WeightEntries.TABLE +
++                " WHERE " + DatabaseContract.WeightEntries.USER_ID + " = ?" +
++                " ORDER BY " + DatabaseContract.WeightEntries.ENTRY_DATE + " ASC, " +
++                DatabaseContract.WeightEntries.ID + " ASC LIMIT 1) AS first_weight, " +
++                "(SELECT " + DatabaseContract.WeightEntries.ENTRY_DATE +
++                " FROM " + DatabaseContract.WeightEntries.TABLE +
++                " WHERE " + DatabaseContract.WeightEntries.USER_ID + " = ?" +
++                " ORDER BY " + DatabaseContract.WeightEntries.ENTRY_DATE + " ASC, " +
++                DatabaseContract.WeightEntries.ID + " ASC LIMIT 1) AS first_date, " +
++                "(SELECT " + DatabaseContract.WeightEntries.WEIGHT +
++                " FROM " + DatabaseContract.WeightEntries.TABLE +
++                " WHERE " + DatabaseContract.WeightEntries.USER_ID + " = ?" +
++                " ORDER BY " + DatabaseContract.WeightEntries.ENTRY_DATE + " DESC, " +
++                DatabaseContract.WeightEntries.ID + " DESC LIMIT 1) AS latest_weight, " +
++                "(SELECT " + DatabaseContract.WeightEntries.ENTRY_DATE +
++                " FROM " + DatabaseContract.WeightEntries.TABLE +
++                " WHERE " + DatabaseContract.WeightEntries.USER_ID + " = ?" +
++                " ORDER BY " + DatabaseContract.WeightEntries.ENTRY_DATE + " DESC, " +
++                DatabaseContract.WeightEntries.ID + " DESC LIMIT 1) AS latest_date " +
++                "FROM " + DatabaseContract.WeightEntries.TABLE +
++                " WHERE " + DatabaseContract.WeightEntries.USER_ID + " = ?";
++        String id = String.valueOf(userId);
++        try (Cursor cursor = helper.getReadableDatabase().rawQuery(
++                sql,
++                new String[]{id, id, id, id, id})) {
++            if (!cursor.moveToFirst()) {
++                return new ProgressSummary(0, null, null, null, null);
++            }
++            int count = cursor.getInt(0);
++            if (count == 0) {
++                return new ProgressSummary(0, null, null, null, null);
++            }
++            return new ProgressSummary(
++                    count,
++                    cursor.getDouble(1),
++                    cursor.getString(2),
++                    cursor.getDouble(3),
++                    cursor.getString(4));
++        }
++    }
++
++    private WeightEntry map(Cursor cursor) {
++        return new WeightEntry(
++                cursor.getLong(0),
++                cursor.getLong(1),
++                cursor.getDouble(2),
++                cursor.getString(3),
++                cursor.getString(4));
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/model/ProgressSummary.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/model/ProgressSummary.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/model/ProgressSummary.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/model/ProgressSummary.java	2026-08-01 16:10:42.000000000 +0000
+@@ -0,0 +1,51 @@
++package com.example.project.model;
++
++/** Earliest-to-latest progress computed from user-scoped database queries. */
++public final class ProgressSummary {
++    private final int entryCount;
++    private final Double firstWeight;
++    private final String firstDate;
++    private final Double latestWeight;
++    private final String latestDate;
++
++    public ProgressSummary(
++            int entryCount,
++            Double firstWeight,
++            String firstDate,
++            Double latestWeight,
++            String latestDate) {
++        this.entryCount = entryCount;
++        this.firstWeight = firstWeight;
++        this.firstDate = firstDate;
++        this.latestWeight = latestWeight;
++        this.latestDate = latestDate;
++    }
++
++    public int getEntryCount() {
++        return entryCount;
++    }
++
++    public Double getFirstWeight() {
++        return firstWeight;
++    }
++
++    public String getFirstDate() {
++        return firstDate;
++    }
++
++    public Double getLatestWeight() {
++        return latestWeight;
++    }
++
++    public String getLatestDate() {
++        return latestDate;
++    }
++
++    public boolean hasData() {
++        return entryCount > 0 && firstWeight != null && latestWeight != null;
++    }
++
++    public double getChange() {
++        return hasData() ? latestWeight - firstWeight : 0.0;
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/model/UserSession.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/model/UserSession.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/model/UserSession.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/model/UserSession.java	2026-08-01 16:10:42.000000000 +0000
+@@ -0,0 +1,20 @@
++package com.example.project.model;
++
++/** Identifies the account authenticated for the current dashboard session. */
++public final class UserSession {
++    private final long userId;
++    private final String username;
++
++    public UserSession(long userId, String username) {
++        this.userId = userId;
++        this.username = username;
++    }
++
++    public long getUserId() {
++        return userId;
++    }
++
++    public String getUsername() {
++        return username;
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/model/WeightEntry.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/model/WeightEntry.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/model/WeightEntry.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/model/WeightEntry.java	2026-08-01 16:10:42.000000000 +0000
+@@ -0,0 +1,38 @@
++package com.example.project.model;
++
++/** Immutable result returned by the database repository. */
++public final class WeightEntry {
++    private final long entryId;
++    private final long userId;
++    private final double weight;
++    private final String entryDate;
++    private final String note;
++
++    public WeightEntry(long entryId, long userId, double weight, String entryDate, String note) {
++        this.entryId = entryId;
++        this.userId = userId;
++        this.weight = weight;
++        this.entryDate = entryDate;
++        this.note = note;
++    }
++
++    public long getEntryId() {
++        return entryId;
++    }
++
++    public long getUserId() {
++        return userId;
++    }
++
++    public double getWeight() {
++        return weight;
++    }
++
++    public String getEntryDate() {
++        return entryDate;
++    }
++
++    public String getNote() {
++        return note;
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/security/PasswordHasher.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/security/PasswordHasher.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/security/PasswordHasher.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/security/PasswordHasher.java	2026-08-01 16:10:42.000000000 +0000
+@@ -0,0 +1,104 @@
++package com.example.project.security;
++
++import java.security.GeneralSecurityException;
++import java.security.MessageDigest;
++import java.security.SecureRandom;
++import java.util.Base64;
++import javax.crypto.SecretKeyFactory;
++import javax.crypto.spec.PBEKeySpec;
++
++/** PBKDF2 password hashing with a unique random salt for each account. */
++public final class PasswordHasher {
++    public static final String ALGORITHM = "PBKDF2WithHmacSHA256";
++    public static final int ITERATIONS = 600_000;
++    public static final int SALT_BYTES = 16;
++    public static final int KEY_LENGTH_BITS = 256;
++
++    private static final SecureRandom RANDOM = new SecureRandom();
++
++    private PasswordHasher() {
++    }
++
++    public static HashResult hash(char[] password) {
++        if (password == null || password.length == 0) {
++            throw new IllegalArgumentException("Password is required.");
++        }
++        byte[] salt = new byte[SALT_BYTES];
++        RANDOM.nextBytes(salt);
++        byte[] derived = derive(password, salt, ITERATIONS, ALGORITHM);
++        return new HashResult(
++                Base64.getEncoder().encodeToString(derived),
++                Base64.getEncoder().encodeToString(salt),
++                ALGORITHM,
++                ITERATIONS);
++    }
++
++    public static boolean verify(
++            char[] candidate,
++            String encodedSalt,
++            String encodedHash,
++            String algorithm,
++            int iterations) {
++        if (candidate == null || encodedSalt == null || encodedHash == null) {
++            return false;
++        }
++        if (!ALGORITHM.equals(algorithm) || iterations <= 0) {
++            return false;
++        }
++        try {
++            byte[] salt = Base64.getDecoder().decode(encodedSalt);
++            byte[] expected = Base64.getDecoder().decode(encodedHash);
++            byte[] actual = derive(candidate, salt, iterations, algorithm);
++            return MessageDigest.isEqual(expected, actual);
++        } catch (IllegalArgumentException exception) {
++            return false;
++        }
++    }
++
++    private static byte[] derive(
++            char[] password,
++            byte[] salt,
++            int iterations,
++            String algorithm) {
++        PBEKeySpec specification = new PBEKeySpec(password, salt, iterations, KEY_LENGTH_BITS);
++        try {
++            return SecretKeyFactory.getInstance(algorithm)
++                    .generateSecret(specification)
++                    .getEncoded();
++        } catch (GeneralSecurityException exception) {
++            throw new IllegalStateException("Password hashing is unavailable.", exception);
++        } finally {
++            specification.clearPassword();
++        }
++    }
++
++    public static final class HashResult {
++        private final String hash;
++        private final String salt;
++        private final String algorithm;
++        private final int iterations;
++
++        public HashResult(String hash, String salt, String algorithm, int iterations) {
++            this.hash = hash;
++            this.salt = salt;
++            this.algorithm = algorithm;
++            this.iterations = iterations;
++        }
++
++        public String getHash() {
++            return hash;
++        }
++
++        public String getSalt() {
++            return salt;
++        }
++
++        public String getAlgorithm() {
++            return algorithm;
++        }
++
++        public int getIterations() {
++            return iterations;
++        }
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/validation/InputValidator.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/validation/InputValidator.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/validation/InputValidator.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/validation/InputValidator.java	2026-08-01 16:10:42.000000000 +0000
+@@ -0,0 +1,72 @@
++package com.example.project.validation;
++
++import java.time.LocalDate;
++import java.time.format.DateTimeParseException;
++
++/** Shared validation used before data reaches SQLite. */
++public final class InputValidator {
++    public static final int MAX_USERNAME_LENGTH = 40;
++    public static final int MIN_PASSWORD_LENGTH = 8;
++    public static final int MAX_PASSWORD_LENGTH = 128;
++    public static final int MAX_NOTE_LENGTH = 250;
++    public static final double MAX_WEIGHT = 1500.0;
++
++    private InputValidator() {
++    }
++
++    public static String username(String value) {
++        if (value == null) {
++            throw new IllegalArgumentException("Username is required.");
++        }
++        String normalized = value.trim();
++        if (normalized.length() < 3 || normalized.length() > MAX_USERNAME_LENGTH) {
++            throw new IllegalArgumentException("Username must contain 3 to 40 characters.");
++        }
++        if (!normalized.matches("[A-Za-z0-9._-]+")) {
++            throw new IllegalArgumentException(
++                    "Username may use letters, numbers, periods, underscores, and hyphens.");
++        }
++        return normalized;
++    }
++
++    public static char[] password(char[] value) {
++        if (value == null || value.length < MIN_PASSWORD_LENGTH || value.length > MAX_PASSWORD_LENGTH) {
++            throw new IllegalArgumentException("Password must contain 8 to 128 characters.");
++        }
++        return value;
++    }
++
++    public static long positiveId(long value, String fieldName) {
++        if (value <= 0) {
++            throw new IllegalArgumentException(fieldName + " must be a positive number.");
++        }
++        return value;
++    }
++
++    public static double weight(double value) {
++        if (!Double.isFinite(value) || value <= 0 || value > MAX_WEIGHT) {
++            throw new IllegalArgumentException("Weight must be greater than 0 and no more than 1500.");
++        }
++        return value;
++    }
++
++    public static String isoDate(String value) {
++        if (value == null) {
++            throw new IllegalArgumentException("Entry date is required in YYYY-MM-DD format.");
++        }
++        String normalized = value.trim();
++        try {
++            return LocalDate.parse(normalized).toString();
++        } catch (DateTimeParseException exception) {
++            throw new IllegalArgumentException("Entry date must use YYYY-MM-DD format.");
++        }
++    }
++
++    public static String note(String value) {
++        String normalized = value == null ? "" : value.trim();
++        if (normalized.length() > MAX_NOTE_LENGTH) {
++            throw new IllegalArgumentException("Note must contain 250 characters or fewer.");
++        }
++        return normalized;
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/res/layout/activity_main2.xml 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/res/layout/activity_main2.xml
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/res/layout/activity_main2.xml	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/res/layout/activity_main2.xml	2026-08-01 16:10:42.000000000 +0000
+@@ -6,7 +6,11 @@
+     android:background="@color/lightBlue"
+     tools:context=".MainActivity2">
+ 
+-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="vertical"
++        android:padding="20dp">
+ 
+         <LinearLayout
+             android:layout_width="match_parent"
+@@ -25,42 +29,187 @@
+                 android:textStyle="bold" />
+ 
+             <TextView
++                android:id="@+id/currentUser"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="8dp"
+-                android:text="@string/dashboard_subtitle"
+                 android:textColor="@color/white"
+-                android:textSize="14sp" />
++                android:textSize="14sp"
++                tools:text="Signed in as Madison" />
++        </LinearLayout>
++
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:layout_marginTop="18dp"
++            android:background="@drawable/card_bg"
++            android:orientation="vertical"
++            android:padding="20dp">
+ 
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+-                android:layout_marginTop="12dp"
+-                android:background="@drawable/button_outline"
+-                android:paddingStart="12dp"
+-                android:paddingTop="6dp"
+-                android:paddingEnd="12dp"
+-                android:paddingBottom="6dp"
+-                android:text="@string/updated_today"
++                android:text="@string/progress_heading"
+                 android:textColor="@color/darkBlue"
+-                android:textSize="12sp" />
++                android:textSize="20sp"
++                android:textStyle="bold" />
++
++            <TextView
++                android:id="@+id/progressSummary"
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="8dp"
++                android:text="@string/no_progress_data"
++                android:textColor="@color/textSecondary"
++                android:textSize="14sp" />
+         </LinearLayout>
+ 
+-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:background="@drawable/card_bg" android:orientation="vertical" android:padding="20dp">
+-            <EditText android:id="@+id/name" android:layout_width="match_parent" android:layout_height="52dp" android:autofillHints="name" android:background="@drawable/input_bg" android:hint="@string/name" android:inputType="textPersonName" android:paddingStart="14dp" android:paddingEnd="14dp" android:textColor="@color/textPrimary" android:textColorHint="@color/textSecondary" android:textSize="15sp" />
+-            <EditText android:id="@+id/weight" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="12dp" android:background="@drawable/input_bg" android:hint="@string/todays_weight" android:inputType="numberDecimal" android:paddingStart="14dp" android:paddingEnd="14dp" android:textColor="@color/textPrimary" android:textColorHint="@color/textSecondary" android:textSize="15sp" />
+-            <EditText android:id="@+id/date1" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="12dp" android:background="@drawable/input_bg" android:hint="@string/todays_date" android:inputType="date" android:paddingStart="14dp" android:paddingEnd="14dp" android:text="@string/current_date" android:textColor="@color/textPrimary" android:textColorHint="@color/textSecondary" android:textSize="15sp" />
+-
+-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="18dp">
+-                <Button android:id="@+id/btnInsert" android:layout_width="0dp" android:layout_height="50dp" android:layout_weight="1" android:background="@drawable/button_primary" android:text="@string/insert" android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp" />
+-                <Button android:id="@+id/btnUpdate" android:layout_width="0dp" android:layout_height="50dp" android:layout_weight="1" android:layout_marginStart="8dp" android:background="@drawable/button_dark" android:text="@string/update" android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp" />
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:layout_marginTop="18dp"
++            android:background="@drawable/card_bg"
++            android:orientation="vertical"
++            android:padding="20dp">
++
++            <EditText
++                android:id="@+id/entryId"
++                android:layout_width="match_parent"
++                android:layout_height="52dp"
++                android:background="@drawable/input_bg"
++                android:hint="@string/entry_id_hint"
++                android:inputType="number"
++                android:paddingStart="14dp"
++                android:paddingEnd="14dp"
++                android:textColor="@color/textPrimary"
++                android:textColorHint="@color/textSecondary"
++                android:textSize="15sp" />
++
++            <EditText
++                android:id="@+id/weight"
++                android:layout_width="match_parent"
++                android:layout_height="52dp"
++                android:layout_marginTop="12dp"
++                android:background="@drawable/input_bg"
++                android:hint="@string/todays_weight"
++                android:inputType="numberDecimal"
++                android:paddingStart="14dp"
++                android:paddingEnd="14dp"
++                android:textColor="@color/textPrimary"
++                android:textColorHint="@color/textSecondary"
++                android:textSize="15sp" />
++
++            <EditText
++                android:id="@+id/date1"
++                android:layout_width="match_parent"
++                android:layout_height="52dp"
++                android:layout_marginTop="12dp"
++                android:background="@drawable/input_bg"
++                android:hint="@string/date_format_hint"
++                android:inputType="date"
++                android:paddingStart="14dp"
++                android:paddingEnd="14dp"
++                android:textColor="@color/textPrimary"
++                android:textColorHint="@color/textSecondary"
++                android:textSize="15sp" />
++
++            <EditText
++                android:id="@+id/note"
++                android:layout_width="match_parent"
++                android:layout_height="80dp"
++                android:layout_marginTop="12dp"
++                android:background="@drawable/input_bg"
++                android:gravity="top"
++                android:hint="@string/optional_note"
++                android:inputType="textCapSentences|textMultiLine"
++                android:maxLength="250"
++                android:padding="14dp"
++                android:textColor="@color/textPrimary"
++                android:textColorHint="@color/textSecondary"
++                android:textSize="15sp" />
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="18dp"
++                android:orientation="horizontal">
++
++                <Button
++                    android:id="@+id/btnInsert"
++                    android:layout_width="0dp"
++                    android:layout_height="50dp"
++                    android:layout_weight="1"
++                    android:background="@drawable/button_primary"
++                    android:text="@string/insert"
++                    android:textAllCaps="false"
++                    android:textColor="@color/white"
++                    android:textSize="14sp" />
++
++                <Button
++                    android:id="@+id/btnUpdate"
++                    android:layout_width="0dp"
++                    android:layout_height="50dp"
++                    android:layout_marginStart="8dp"
++                    android:layout_weight="1"
++                    android:background="@drawable/button_dark"
++                    android:text="@string/update"
++                    android:textAllCaps="false"
++                    android:textColor="@color/white"
++                    android:textSize="14sp" />
+             </LinearLayout>
+-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="10dp">
+-                <Button android:id="@+id/btnView" android:layout_width="0dp" android:layout_height="50dp" android:layout_weight="1" android:background="@drawable/button_primary" android:text="@string/view" android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp" />
+-                <Button android:id="@+id/btnDelete" android:layout_width="0dp" android:layout_height="50dp" android:layout_weight="1" android:layout_marginStart="8dp" android:background="@drawable/button_dark" android:text="@string/delete" android:textAllCaps="false" android:textColor="@color/white" android:textSize="14sp" />
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="10dp"
++                android:orientation="horizontal">
++
++                <Button
++                    android:id="@+id/btnView"
++                    android:layout_width="0dp"
++                    android:layout_height="50dp"
++                    android:layout_weight="1"
++                    android:background="@drawable/button_primary"
++                    android:text="@string/view"
++                    android:textAllCaps="false"
++                    android:textColor="@color/white"
++                    android:textSize="14sp" />
++
++                <Button
++                    android:id="@+id/btnDelete"
++                    android:layout_width="0dp"
++                    android:layout_height="50dp"
++                    android:layout_marginStart="8dp"
++                    android:layout_weight="1"
++                    android:background="@drawable/button_dark"
++                    android:text="@string/delete"
++                    android:textAllCaps="false"
++                    android:textColor="@color/white"
++                    android:textSize="14sp" />
+             </LinearLayout>
+         </LinearLayout>
+ 
+-        <Button android:id="@+id/button1" android:layout_width="match_parent" android:layout_height="50dp" android:layout_marginTop="18dp" android:background="@drawable/button_outline" android:contentDescription="@string/settings1" android:text="@string/settings1" android:textAllCaps="false" android:textColor="@color/darkBlue" android:textSize="15sp" />
++        <Button
++            android:id="@+id/button1"
++            android:layout_width="match_parent"
++            android:layout_height="50dp"
++            android:layout_marginTop="18dp"
++            android:background="@drawable/button_outline"
++            android:text="@string/settings1"
++            android:textAllCaps="false"
++            android:textColor="@color/darkBlue"
++            android:textSize="15sp" />
++
++        <Button
++            android:id="@+id/btnLogout"
++            android:layout_width="match_parent"
++            android:layout_height="50dp"
++            android:layout_marginTop="10dp"
++            android:layout_marginBottom="18dp"
++            android:background="@drawable/button_dark"
++            android:text="@string/log_out"
++            android:textAllCaps="false"
++            android:textColor="@color/white"
++            android:textSize="15sp" />
+     </LinearLayout>
+ </ScrollView>
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/res/values/strings.xml 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/res/values/strings.xml
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/res/values/strings.xml	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/res/values/strings.xml	2026-08-01 16:10:42.000000000 +0000
+@@ -5,12 +5,12 @@
+     <string name="sms_messaging">SMS Messaging</string>
+     <string name="settings">Settings</string>
+     <string name="welcome">Dashboard</string>
+-    <string name="view">View</string>
++    <string name="view">View History</string>
+     <string name="delete">Delete</string>
+     <string name="update">Update</string>
+-    <string name="insert">Insert</string>
+-    <string name="todays_date">Today&apos;s Date</string>
+-    <string name="todays_weight">Today&apos;s Weight</string>
++    <string name="insert">Save New</string>
++    <string name="todays_date">Entry Date</string>
++    <string name="todays_weight">Weight</string>
+     <string name="name">Name</string>
+     <string name="app_settings">App Settings</string>
+     <string name="username">Username</string>
+@@ -23,16 +23,24 @@
+     <string name="settings1">Settings</string>
+     <string name="register">Register</string>
+     <string name="sign_up">Sign Up</string>
+-    <string name="sign_in">Sign In</string>
++    <string name="sign_in">Return to Sign In</string>
+     <string name="scale_image">Weight tracker scale image</string>
+     <string name="title_activity_main3">Settings</string>
+-    <string name="current_date">June 22, 2026</string>
+-    <string name="updated_today">Updated June 22, 2026</string>
+-    <string name="login_subtitle">A supportive space to log progress, set goals, and celebrate healthy consistency.</string>
+-    <string name="welcome_note">Log in or create a new profile to begin tracking.</string>
+-    <string name="privacy_note">Password text is obscured for privacy. Project Three will connect these fields to the database.</string>
+-    <string name="dashboard_subtitle">Record today&apos;s weight entry and manage saved progress.</string>
++    <string name="current_date">2026-08-01</string>
++    <string name="updated_today">Database enhancement</string>
++    <string name="login_subtitle">A private space to record progress and review your own weight history.</string>
++    <string name="welcome_note">Sign in to access records connected to your account.</string>
++    <string name="privacy_note">Passwords are salted and hashed before storage. Weight records are restricted to the signed-in user.</string>
++    <string name="dashboard_subtitle">Record weight entries and review account-specific progress.</string>
+     <string name="settings_subtitle">Choose whether the app can send SMS reminders.</string>
+     <string name="sms_note">Enable this setting to allow SMS notifications for weight tracking reminders.</string>
+-    <string name="register_subtitle">Create an account to save your weight tracking entries.</string>
++    <string name="register_subtitle">Create an account. Passwords must contain at least eight characters.</string>
++    <string name="signed_in_as">Signed in as %1$s</string>
++    <string name="progress_heading">Progress Summary</string>
++    <string name="no_progress_data">No entries yet. Save a weight entry to begin the summary.</string>
++    <string name="progress_summary">%1$d entries\nFirst: %2$.1f on %3$s\nLatest: %4$.1f on %5$s\nChange: %6$+.1f</string>
++    <string name="entry_id_hint">Entry ID (required for update/delete)</string>
++    <string name="date_format_hint">Date (YYYY-MM-DD)</string>
++    <string name="optional_note">Optional note (250 characters maximum)</string>
++    <string name="log_out">Log Out</string>
+ </resources>
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/res/xml/backup_rules.xml 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/res/xml/backup_rules.xml
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/res/xml/backup_rules.xml	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/res/xml/backup_rules.xml	2026-08-01 16:23:54.000000000 +0000
+@@ -1,13 +1,6 @@
+-<?xml version="1.0" encoding="utf-8"?><!--
+-   Sample backup rules file; uncomment and customize as necessary.
+-   See https://developer.android.com/guide/topics/data/autobackup
+-   for details.
+-   Note: This file is ignored for devices older that API 31
+-   See https://developer.android.com/about/versions/12/backup-restore
+--->
++<?xml version="1.0" encoding="utf-8"?>
+ <full-backup-content>
+-    <!--
+-   <include domain="sharedpref" path="."/>
+-   <exclude domain="sharedpref" path="device.xml"/>
+--->
+-</full-backup-content>
+\ No newline at end of file
++    <!-- Defense in depth: do not back up the local database or preferences. -->
++    <exclude domain="database" path="." />
++    <exclude domain="sharedpref" path="." />
++</full-backup-content>
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/res/xml/data_extraction_rules.xml 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/res/xml/data_extraction_rules.xml
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/res/xml/data_extraction_rules.xml	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/res/xml/data_extraction_rules.xml	2026-08-01 16:23:54.000000000 +0000
+@@ -1,19 +1,12 @@
+-<?xml version="1.0" encoding="utf-8"?><!--
+-   Sample data extraction rules file; uncomment and customize as necessary.
+-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
+-   for details.
+--->
++<?xml version="1.0" encoding="utf-8"?>
+ <data-extraction-rules>
++    <!-- Application backup is disabled in AndroidManifest.xml to avoid exporting local account data. -->
+     <cloud-backup>
+-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
+-        <include .../>
+-        <exclude .../>
+-        -->
++        <exclude domain="database" path="." />
++        <exclude domain="sharedpref" path="." />
+     </cloud-backup>
+-    <!--
+     <device-transfer>
+-        <include .../>
+-        <exclude .../>
++        <exclude domain="database" path="." />
++        <exclude domain="sharedpref" path="." />
+     </device-transfer>
+-    -->
+-</data-extraction-rules>
+\ No newline at end of file
++</data-extraction-rules>
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/test/java/com/example/project/ExampleUnitTest.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/test/java/com/example/project/ExampleUnitTest.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/test/java/com/example/project/ExampleUnitTest.java	2026-08-01 16:04:06.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/test/java/com/example/project/ExampleUnitTest.java	1970-01-01 00:00:00.000000000 +0000
+@@ -1,17 +0,0 @@
+-package com.example.project;
+-
+-import org.junit.Test;
+-
+-import static org.junit.Assert.*;
+-
+-/**
+- * Example local unit test, which will execute on the development machine (host).
+- *
+- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+- */
+-public class ExampleUnitTest {
+-    @Test
+-    public void addition_isCorrect() {
+-        assertEquals(4, 2 + 2);
+-    }
+-}
+\ No newline at end of file
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/test/java/com/example/project/data/LegacyDataNormalizerTest.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/test/java/com/example/project/data/LegacyDataNormalizerTest.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/test/java/com/example/project/data/LegacyDataNormalizerTest.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/test/java/com/example/project/data/LegacyDataNormalizerTest.java	2026-08-01 16:24:12.000000000 +0000
+@@ -0,0 +1,26 @@
++package com.example.project.data;
++
++import static org.junit.Assert.assertEquals;
++import static org.junit.Assert.assertNull;
++import org.junit.Test;
++
++public class LegacyDataNormalizerTest {
++    @Test
++    public void supportedLegacyDatesNormalizeToIso() {
++        assertEquals("2026-06-22", LegacyDataNormalizer.normalizeDate("June 22, 2026"));
++        assertEquals("2026-06-22", LegacyDataNormalizer.normalizeDate("6/22/2026"));
++        assertEquals("2026-06-22", LegacyDataNormalizer.normalizeDate("2026-06-22"));
++    }
++
++    @Test
++    public void validLegacyWeightIsConvertedToNumericValue() {
++        assertEquals(138.5, LegacyDataNormalizer.parseWeight(" 138.5 "), 0.0001);
++    }
++
++    @Test
++    public void invalidLegacyValuesAreNotSilentlyConverted() {
++        assertNull(LegacyDataNormalizer.parseWeight("not-a-number"));
++        assertNull(LegacyDataNormalizer.parseWeight("0"));
++        assertNull(LegacyDataNormalizer.normalizeDate("February 30, 2026"));
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/test/java/com/example/project/security/PasswordHasherTest.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/test/java/com/example/project/security/PasswordHasherTest.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/test/java/com/example/project/security/PasswordHasherTest.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/test/java/com/example/project/security/PasswordHasherTest.java	2026-08-01 16:24:12.000000000 +0000
+@@ -0,0 +1,48 @@
++package com.example.project.security;
++
++import static org.junit.Assert.assertFalse;
++import static org.junit.Assert.assertNotEquals;
++import static org.junit.Assert.assertTrue;
++import org.junit.Test;
++
++public class PasswordHasherTest {
++    @Test
++    public void uniqueSaltsProduceDifferentHashesAndBothVerify() {
++        char[] password = "correct horse battery staple".toCharArray();
++        PasswordHasher.HashResult first = PasswordHasher.hash(password);
++        PasswordHasher.HashResult second = PasswordHasher.hash(password);
++
++        assertNotEquals(first.getSalt(), second.getSalt());
++        assertNotEquals(first.getHash(), second.getHash());
++        assertTrue(PasswordHasher.verify(
++                password,
++                first.getSalt(),
++                first.getHash(),
++                first.getAlgorithm(),
++                first.getIterations()));
++        assertFalse(PasswordHasher.verify(
++                "wrong password".toCharArray(),
++                first.getSalt(),
++                first.getHash(),
++                first.getAlgorithm(),
++                first.getIterations()));
++    }
++
++    @Test
++    public void malformedOrUnsupportedVerifierIsRejectedWithoutCrashing() {
++        char[] password = "correct horse battery staple".toCharArray();
++        PasswordHasher.HashResult result = PasswordHasher.hash(password);
++
++        assertFalse(PasswordHasher.verify(password, "not-base64", result.getHash(),
++                result.getAlgorithm(), result.getIterations()));
++        assertFalse(PasswordHasher.verify(password, result.getSalt(), result.getHash(),
++                "UnsupportedAlgorithm", result.getIterations()));
++        assertFalse(PasswordHasher.verify(password, result.getSalt(), result.getHash(),
++                result.getAlgorithm(), 0));
++    }
++
++    @Test(expected = IllegalArgumentException.class)
++    public void emptyPasswordCannotBeHashed() {
++        PasswordHasher.hash(new char[0]);
++    }
++}
+diff -ruN 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/test/java/com/example/project/validation/InputValidatorTest.java 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/test/java/com/example/project/validation/InputValidatorTest.java
+--- 01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/test/java/com/example/project/validation/InputValidatorTest.java	1970-01-01 00:00:00.000000000 +0000
++++ 02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/test/java/com/example/project/validation/InputValidatorTest.java	2026-08-01 16:24:12.000000000 +0000
+@@ -0,0 +1,44 @@
++package com.example.project.validation;
++
++import static org.junit.Assert.assertEquals;
++import org.junit.Test;
++
++public class InputValidatorTest {
++    @Test
++    public void validValuesAreNormalized() {
++        assertEquals("Madison.Parker", InputValidator.username("  Madison.Parker  "));
++        assertEquals("2026-08-01", InputValidator.isoDate("2026-08-01"));
++        assertEquals(138.5, InputValidator.weight(138.5), 0.0001);
++        assertEquals("weekly check", InputValidator.note("  weekly check  "));
++    }
++
++    @Test(expected = IllegalArgumentException.class)
++    public void unsupportedUsernameCharacterIsRejected() {
++        InputValidator.username("Madison Parker");
++    }
++
++    @Test(expected = IllegalArgumentException.class)
++    public void shortPasswordIsRejected() {
++        InputValidator.password("short".toCharArray());
++    }
++
++    @Test(expected = IllegalArgumentException.class)
++    public void nonIsoDateFormatIsRejected() {
++        InputValidator.isoDate("August 1, 2026");
++    }
++
++    @Test(expected = IllegalArgumentException.class)
++    public void impossibleIsoDateIsRejected() {
++        InputValidator.isoDate("2026-02-30");
++    }
++
++    @Test(expected = IllegalArgumentException.class)
++    public void nonFiniteWeightIsRejected() {
++        InputValidator.weight(Double.NaN);
++    }
++
++    @Test(expected = IllegalArgumentException.class)
++    public void overlongNoteIsRejected() {
++        InputValidator.note("x".repeat(251));
++    }
++}

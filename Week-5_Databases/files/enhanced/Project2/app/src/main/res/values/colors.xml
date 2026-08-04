@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryBlue">#3B82F6</color>
+    <color name="darkBlue">#1E4F9C</color>
+    <color name="deepBlue">#0F3D7A</color>
+    <color name="lightBlue">#EFF6FF</color>
+    <color name="softBlue">#DBEAFE</color>
+    <color name="cardWhite">#FFFFFF</color>
+    <color name="cardBorder">#D6E4FF</color>
+    <color name="inputBorder">#BFD7FF</color>
+    <color name="textPrimary">#1E293B</color>
+    <color name="textSecondary">#64748B</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#FF000000</color>
+</resources>

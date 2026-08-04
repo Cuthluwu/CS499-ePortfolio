@@ -25,7 +25,7 @@ The current publication intentionally contains Weeks 1, 3, 4, 5, and 6. Week 2's
 1. Read the [Module One plan](Week-1_Module-One-Planning/) and the accompanying [scope refinement](Week-1_Module-One-Planning/PLAN_REFINEMENT.md).
 2. Review the [Week 3 software-design narrative](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx), then compare its original and enhanced source folders.
 3. Continue to [Week 4](Week-4_Algorithms-and-Data-Structures/) to isolate the cumulative algorithm delta and its documented performance trade-offs.
-4. Review [Week 5](Week-5_Databases/) as an independent Android/SQLite enhancement, beginning with its narrative and `Artifact_Contents/00_READ_ME_FIRST.txt`.
+4. Review [Week 5](Week-5_Databases/) as an independent Android/SQLite enhancement, beginning with its narrative and `files/00_READ_ME_FIRST.txt`.
 5. Use [OUTCOME_CROSSWALK.md](OUTCOME_CROSSWALK.md) to trace each program outcome to concrete implementation and evidence locations.
 6. Review [Week 6](Week-6_Algorithms-Publication-and-Technology/) for the published algorithms work and the disruptive-technology journal grounded in the Weight Tracker.
 7. Use [PORTFOLIO_TIMELINE.md](PORTFOLIO_TIMELINE.md) to distinguish original artifact creation, enhancement dates, and final publication activity.
@@ -66,7 +66,7 @@ CS499-ePortfolio/
 └── PORTFOLIO_TIMELINE.md
 ```
 
-Within each enhancement week, `Artifact_Contents` is extracted for browser-based review. Original and enhanced folders remain separate, and the submission ZIP is retained as a single-file download.
+Within each enhancement week, `files` is extracted for browser-based review. Original and enhanced folders remain separate, and the submission ZIP is retained as a single-file download.
 
 ## Author
 

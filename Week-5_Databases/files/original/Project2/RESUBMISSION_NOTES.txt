@@ -1,0 +1,5 @@
+Resubmission notes - June 22, 2026
+
+Updated the project configuration for a newer Android Studio setup using JVM 21.
+Kept the blue UI palette consistent across the layouts.
+Removed local machine path settings so Android Studio can regenerate them when opened.

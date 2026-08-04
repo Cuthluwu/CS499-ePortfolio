@@ -1,0 +1,47 @@
+PASS 01: foreign-key enforcement is enabled
+PASS 02: all version-two tables are created
+PASS 03: users has an integer user_id
+PASS 04: users stores a hash and salt instead of a password column
+PASS 05: weight_entries has an integer entry_id
+PASS 06: weight_entries has an integer user_id
+PASS 07: weight is stored with REAL affinity
+PASS 08: weight_entries references users
+PASS 09: the user relationship uses ON DELETE CASCADE
+PASS 10: the user/date history index exists
+PASS 11: registration returns stable, distinct user IDs
+PASS 12: plaintext password is not stored
+PASS 13: each account uses a 128-bit random salt
+PASS 14: algorithm and work factor are stored with the verifier
+PASS 15: authentication is case-insensitive for username
+PASS 16: incorrect password is rejected
+PASS 17: duplicate usernames are rejected without case sensitivity
+PASS 18: identical passwords receive different salts and hashes
+PASS 19: new entries receive numeric primary keys
+PASS 20: history returns only the requested user's records
+PASS 21: a second user's history remains separate
+PASS 22: same-date records use entry_id as a deterministic tie-breaker
+PASS 23: cross-user update is rejected by the SQL WHERE clause
+PASS 24: cross-user delete is rejected by the SQL WHERE clause
+PASS 25: owner can update the record
+PASS 26: owner update persists the new value
+PASS 27: owner can delete the record
+PASS 28: deleted record is absent
+PASS 29: database CHECK constraint rejects zero weight
+PASS 30: foreign key rejects an entry for a missing user
+PASS 31: database CHECK constraint rejects notes over 250 characters
+PASS 32: database CHECK constraint rejects non-ISO date length
+PASS 33: database CHECK constraint rejects an impossible ISO date
+PASS 34: database CHECK constraint rejects a nonpositive password work factor
+PASS 35: progress query returns the correct entry count
+PASS 36: progress query finds chronological endpoints
+PASS 37: progress change is calculated from first to latest weight
+PASS 38: progress query handles an empty history
+PASS 39: SQLite query plan uses the history index
+PASS 40: deleting a user removes dependent weight entries
+PASS 41: migration hashes legacy plaintext credentials while preserving login
+PASS 42: legacy record with matching name is linked to that user
+PASS 43: legacy long-form date is normalized to ISO
+PASS 44: unmatched legacy record is preserved under a separate import account
+PASS 45: unreadable legacy record is logged instead of silently discarded
+PASS 46: legacy tables are removed only after the migration completes
+PASS: 46 database verification checks completed successfully.
