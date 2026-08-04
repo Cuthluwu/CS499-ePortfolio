@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Madison Parker's CS 499 Computer Science Capstone ePortfolio: software design, algorithms and data structures, and database enhancements.">
+  <title>Madison Parker | CS 499 ePortfolio</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="Madison Parker CS 499 ePortfolio home">
+        <span class="brand-mark" aria-hidden="true">MP</span>
+        <span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#enhancements">Enhancements</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#outcomes">Outcomes</a>
+        <a href="#evidence">Evidence</a>
+        <a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="shell hero-grid">
+        <div>
+          <p class="eyebrow">Southern New Hampshire University · Computer Science Capstone</p>
+          <h1>From working coursework to reviewable engineering evidence.</h1>
+          <p class="hero-copy">This portfolio preserves each original artifact, documents the reasoning behind every enhancement, and connects implementation decisions to verification evidence and the five Computer Science program outcomes.</p>
+          <div class="actions">
+            <a class="button primary" href="#enhancements">Review the enhancements</a>
+            <a class="button secondary" href="OUTCOME_CROSSWALK.md">Open the outcome crosswalk</a>
+          </div>
+        </div>
+        <aside class="summary-panel" aria-label="Portfolio summary">
+          <p class="panel-label">Current publication</p>
+          <dl>
+            <div><dt>5</dt><dd>organized course weeks</dd></div>
+            <div><dt>3</dt><dd>technical categories</dd></div>
+            <div><dt>121</dt><dd>executed verification checks</dd></div>
+            <div><dt>5</dt><dd>program outcomes mapped</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="approach-title">
+      <div class="shell split">
+        <div>
+          <p class="eyebrow">Portfolio approach</p>
+          <h2 id="approach-title">Traceability before presentation.</h2>
+        </div>
+        <div class="prose">
+          <p>Every enhancement is organized as a before-and-after technical review. The unchanged baseline establishes what existed at the start. The enhanced source shows the category-specific work. The narrative explains the design choice, alternative, trade-off, test, result, and remaining limitation.</p>
+          <p>Module One's initial CS 250 selection remains visible as planning context. The later code review refined the concrete Software Design artifact to the CS 320 service suite because it supports direct source inspection and verification. That decision is documented rather than hidden.</p>
+          <a class="text-link" href="Week-1_Module-One-Planning/PLAN_REFINEMENT.md">Read the plan refinement <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section timeline-section" id="timeline" aria-labelledby="timeline-title">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Dated progression</p>
+            <h2 id="timeline-title">A capstone built across distinct course stages.</h2>
+          </div>
+          <a class="text-link" href="PORTFOLIO_TIMELINE.md">Full timeline and scope notes <span aria-hidden="true">→</span></a>
+        </div>
+        <ol class="timeline-list">
+          <li><time datetime="2026-07-04">July 4</time><div><strong>Week 1</strong><span>Artifact selection, enhancement planning, pseudocode, and outcome coverage.</span></div></li>
+          <li><time datetime="2026-07-13">July 13</time><div><strong>Week 3</strong><span>Software design and engineering enhancement of the CS 320 service suite.</span></div></li>
+          <li><time datetime="2026-07-20">July 20</time><div><strong>Week 4</strong><span>Algorithms and data-structures enhancement with complexity analysis.</span></div></li>
+          <li><time datetime="2026-08-01">August 1</time><div><strong>Week 5</strong><span>Database enhancement of the CS 360 Android Weight Tracker.</span></div></li>
+          <li><time datetime="2026-08-03">August 3</time><div><strong>Week 6</strong><span>Algorithms publication and disruptive-technology evaluation.</span></div></li>
+        </ol>
+        <p class="timeline-note">The original CS 320 and CS 360 coursework predates these capstone stages. Later packaging and GitHub publication do not replace the dates shown inside the academic documents.</p>
+      </div>
+    </section>
+
+    <section class="section section-tint" id="enhancements" aria-labelledby="enhancements-title">
+      <div class="shell">
+        <p class="eyebrow">Artifact progression</p>
+        <h2 id="enhancements-title">Five weeks, one coherent capstone.</h2>
+        <div class="card-grid">
+          <article class="card planning-card">
+            <p class="card-number">Week 1 · <time datetime="2026-07-04">July 4, 2026</time></p>
+            <h3>Planning and artifact selection</h3>
+            <p>Defines the initial three-artifact strategy, intended enhancement scope, and program-outcome coverage. A separate refinement records why CS 320 became the final source-level Category One artifact.</p>
+            <ul>
+              <li>CS 250 Agile and stakeholder context</li>
+              <li>CS 320 Java service-suite plan</li>
+              <li>CS 360 Android/SQLite plan</li>
+            </ul>
+            <div class="card-links">
+              <a href="Week-1_Module-One-Planning/Madison_Parker_CS499_Module_One_Assignment.docx">Download plan</a>
+              <a href="https://github.com/Cuthluwu/CS499-ePortfolio/tree/main/Week-1_Module-One-Planning">Browse files</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-number">Week 3 · <time datetime="2026-07-13">July 13, 2026</time></p>
+            <h3>Software Design and Engineering</h3>
+            <p>Transforms three disconnected services into an organized Java 17/Maven suite with explicit boundaries and testable policies.</p>
+            <ul>
+              <li>Shared validation and specific exceptions</li>
+              <li>Defensive copies and atomic updates</li>
+              <li>Deterministic time through <code>Clock</code></li>
+              <li>26 of 26 executed checks passed</li>
+            </ul>
+            <div class="card-links">
+              <a href="Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx">Download narrative</a>
+              <a href="https://github.com/Cuthluwu/CS499-ePortfolio/tree/main/Week-3_Software-Design-and-Engineering">Browse evidence</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-number">Week 4 · <time datetime="2026-07-20">July 20, 2026</time></p>
+            <h3>Algorithms and Data Structures</h3>
+            <p>Extends the Week 3 design with category-specific retrieval algorithms while preserving efficient exact-ID access.</p>
+            <ul>
+              <li>Case-insensitive search and filtering</li>
+              <li>Inclusive date-range retrieval</li>
+              <li>Deterministic comparator chains</li>
+              <li>19 of 19 executed checks passed</li>
+            </ul>
+            <div class="card-links">
+              <a href="Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx">Download narrative</a>
+              <a href="https://github.com/Cuthluwu/CS499-ePortfolio/tree/main/Week-4_Algorithms-and-Data-Structures">Browse evidence</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-number">Week 5 · <time datetime="2026-08-01">August 1, 2026</time></p>
+            <h3>Databases</h3>
+            <p>Redesigns the CS 360 Weight Tracker persistence layer around a versioned relational model, ownership, migration, and measurable database behavior.</p>
+            <ul>
+              <li>Version-two schema and data constraints</li>
+              <li>Ownership-scoped parameterized CRUD</li>
+              <li>Salted PBKDF2 password verifiers</li>
+              <li>76 of 76 database/Java checks passed</li>
+            </ul>
+            <div class="card-links">
+              <a href="Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Narrative.docx">Download narrative</a>
+              <a href="https://github.com/Cuthluwu/CS499-ePortfolio/tree/main/Week-5_Databases">Browse evidence</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-number">Week 6 · <time datetime="2026-08-03">August 3, 2026</time></p>
+            <h3>Disruptive Technology</h3>
+            <p>Publishes the algorithms work and evaluates a behavior-aware Bluetooth smart-scale extension grounded in the existing Weight Tracker.</p>
+            <ul>
+              <li>Goal-aware green, red, and neutral feedback</li>
+              <li>Positive-reinforcement and self-monitoring research</li>
+              <li>Bluetooth SIG Weight Scale Service pathway</li>
+              <li>Android, database, privacy, and physical-device acceptance plan</li>
+            </ul>
+            <div class="card-links">
+              <a href="Week-6_Algorithms-Publication-and-Technology/Madison_Parker_CS499_Module6_Disruptive_Technology_Journal.docx">Download journal</a>
+              <a href="Week-6_Algorithms-Publication-and-Technology/">Review Week 6</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="outcomes" aria-labelledby="outcomes-title">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Program outcomes</p>
+            <h2 id="outcomes-title">Claims connected to concrete artifacts.</h2>
+          </div>
+          <a class="text-link" href="OUTCOME_CROSSWALK.md">Full evidence crosswalk <span aria-hidden="true">→</span></a>
+        </div>
+        <ol class="outcome-list">
+          <li><span>01</span><div><h3>Collaborative environments</h3><p>Agile context, shared contracts, enhancement maps, decision logs, and reviewable documentation support informed technical discussion without overstating individual work as a full team environment.</p></div></li>
+          <li><span>02</span><div><h3>Professional communication</h3><p>Narratives, read-first guides, source maps, evidence summaries, and public navigation adapt the same technically precise work for academic and professional review.</p></div></li>
+          <li><span>03</span><div><h3>Algorithms and data structures</h3><p>Hash-based exact access, value traversals, comparator chains, immutable snapshots, complexity bounds, and indexing alternatives make the implementation trade-offs explicit.</p></div></li>
+          <li><span>04</span><div><h3>Computing techniques and tools</h3><p>Java, Maven structure, SQLite, repositories, schema constraints, migration, cryptographic password verification, query planning, and repeatable checks deliver specific user and reviewer value.</p></div></li>
+          <li><span>05</span><div><h3>Security mindset</h3><p>Input boundaries, state isolation, user-scoped queries, parameter binding, foreign keys, credential protection, conservative migration, and explicit limitations anticipate realistic data-integrity and privacy risks.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section evidence" id="evidence" aria-labelledby="evidence-title">
+      <div class="shell evidence-grid">
+        <div>
+          <p class="eyebrow">Verification</p>
+          <h2 id="evidence-title">Evidence is reported at the level actually executed.</h2>
+          <p>Compilation, standalone checks, dependency-based unit tests, and a full Android build are different forms of evidence. This portfolio keeps those boundaries visible.</p>
+        </div>
+        <div class="evidence-table-wrap">
+          <table>
+            <thead><tr><th>Category</th><th>Executed result</th><th>Additional included assets</th></tr></thead>
+            <tbody>
+              <tr><td>Software design</td><td>26/26 checks</td><td>97 JUnit methods</td></tr>
+              <tr><td>Algorithms</td><td>19/19 checks</td><td>103 cumulative JUnit methods</td></tr>
+              <tr><td>Databases</td><td>46/46 SQLite + 30/30 Java</td><td>Gradle project and Android instrumentation tests</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <p><strong>Madison Parker</strong><br>Bachelor of Science in Computer Science<br>Southern New Hampshire University<br><small>Portfolio stages: July 4-August 3, 2026</small></p>
+      <p><a href="https://github.com/Cuthluwu/CS499-ePortfolio">View source on GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
