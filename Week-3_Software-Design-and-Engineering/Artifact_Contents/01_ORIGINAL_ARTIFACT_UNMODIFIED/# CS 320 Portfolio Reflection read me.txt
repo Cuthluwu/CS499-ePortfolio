@@ -1,0 +1,44 @@
+# CS 320 Portfolio Reflection
+
+## Artifact Overview
+
+This repository contains artifacts from CS 320 Software Testing, Automation, and Quality Assurance. The included files demonstrate my ability to design software that meets requirements, develop unit tests using JUnit, validate functionality through automated testing, and apply quality assurance principles throughout the software development lifecycle.
+
+Artifacts included:
+
+* Contact.java
+* ContactService.java
+* ContactTest.java
+* ContactServiceTest.java
+* Project Two Summary and Reflections Report
+
+These artifacts showcase my understanding of software testing techniques, defensive programming practices, and quality assurance methodologies.
+
+## How can I ensure that my code, program, or software is functional and secure?
+
+I ensure software is functional and secure by validating requirements through comprehensive testing and input validation. Throughout this course, I used JUnit tests to verify both expected functionality and invalid input scenarios. I focused on preventing errors before they could affect the system by implementing exception handling and validation rules for all user-provided data. Security and reliability begin with preventing invalid data from entering the application, and automated testing helps confirm that safeguards continue to work as the software evolves.
+
+## How do I interpret user needs and incorporate them into a program?
+
+I begin by carefully analyzing the requirements and identifying the constraints that users expect the software to enforce. In this course, each service included specific business rules, such as character limits, unique identifiers, and date restrictions. I translated these requirements directly into program logic and corresponding test cases. By connecting each requirement to both implementation and testing, I was able to ensure that the final software behaved as intended and met user expectations.
+
+## How do I approach designing software?
+
+I approach software design by breaking large problems into smaller, manageable components. I focus first on understanding the requirements and then designing classes and methods with clear responsibilities. Throughout this project, I used object-oriented design principles to separate data objects from service logic, making the code easier to maintain and test. I also consider validation, testing, and future maintainability during the design process rather than treating them as afterthoughts. This approach helps create software that is reliable, scalable, and easier to improve over time.
+
+## Skills Demonstrated
+
+* Unit Testing with JUnit
+* Test-Driven Quality Assurance
+* Boundary Value Testing
+* Negative Testing
+* Input Validation
+* Exception Handling
+* Software Requirements Analysis
+* Object-Oriented Programming
+* Defensive Programming
+* Software Quality Assurance Principles
+
+## Reflection
+
+This course strengthened my understanding of how software testing contributes to overall software quality. I learned that testing is not simply about confirming code works correctly; it is also about identifying how software may fail under unexpected conditions. Developing automated tests improved my problem-solving skills and reinforced the importance of building quality into software from the beginning of the development process. Moving forward, I plan to continue incorporating automated testing, validation, and quality assurance practices into future software development projects.

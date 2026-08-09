@@ -5,12 +5,12 @@ Milestone Four enhances the CS 360 Android Weight Tracker as an end-to-end datab
 ## Start Here
 
 1. [Enhancement narrative](Madison_Parker_CS499_Milestone4_Database_Narrative.docx)
-2. [`files/00_READ_ME_FIRST.txt`](files/00_READ_ME_FIRST.txt)
-3. [`files/04_INSTRUCTOR_EVIDENCE/WHAT_CHANGED_AT_A_GLANCE.md`](files/04_INSTRUCTOR_EVIDENCE/WHAT_CHANGED_AT_A_GLANCE.md)
-4. [`files/04_INSTRUCTOR_EVIDENCE/ENHANCEMENT_MAP.md`](files/04_INSTRUCTOR_EVIDENCE/ENHANCEMENT_MAP.md)
-5. [`files/docs/SECURITY_ANALYSIS.md`](files/docs/SECURITY_ANALYSIS.md)
+2. [`Artifact_Contents/00_READ_ME_FIRST.txt`](Artifact_Contents/00_READ_ME_FIRST.txt)
+3. [`Artifact_Contents/04_INSTRUCTOR_EVIDENCE/WHAT_CHANGED_AT_A_GLANCE.md`](Artifact_Contents/04_INSTRUCTOR_EVIDENCE/WHAT_CHANGED_AT_A_GLANCE.md)
+4. [`Artifact_Contents/04_INSTRUCTOR_EVIDENCE/ENHANCEMENT_MAP.md`](Artifact_Contents/04_INSTRUCTOR_EVIDENCE/ENHANCEMENT_MAP.md)
+5. [`Artifact_Contents/03_DATABASE_DOCUMENTATION/SECURITY_ANALYSIS.md`](Artifact_Contents/03_DATABASE_DOCUMENTATION/SECURITY_ANALYSIS.md)
 6. [Downloadable technical artifact](Madison_Parker_CS499_Milestone4_Database_Artifact.zip)
-7. [Behavior-aware feedback and Bluetooth scale roadmap](files/docs/BEHAVIOR_DESIGN_AND_BLUETOOTH_ROADMAP.md)
+7. [Behavior-aware feedback and Bluetooth scale roadmap](Artifact_Contents/03_DATABASE_DOCUMENTATION/BEHAVIOR_DESIGN_AND_BLUETOOTH_ROADMAP.md)
 
 ## Before and After
 
@@ -26,6 +26,7 @@ Milestone Four enhances the CS 360 Android Weight Tracker as an end-to-end datab
 ## Security and Data-Integrity Decisions
 
 - `PasswordHasher` stores salted verifiers instead of reversible or plaintext credentials and records parameters needed for future work-factor changes.
+- Final verification bounds accepted work factors, rejects malformed decoded verifier dimensions, and assigns randomized 256-bit inaccessible credentials to blank legacy accounts instead of deriving a predictable value.
 - `UserRepository` separates registration and authentication from weight-entry behavior.
 - `WeightEntryRepository` uses bound values and scopes update/delete statements by both `entry_id` and authenticated `user_id`.
 - `DBHelper.onConfigure` enables foreign-key enforcement for every connection.
@@ -54,13 +55,13 @@ The proposed architecture covers pairing, Android runtime permissions, device ad
 ## Verification Boundary
 
 - **46 of 46 SQLite checks passed** for schema creation, keys, constraints, credential storage, authentication, ownership-scoped CRUD, ordering, reporting, index selection, cascade behavior, and migration.
-- **30 of 30 Java checks passed** after Java 17 `-Xlint:all` compilation of password, validation, and legacy-normalization logic.
+- **36 of 36 Java checks passed** after Java 17 `-Xlint:all` compilation of password, validation, and legacy-normalization logic.
 - Original-artifact integrity records cover all 78 baseline files.
 - The complete Gradle project and Android instrumentation tests are included for Android Studio execution; the publication environment did not assemble an APK, and the portfolio does not claim otherwise.
 
 Run the recorded verifiers with:
 
 ```sh
-sh files/04_INSTRUCTOR_EVIDENCE/run_database_verification.sh
-sh files/04_INSTRUCTOR_EVIDENCE/run_java_verification.sh
+sh Artifact_Contents/04_INSTRUCTOR_EVIDENCE/run_database_verification.sh
+sh Artifact_Contents/04_INSTRUCTOR_EVIDENCE/run_java_verification.sh
 ```

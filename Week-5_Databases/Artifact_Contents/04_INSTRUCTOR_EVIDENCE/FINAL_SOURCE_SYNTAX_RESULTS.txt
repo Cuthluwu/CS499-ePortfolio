@@ -1,0 +1,8 @@
+COMMAND
+sh 04_INSTRUCTOR_EVIDENCE/run_final_source_syntax_check.sh
+
+RESULT
+PASS: final DatabaseContract, DBHelper, PasswordHasher, and LegacyDataNormalizer syntax compiled with -Xlint:all.
+
+SCOPE
+DatabaseContract.java, PasswordHasher.java, and LegacyDataNormalizer.java compiled directly. DBHelper.java compiled against the minimal Android API signatures stored under android_api_stubs. Those stubs verify Java source compatibility only; they do not simulate Android runtime behavior or replace an Android Studio build.

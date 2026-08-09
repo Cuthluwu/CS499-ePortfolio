@@ -1,0 +1,360 @@
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/README.md Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/README.md
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/README.md	2026-08-10 03:10:13.482121670 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/README.md	2026-08-10 03:10:13.482737161 +0500
+@@ -1,6 +1,14 @@
+ # CS 320 Service Suite
+ 
+-This enhanced version reorganizes Madison Parker's original CS 320 contact, task, and appointment services into one Maven project. The original business rules remain intact while the code now uses packages, shared validation, a repository contract, specific service exceptions, consistent lookup behavior, defensive copies, and expanded JUnit tests.
++This cumulative enhanced version reorganizes Madison Parker's original CS 320 contact, task, and appointment services into one Maven project and adds category-specific search, filtering, and deterministic sorting algorithms. The original business rules remain intact while the code now uses packages, shared validation, a repository contract, specific service exceptions, consistent lookup behavior, defensive copies, and expanded JUnit tests.
++
++## Algorithm enhancements
++
++- Contact search performs a case-insensitive last-name scan and sorts matches by last name, first name, and ID.
++- Task search scans both the name and description and sorts matches by name and ID.
++- Appointment filtering uses an inclusive date range and sorts matches by date and ID.
++- Each result is an immutable snapshot, so callers cannot modify the service's collection through the returned list.
++- Exact-ID operations retain average O(1) `HashMap` behavior. Searches are O(n), and sorting `m` matches is O(m log m).
+ 
+ ## Requirements
+ 
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/pom.xml Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/pom.xml
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/pom.xml	2026-08-10 03:10:13.482211433 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/pom.xml	2026-08-10 03:10:13.482817200 +0500
+@@ -7,7 +7,7 @@
+     <groupId>edu.snhu.cs499</groupId>
+     <artifactId>cs320-service-suite</artifactId>
+     <version>1.0.0</version>
+-    <name>CS 320 Service Suite - Software Design Enhancement</name>
++    <name>CS 320 Service Suite - Algorithms and Data Structures Enhancement</name>
+ 
+     <properties>
+         <maven.compiler.release>17</maven.compiler.release>
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/model/Appointment.java Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/model/Appointment.java
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/model/Appointment.java	2026-08-10 03:10:13.482318221 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/model/Appointment.java	2026-08-10 03:23:47.103319037 +0500
+@@ -38,6 +38,14 @@
+         return new Date(appointmentDate.getTime());
+     }
+ 
++    /**
++     * Returns the appointment timestamp without allocating a mutable Date copy.
++     * The primitive value cannot expose or modify the stored Date instance.
++     */
++    public long getAppointmentTimeMillis() {
++        return appointmentDate.getTime();
++    }
++
+     public String getDescription() {
+         return description;
+     }
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/service/AppointmentService.java Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/service/AppointmentService.java
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/service/AppointmentService.java	2026-08-10 03:10:13.482361705 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/service/AppointmentService.java	2026-08-10 03:23:46.779319049 +0500
+@@ -5,13 +5,19 @@
+ import edu.snhu.cs499.model.Appointment;
+ import edu.snhu.cs499.repository.RecordRepository;
+ import edu.snhu.cs499.validation.Validation;
++import java.util.Comparator;
+ import java.util.Date;
+ import java.util.HashMap;
++import java.util.List;
+ import java.util.Map;
+ import java.util.Optional;
+ 
+ /** Manages appointments without exposing mutable Date values from internal records. */
+ public final class AppointmentService implements RecordRepository<Appointment> {
++    private static final Comparator<Appointment> DATE_ORDER = Comparator
++            .comparingLong(Appointment::getAppointmentTimeMillis)
++            .thenComparing(Appointment::getAppointmentId);
++
+     private final Map<String, Appointment> appointments = new HashMap<>();
+ 
+     @Override
+@@ -47,6 +53,27 @@
+         appointments.put(updated.getAppointmentId(), updated);
+     }
+ 
++    /**
++     * Returns appointments in an inclusive date range, ordered by date and ID.
++     */
++    public List<Appointment> findByDateRange(Date startInclusive, Date endInclusive) {
++        if (startInclusive == null || endInclusive == null) {
++            throw new IllegalArgumentException("Start and end dates are required.");
++        }
++        long startMillis = startInclusive.getTime();
++        long endMillis = endInclusive.getTime();
++        if (startMillis > endMillis) {
++            throw new IllegalArgumentException("Start date cannot be after end date.");
++        }
++
++        return appointments.values().stream()
++                .filter(appointment -> appointment.getAppointmentTimeMillis() >= startMillis
++                        && appointment.getAppointmentTimeMillis() <= endMillis)
++                .map(Appointment::new)
++                .sorted(DATE_ORDER)
++                .toList();
++    }
++
+     @Override
+     public int size() {
+         return appointments.size();
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/service/ContactService.java Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/service/ContactService.java
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/service/ContactService.java	2026-08-10 03:10:13.482437277 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/service/ContactService.java	2026-08-10 03:23:46.151319071 +0500
+@@ -5,12 +5,20 @@
+ import edu.snhu.cs499.model.Contact;
+ import edu.snhu.cs499.repository.RecordRepository;
+ import edu.snhu.cs499.validation.Validation;
++import java.util.Comparator;
+ import java.util.HashMap;
++import java.util.List;
++import java.util.Locale;
+ import java.util.Map;
+ import java.util.Optional;
+ 
+ /** Manages contacts without exposing the mutable records stored internally. */
+ public final class ContactService implements RecordRepository<Contact> {
++    private static final Comparator<Contact> SEARCH_ORDER = Comparator
++            .comparing(Contact::getLastName, String.CASE_INSENSITIVE_ORDER)
++            .thenComparing(Contact::getFirstName, String.CASE_INSENSITIVE_ORDER)
++            .thenComparing(Contact::getContactId);
++
+     private final Map<String, Contact> contacts = new HashMap<>();
+ 
+     @Override
+@@ -68,6 +76,19 @@
+         contacts.put(updated.getContactId(), updated);
+     }
+ 
++    /**
++     * Finds contacts whose last name contains the supplied text and returns a
++     * deterministic, immutable snapshot of the matches.
++     */
++    public List<Contact> searchByLastName(String query) {
++        String normalized = Validation.searchTerm(query, "Last-name search").toLowerCase(Locale.ROOT);
++        return contacts.values().stream()
++                .filter(contact -> contact.getLastName().toLowerCase(Locale.ROOT).contains(normalized))
++                .map(Contact::new)
++                .sorted(SEARCH_ORDER)
++                .toList();
++    }
++
+     @Override
+     public int size() {
+         return contacts.size();
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/service/TaskService.java Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/service/TaskService.java
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/service/TaskService.java	2026-08-10 03:10:13.482437277 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/service/TaskService.java	2026-08-10 03:23:46.463319060 +0500
+@@ -5,12 +5,19 @@
+ import edu.snhu.cs499.model.Task;
+ import edu.snhu.cs499.repository.RecordRepository;
+ import edu.snhu.cs499.validation.Validation;
++import java.util.Comparator;
+ import java.util.HashMap;
++import java.util.List;
++import java.util.Locale;
+ import java.util.Map;
+ import java.util.Optional;
+ 
+ /** Manages tasks without exposing the mutable records stored internally. */
+ public final class TaskService implements RecordRepository<Task> {
++    private static final Comparator<Task> SEARCH_ORDER = Comparator
++            .comparing(Task::getName, String.CASE_INSENSITIVE_ORDER)
++            .thenComparing(Task::getTaskId);
++
+     private final Map<String, Task> tasks = new HashMap<>();
+ 
+     @Override
+@@ -56,6 +63,20 @@
+         update(current.getTaskId(), current.getName(), description);
+     }
+ 
++    /**
++     * Searches task names and descriptions and returns matches in predictable
++     * name-and-ID order.
++     */
++    public List<Task> searchByKeyword(String keyword) {
++        String normalized = Validation.searchTerm(keyword, "Task search").toLowerCase(Locale.ROOT);
++        return tasks.values().stream()
++                .filter(task -> task.getName().toLowerCase(Locale.ROOT).contains(normalized)
++                        || task.getDescription().toLowerCase(Locale.ROOT).contains(normalized))
++                .map(Task::new)
++                .sorted(SEARCH_ORDER)
++                .toList();
++    }
++
+     @Override
+     public int size() {
+         return tasks.size();
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/validation/Validation.java Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/validation/Validation.java
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/validation/Validation.java	2026-08-10 03:10:13.482437277 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/validation/Validation.java	2026-08-10 03:10:13.483096193 +0500
+@@ -28,6 +28,10 @@
+         return requiredText(value, fieldName, 10);
+     }
+ 
++    public static String searchTerm(String value, String fieldName) {
++        return requiredText(value, fieldName, 100);
++    }
++
+     public static String phone(String value) {
+         String normalized = requiredText(value, "Phone number", 10);
+         if (!normalized.matches("\\d{10}")) {
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/test/java/edu/snhu/cs499/service/AppointmentServiceTest.java Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/test/java/edu/snhu/cs499/service/AppointmentServiceTest.java
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/test/java/edu/snhu/cs499/service/AppointmentServiceTest.java	2026-08-10 03:10:13.482737161 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/test/java/edu/snhu/cs499/service/AppointmentServiceTest.java	2026-08-10 03:10:13.483321878 +0500
+@@ -1,6 +1,7 @@
+ package edu.snhu.cs499.service;
+ 
+ import static org.junit.jupiter.api.Assertions.assertEquals;
++import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+ import static org.junit.jupiter.api.Assertions.assertThrows;
+ 
+ import edu.snhu.cs499.exception.DuplicateRecordException;
+@@ -10,6 +11,7 @@
+ import java.time.Instant;
+ import java.time.ZoneOffset;
+ import java.util.Date;
++import java.util.List;
+ import org.junit.jupiter.api.Test;
+ 
+ class AppointmentServiceTest {
+@@ -49,6 +51,39 @@
+         assertEquals("Original", unchanged.getDescription());
+     }
+ 
++    @Test
++    void dateRangeIsInclusiveAndUsesIdAsTieBreaker() {
++        AppointmentService service = new AppointmentService();
++        service.add(appointment("A203", 7200, "Second at same time"));
++        service.add(appointment("A201", 3600, "First"));
++        service.add(appointment("A202", 7200, "First at same time"));
++        service.add(appointment("A204", 14400, "Outside"));
++
++        Date start = Date.from(FIXED_CLOCK.instant().plusSeconds(3600));
++        Date end = Date.from(FIXED_CLOCK.instant().plusSeconds(7200));
++        List<String> identifiers = service.findByDateRange(start, end).stream()
++                .map(Appointment::getAppointmentId)
++                .toList();
++
++        assertIterableEquals(List.of("A201", "A202", "A203"), identifiers);
++    }
++
++    @Test
++    void dateRangeRejectsInvalidBoundsAndReturnsImmutableSnapshots() {
++        AppointmentService service = new AppointmentService();
++        service.add(appointment("A205", 3600, "Included"));
++        Date start = Date.from(FIXED_CLOCK.instant());
++        Date end = Date.from(FIXED_CLOCK.instant().plusSeconds(7200));
++
++        List<Appointment> results = service.findByDateRange(start, end);
++        results.get(0).setDescription("Changed Copy");
++
++        assertEquals("Included", service.findById("A205").orElseThrow().getDescription());
++        assertThrows(UnsupportedOperationException.class, () -> results.clear());
++        assertThrows(IllegalArgumentException.class, () -> service.findByDateRange(end, start));
++        assertThrows(IllegalArgumentException.class, () -> service.findByDateRange(null, end));
++    }
++
+     private Appointment appointment(String identifier, long secondsFromNow, String description) {
+         return new Appointment(identifier, Date.from(FIXED_CLOCK.instant().plusSeconds(secondsFromNow)),
+                 description, FIXED_CLOCK);
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/test/java/edu/snhu/cs499/service/ContactServiceTest.java Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/test/java/edu/snhu/cs499/service/ContactServiceTest.java
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/test/java/edu/snhu/cs499/service/ContactServiceTest.java	2026-08-10 03:10:13.482737161 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/test/java/edu/snhu/cs499/service/ContactServiceTest.java	2026-08-10 03:10:13.483321878 +0500
+@@ -2,11 +2,13 @@
+ 
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ import static org.junit.jupiter.api.Assertions.assertFalse;
++import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+ import static org.junit.jupiter.api.Assertions.assertThrows;
+ 
+ import edu.snhu.cs499.exception.DuplicateRecordException;
+ import edu.snhu.cs499.exception.RecordNotFoundException;
+ import edu.snhu.cs499.model.Contact;
++import java.util.List;
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+ 
+@@ -73,6 +75,32 @@
+         assertEquals("Parker", unchanged.getLastName());
+     }
+ 
++    @Test
++    void lastNameSearchIsCaseInsensitiveAndDeterministicallySorted() {
++        service.add(new Contact("C203", "Zoe", "Baker", "2075552003", "3 Main St"));
++        service.add(new Contact("C201", "Madison", "Parker", "2075552001", "1 Main St"));
++        service.add(new Contact("C202", "Ada", "Baker", "2075552002", "2 Main St"));
++        service.add(new Contact("C204", "June", "Harlow", "2075552004", "4 Main St"));
++
++        List<String> identifiers = service.searchByLastName("KeR").stream()
++                .map(Contact::getContactId)
++                .toList();
++
++        assertIterableEquals(List.of("C202", "C203", "C201"), identifiers);
++    }
++
++    @Test
++    void lastNameSearchReturnsImmutableSnapshots() {
++        service.add(contact("C205"));
++        List<Contact> results = service.searchByLastName("parker");
++        results.get(0).setFirstName("June");
++
++        assertEquals("Madison", service.findById("C205").orElseThrow().getFirstName());
++        assertThrows(UnsupportedOperationException.class, () -> results.add(contact("C206")));
++        assertEquals(0, service.searchByLastName("missing").size());
++        assertThrows(IllegalArgumentException.class, () -> service.searchByLastName(" "));
++    }
++
+     private Contact contact(String identifier) {
+         return new Contact(identifier, "Madison", "Parker", "2075551000", "13 Moonlit Way");
+     }
+diff -ruN Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/test/java/edu/snhu/cs499/service/TaskServiceTest.java Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/test/java/edu/snhu/cs499/service/TaskServiceTest.java
+--- Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/test/java/edu/snhu/cs499/service/TaskServiceTest.java	2026-08-10 03:10:13.482737161 +0500
++++ Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/test/java/edu/snhu/cs499/service/TaskServiceTest.java	2026-08-10 03:10:13.483321878 +0500
+@@ -1,11 +1,13 @@
+ package edu.snhu.cs499.service;
+ 
+ import static org.junit.jupiter.api.Assertions.assertEquals;
++import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+ import static org.junit.jupiter.api.Assertions.assertThrows;
+ 
+ import edu.snhu.cs499.exception.DuplicateRecordException;
+ import edu.snhu.cs499.exception.RecordNotFoundException;
+ import edu.snhu.cs499.model.Task;
++import java.util.List;
+ import org.junit.jupiter.api.Test;
+ 
+ class TaskServiceTest {
+@@ -58,4 +60,31 @@
+         assertEquals("Old Name", unchanged.getName());
+         assertEquals("Old description.", unchanged.getDescription());
+     }
++
++    @Test
++    void keywordSearchChecksNameAndDescriptionThenSortsByNameAndId() {
++        TaskService service = new TaskService();
++        service.add(new Task("T203", "Write Tests", "Cover the search behavior."));
++        service.add(new Task("T201", "Archive Files", "Prepare the capstone package."));
++        service.add(new Task("T202", "Read Rubric", "Check every capstone requirement."));
++
++        List<String> identifiers = service.searchByKeyword("CAPSTONE").stream()
++                .map(Task::getTaskId)
++                .toList();
++
++        assertIterableEquals(List.of("T201", "T202"), identifiers);
++    }
++
++    @Test
++    void keywordSearchHandlesEmptyAndImmutableResults() {
++        TaskService service = new TaskService();
++        service.add(new Task("T204", "Write Tests", "Cover the search behavior."));
++
++        List<Task> matches = service.searchByKeyword("search");
++        assertEquals(1, matches.size());
++        assertThrows(UnsupportedOperationException.class,
++                () -> matches.add(new Task("T205", "Another", "Another valid task.")));
++        assertEquals(0, service.searchByKeyword("missing").size());
++        assertThrows(IllegalArgumentException.class, () -> service.searchByKeyword(null));
++    }
+ }

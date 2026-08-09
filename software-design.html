@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Madison Parker's CS 499 software design and engineering enhancement of the CS 320 Contact, Task, and Appointment Service Suite.">
+  <title>Software Design and Engineering | Madison Parker CS 499 ePortfolio</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html" aria-label="Madison Parker CS 499 ePortfolio home"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a aria-current="page" href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
+  <main id="main">
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Category One</p><p class="eyebrow">Software Design and Engineering · July 13, 2026</p><h1>CS 320 Contact, Task, and Appointment Service Suite</h1><p>A focused redesign that makes validation, state ownership, update behavior, time dependencies, and failure policies explicit and testable.</p></div></section>
+    <section class="section">
+      <div class="shell content-layout">
+        <article class="content-main">
+          <div class="metric-grid" aria-label="Software design verification summary"><div class="metric"><strong>26/26</strong><span>focused checks passed</span></div><div class="metric"><strong>97</strong><span>included JUnit methods</span></div><div class="metric"><strong>12</strong><span>original Java files preserved</span></div></div>
+          <div class="artifact-links">
+            <a class="artifact-link" href="Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx"><strong>Download the narrative</strong><span>Complete reflection, outcome alignment, and references</span></a>
+            <a class="artifact-link" href="Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Artifact.zip"><strong>Download original + enhanced artifact</strong><span>Source, tests, documentation, diff, and evidence</span></a>
+            <a class="artifact-link" href="Week-3_Software-Design-and-Engineering/Artifact_Contents/01_ORIGINAL_ARTIFACT_UNMODIFIED/CS320_Project_One_Final/ContactService/ContactService.java"><strong>Open original ContactService</strong><span>Unmodified CS 320 baseline</span></a>
+            <a class="artifact-link" href="Week-3_Software-Design-and-Engineering/Artifact_Contents/02_ENHANCED_SOFTWARE_DESIGN_ARTIFACT/cs320-service-suite/src/main/java/edu/snhu/cs499/service/ContactService.java"><strong>Open enhanced ContactService</strong><span>Final Category One source</span></a>
+          </div>
+
+          <h2 id="artifact">Artifact and selection</h2>
+          <p>The original artifact is a Java service suite created in May 2026 for CS 320 Software Testing, Automation, and Quality Assurance. It contains contact, task, and appointment models, three in-memory services, and JUnit tests for the required field limits and CRUD behavior. Each service stores records in a <code>HashMap</code> keyed by an immutable identifier.</p>
+          <p>I selected it because a small codebase makes design decisions easy to isolate. The original already demonstrated input rules, collection use, unique identifiers, and testing. It also exposed meaningful weaknesses: the folders did not share a package or contract, validation was repeated, missing records had inconsistent behavior, mutable objects crossed the service boundary, and a multi-field update could change one value before a later validation failure. Those were architectural problems, not formatting problems.</p>
+          <p>Module One initially named the CS 250 SNHU Travel planning work for this category. The code review showed that those materials remained useful Agile and stakeholder context but did not provide enough source for a code-level walkthrough. I documented the refinement and used the CS 320 suite as the concrete technical artifact.</p>
+
+          <h2 id="baseline">Baseline analysis</h2>
+          <p>The original <code>addContact</code> method stores the caller's exact object, and <code>getContact</code> returns the same stored reference. The caller can therefore change service state later through a setter without invoking the service. Retrieval returns <code>null</code> for absence, while deletion goes through a private method that throws a general <code>IllegalArgumentException</code>. Every caller has to remember a different absence policy.</p>
+          <p>The appointment model protects its inner <code>Date</code> less consistently than a modern service boundary should, and validation depends on moving system time. A test near the present-time boundary can fail according to when the assertion executes. The repeated patterns across services also make it easy for policies to drift.</p>
+
+          <h2 id="enhancement">Completed enhancement</h2>
+          <div class="chapter-table"><table><thead><tr><th>Design area</th><th>Original condition</th><th>Completed change</th></tr></thead><tbody>
+            <tr><td>Structure</td><td>Three default-package folders</td><td>One Java 17/Maven project with model, service, validation, repository, and exception packages</td></tr>
+            <tr><td>Validation</td><td>Repeated limits and null checks</td><td>Named model constants and one shared validation boundary</td></tr>
+            <tr><td>Service policy</td><td>Null lookups and general exceptions</td><td><code>Optional</code> for nonexceptional lookup; specific duplicate and missing-record exceptions for commands</td></tr>
+            <tr><td>State ownership</td><td>Stored and returned caller-owned references</td><td>Copies on input and snapshot copies on output</td></tr>
+            <tr><td>Updates</td><td>Direct mutation with partial-failure risk</td><td>Copy, validate, then replace only after the full change succeeds</td></tr>
+            <tr><td>Time</td><td>Moving system time inside validation</td><td>Injectable <code>Clock</code> with the original constructor preserved</td></tr>
+          </tbody></table></div>
+
+          <h3>Before and after: service ownership</h3>
+          <div class="comparison">
+            <section class="code-panel"><h3>Original</h3><pre><code>public void addContact(Contact contact) {
+    if (contacts.containsKey(contact.getContactId())) {
+        throw new IllegalArgumentException(
+            "A contact with this ID already exists.");
+    }
+    contacts.put(contact.getContactId(), contact);
+}
+
+public Contact getContact(String contactId) {
+    return contacts.get(contactId);
+}</code></pre></section>
+            <section class="code-panel"><h3>Enhanced</h3><pre><code>public void add(Contact contact) {
+    if (contact == null) {
+        throw new IllegalArgumentException(
+            "Contact cannot be null.");
+    }
+    String identifier = contact.getContactId();
+    if (contacts.containsKey(identifier)) {
+        throw new DuplicateRecordException(
+            "Contact", identifier);
+    }
+    contacts.put(identifier, new Contact(contact));
+}
+
+public Optional&lt;Contact&gt; findById(String identifier) {
+    String normalized = Validation.identifier(
+        identifier, "Contact ID");
+    return Optional.ofNullable(contacts.get(normalized))
+        .map(Contact::new);
+}</code></pre></section>
+          </div>
+          <p>The enhanced add path rejects null, assigns a specific duplicate policy, and stores a copy. The read path validates the identifier, expresses ordinary absence through <code>Optional</code>, and returns a snapshot. The map remains the service's state rather than becoming a collection of shared object references.</p>
+
+          <h3>Atomic multi-field updates</h3>
+          <p><code>updateName</code> creates a copy of the stored contact, validates both new values on that copy, and writes the replacement only after both setters succeed. If last-name validation fails, the original first name remains unchanged. Similar copy-validate-replace logic protects task and appointment updates. Focused checks read the record after an exception and confirm that the stored postcondition remains unchanged.</p>
+
+          <h2 id="verification">Verification</h2>
+          <p>The enhanced Maven project contains 97 JUnit methods across 12 test classes. Six classes retain the original requirements; the additional tests cover shared validation, exact exception policies, defensive copying, failed-update atomicity, controlled time, and the common repository contract. A separate executable verifier performed 26 focused checks and recorded a passing result for every one.</p>
+          <div class="status-note success"><p><strong>Executed evidence:</strong> 26 of 26 focused software-design checks passed. The technical package also includes the Maven project, JUnit sources, original integrity hashes, enhancement map, full original-to-enhanced diff, and verification output.</p></div>
+
+          <h2 id="reflection">Reflection</h2>
+          <p>The most important lesson was that encapsulation can fail even when fields are private. If a service stores and returns the same mutable object, external code still controls the service's state. Defensive copying at both sides of the boundary made the ownership rule concrete.</p>
+          <p>I also learned to distinguish lookup from command failure. A missing search result is normal and can be represented explicitly. An update or delete that cannot act on the requested identifier is a failed command and should say why. That difference made the service API easier to reason about and test.</p>
+          <p>I considered a generic base-service class but rejected it. The services share repository operations, yet their update behavior and later retrieval algorithms differ. A small interface documents the common contract without forcing unrelated implementation details into an inheritance hierarchy.</p>
+          <p>The remaining limitations are intentional and documented. The services are in-memory, single-process teaching components. They do not claim persistence, thread safety, authentication, or authorization. Those concerns belong to a different layer and appear in the database artifact rather than being hidden behind a more complicated abstraction here.</p>
+
+          <h2 id="outcomes">Skills and outcome alignment</h2>
+          <ul>
+            <li><strong>Outcome 1:</strong> shared contracts, conventional structure, decision logs, and exact evidence locations make the work reviewable in a collaborative environment.</li>
+            <li><strong>Outcome 2:</strong> the narrative explains the user-facing effect, implementation choice, alternative, test, result, and limitation for multiple audiences.</li>
+            <li><strong>Outcome 4:</strong> Java 17, Maven structure, <code>Optional</code>, defensive copies, specific exceptions, <code>Clock</code>, JUnit, and executable verification deliver a reliable service boundary.</li>
+            <li><strong>Outcome 5:</strong> validation, immutable identifiers, state isolation, explicit failures, and negative tests reduce misuse and unintended mutation.</li>
+            <li><strong>Outcome 3:</strong> the map choice is justified here, while the dedicated algorithm enhancement provides the fuller complexity evidence.</li>
+          </ul>
+          <a class="text-link" href="algorithms.html">Continue to Category Two: Algorithms and Data Structures <span aria-hidden="true">→</span></a>
+        </article>
+        <aside class="side-nav" aria-label="On this page"><strong>On this page</strong><a href="#artifact">Artifact and selection</a><a href="#baseline">Baseline analysis</a><a href="#enhancement">Completed enhancement</a><a href="#verification">Verification</a><a href="#reflection">Reflection</a><a href="#outcomes">Outcome alignment</a></aside>
+      </div>
+    </section>
+  </main>
+  <footer><div class="shell footer-inner"><p><strong>Madison Parker</strong><br>CS 499 Category One<br><small>Software Design and Engineering</small></p><p><a href="index.html">Portfolio home</a><br><a href="algorithms.html">Next category</a></p></div></footer>
+</body>
+</html>

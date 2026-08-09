@@ -6,7 +6,7 @@ Week 6, dated August 3, 2026, publishes the polished algorithms and data-structu
 
 1. [Module Six Journal: Disruptive Technology and Behavior-Aware Mobile Health](Madison_Parker_CS499_Module6_Disruptive_Technology_Journal.docx)
 2. [Published algorithms enhancement](../Week-4_Algorithms-and-Data-Structures/)
-3. [Behavior-aware feedback and Bluetooth scale roadmap](../Week-5_Databases/files/docs/BEHAVIOR_DESIGN_AND_BLUETOOTH_ROADMAP.md)
+3. [Behavior-aware feedback and Bluetooth scale roadmap](../Week-5_Databases/Artifact_Contents/03_DATABASE_DOCUMENTATION/BEHAVIOR_DESIGN_AND_BLUETOOTH_ROADMAP.md)
 
 ## What Was Polished
 
@@ -35,4 +35,4 @@ Withings shows that scale measurements can synchronize automatically to a mobile
 
 ## Scope Boundary
 
-Bluetooth synchronization and adaptive color feedback are proposed next iterations. The current portfolio proves the database foundation needed to support them, but it does not claim a paired physical scale, completed radio integration, validated behavior change, or medical-device status. No later-course work is included.
+Bluetooth synchronization and adaptive color feedback are proposed next iterations. The current portfolio proves the database foundation needed to support them, but it does not claim a paired physical scale, completed radio integration, validated behavior change, or medical-device status. This Week 6 package does not claim a later implementation of those proposed features.

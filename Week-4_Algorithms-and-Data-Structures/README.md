@@ -5,9 +5,9 @@ Milestone Three builds cumulatively on the Week 3 service design while isolating
 ## Start Here
 
 1. [Enhancement narrative](Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx)
-2. [`files/00_READ_ME_FIRST.txt`](files/00_READ_ME_FIRST.txt)
-3. [`files/docs/ALGORITHM_COMPLEXITY_AND_TRADEOFFS.md`](files/docs/ALGORITHM_COMPLEXITY_AND_TRADEOFFS.md)
-4. [`files/evidence/ALGORITHMS_VERIFICATION_RESULTS.txt`](files/evidence/ALGORITHMS_VERIFICATION_RESULTS.txt)
+2. [`Artifact_Contents/00_READ_ME_FIRST.txt`](Artifact_Contents/00_READ_ME_FIRST.txt)
+3. [`Artifact_Contents/03_DOCUMENTATION/ALGORITHM_COMPLEXITY_AND_TRADEOFFS.md`](Artifact_Contents/03_DOCUMENTATION/ALGORITHM_COMPLEXITY_AND_TRADEOFFS.md)
+4. [`Artifact_Contents/04_EVIDENCE/ALGORITHMS_VERIFICATION_RESULTS.txt`](Artifact_Contents/04_EVIDENCE/ALGORITHMS_VERIFICATION_RESULTS.txt)
 5. [Downloadable technical artifact](Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip)
 
 ## Algorithm Delta
@@ -18,7 +18,7 @@ Milestone Three builds cumulatively on the Week 3 service design while isolating
 | `TaskService.searchByKeyword` | Case-insensitive search across task name or description | Task name, task ID |
 | `AppointmentService.findByDateRange` | Inclusive filtering across copied start and end dates | Appointment date, appointment ID |
 
-`Validation.searchTerm` rejects null and blank criteria and normalizes user input. Each algorithm creates record snapshots before sorting, then returns `List.copyOf` so the caller cannot structurally modify the result or mutate the service's stored record through a returned element.
+`Validation.searchTerm` rejects null and blank criteria and normalizes user input. Each algorithm creates record snapshots before sorting, then returns Java 17's unmodifiable `Stream.toList()` result so the caller cannot structurally modify the result or mutate the service's stored record through a returned element. Reusable comparator constants and primitive appointment timestamps reduce temporary allocations without changing the documented complexity bounds.
 
 ## Complexity and Design Trade-Off
 
@@ -33,5 +33,5 @@ The cumulative source contains 103 JUnit methods, including six retrieval-focuse
 Run the recorded verifier with:
 
 ```sh
-sh files/evidence/run_algorithms_verification.sh
+sh Artifact_Contents/04_EVIDENCE/run_algorithms_verification.sh
 ```

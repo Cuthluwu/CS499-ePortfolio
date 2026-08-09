@@ -5,9 +5,9 @@ Milestone Two converts the original CS 320 Contact, Task, and Appointment servic
 ## Start Here
 
 1. [Enhancement narrative](Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx)
-2. [`files/00_READ_ME_FIRST.txt`](files/00_READ_ME_FIRST.txt)
-3. [`files/docs/ENHANCEMENT_MAP.md`](files/docs/ENHANCEMENT_MAP.md)
-4. [`files/evidence/SOFTWARE_DESIGN_VERIFICATION_RESULTS.txt`](files/evidence/SOFTWARE_DESIGN_VERIFICATION_RESULTS.txt)
+2. [`Artifact_Contents/00_READ_ME_FIRST.txt`](Artifact_Contents/00_READ_ME_FIRST.txt)
+3. [`Artifact_Contents/03_DOCUMENTATION/ENHANCEMENT_MAP.md`](Artifact_Contents/03_DOCUMENTATION/ENHANCEMENT_MAP.md)
+4. [`Artifact_Contents/04_EVIDENCE/SOFTWARE_DESIGN_VERIFICATION_RESULTS.txt`](Artifact_Contents/04_EVIDENCE/SOFTWARE_DESIGN_VERIFICATION_RESULTS.txt)
 5. [Downloadable technical artifact](Madison_Parker_CS499_Milestone2_Software_Design_Artifact.zip)
 
 ## Before and After
@@ -36,7 +36,7 @@ The enhanced Maven project contains 97 JUnit methods as reviewable test assets. 
 Run the recorded verifier with:
 
 ```sh
-sh files/evidence/run_software_design_verification.sh
+sh Artifact_Contents/04_EVIDENCE/run_software_design_verification.sh
 ```
 
 The narrative also states the artifact's limits: it is an in-memory, single-process teaching component and does not claim persistence, concurrency control, authentication, or production authorization.

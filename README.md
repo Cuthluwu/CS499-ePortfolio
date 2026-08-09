@@ -1,72 +1,81 @@
-# Madison Parker — CS 499 Computer Science Capstone
+# Madison Parker — CS 499 Computer Science Capstone ePortfolio
 
-This repository presents the planning record and three completed technical enhancements for my Southern New Hampshire University Computer Science capstone. The portfolio is organized to make every claim reviewable: each milestone separates the original artifact from the enhanced implementation, names the exact design decisions, includes supporting documentation, and records what was actually verified.
+This is the final CS 499 ePortfolio for Madison Parker. It presents the professional self-assessment first, then the code-review materials, original and enhanced artifacts, category narratives, outcome synthesis, and verification evidence.
 
-**Portfolio site:** [Open the ePortfolio landing page](https://cuthluwu.github.io/CS499-ePortfolio/)  
-**Outcome crosswalk:** [Review the five program outcomes](OUTCOME_CROSSWALK.md)
-**Portfolio timeline:** [Review the dated artifact progression](PORTFOLIO_TIMELINE.md)
+**Portfolio site:** [https://cuthluwu.github.io/CS499-ePortfolio/](https://cuthluwu.github.io/CS499-ePortfolio/)  
+**Professional self-assessment:** [Read the HTML version](self-assessment.html)  
+**Code review:** [Review the script, chapters, and recording status](code-review.html)  
+**Program outcomes:** [Open the five-outcome synthesis](outcomes.html)
 
-## Portfolio at a Glance
+## Final Review Order
 
-| Course week | Portfolio date | Category and deliverable | Primary evidence |
+1. [Professional Self-Assessment](self-assessment.html)
+2. [Code Review](code-review.html)
+3. [Software Design and Engineering](software-design.html)
+4. [Algorithms and Data Structures](algorithms.html)
+5. [Databases](databases.html)
+6. [Five Program Outcomes](outcomes.html)
+7. [Final Project Rubric Traceability](FINAL_PROJECT_RUBRIC_TRACEABILITY.md)
+
+The website pages contain the substantive explanation and before/after evidence. The Word narratives and artifact ZIPs remain available as formal submission downloads rather than serving as the only interface.
+
+## Portfolio Components
+
+| Stage | Date | Deliverable | Primary evidence |
 | --- | --- | --- | --- |
-| [Week 1](Week-1_Module-One-Planning/) | July 4, 2026 | Module One artifact selection and enhancement plan | Three-artifact plan, intended outcomes, and documented scope refinement |
-| [Week 3](Week-3_Software-Design-and-Engineering/) | July 13, 2026 | Milestone Two: Software Design and Engineering | CS 320 service-suite architecture, validation, defensive copying, atomic updates, and 26 executed checks |
-| [Week 4](Week-4_Algorithms-and-Data-Structures/) | July 20, 2026 | Milestone Three: Algorithms and Data Structures | Search, filtering, deterministic sorting, complexity analysis, and 19 executed checks |
-| [Week 5](Week-5_Databases/) | August 1, 2026 | Milestone Four: Databases | CS 360 SQLite redesign, ownership-aware CRUD, migration, password verification, and 76 executed database/Java checks |
-| [Week 6](Week-6_Algorithms-Publication-and-Technology/) | August 3, 2026 | Algorithms publication and disruptive-technology journal | Published algorithm evidence plus a researched, accessible Bluetooth smart-scale and behavior-feedback roadmap |
+| Week 1 | July 4, 2026 | Artifact selection and enhancement plan | Three-category plan, pseudocode, intended outcomes, and documented scope refinement |
+| Week 2 | July 2026 | Code-review materials | 35-minute narration script, 17-chapter visual timeline, original analysis, and enhancement plan |
+| Week 3 | July 13, 2026 | Software Design and Engineering | Original and enhanced CS 320 suite, narrative, 97 JUnit methods, and 26/26 focused checks |
+| Week 4 | July 20, 2026 | Algorithms and Data Structures | Original, Week 3 baseline, isolated Week 4 delta, narrative, 103 cumulative JUnit methods, and 19/19 focused checks |
+| Week 5 | August 1, 2026; final revision August 9 | Databases | Original and enhanced CS 360 Weight Tracker, revised narrative, 46/46 SQLite checks, and 36/36 Java checks |
+| Week 6 | August 3, 2026 | Algorithms publication and disruptive-technology journal | Published algorithm evidence plus a researched future Bluetooth and behavior-aware feedback roadmap |
+| Week 7 | August 9, 2026 | Final ePortfolio and professional self-assessment | Self-assessment, final website, outcome synthesis, rubric traceability, and release verification |
 
-The dates above identify when each capstone-stage document belongs in the course progression. They are intentionally different from the May and June 2026 creation dates of the original CS 320 and CS 360 coursework. File packaging or GitHub publication may occur later without changing the historical artifact dates.
-
-The current publication intentionally contains Weeks 1, 3, 4, 5, and 6. Week 2's recorded code review will be linked after the final video is encoded, downloaded, and independently checked for playback and readability. This release ends with the completed Module Six work.
-
-## Recommended Review Path
-
-1. Read the [Module One plan](Week-1_Module-One-Planning/) and the accompanying [scope refinement](Week-1_Module-One-Planning/PLAN_REFINEMENT.md).
-2. Review the [Week 3 software-design narrative](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx), then compare its original and enhanced source folders.
-3. Continue to [Week 4](Week-4_Algorithms-and-Data-Structures/) to isolate the cumulative algorithm delta and its documented performance trade-offs.
-4. Review [Week 5](Week-5_Databases/) as an independent Android/SQLite enhancement, beginning with its narrative and `files/00_READ_ME_FIRST.txt`.
-5. Use [OUTCOME_CROSSWALK.md](OUTCOME_CROSSWALK.md) to trace each program outcome to concrete implementation and evidence locations.
-6. Review [Week 6](Week-6_Algorithms-Publication-and-Technology/) for the published algorithms work and the disruptive-technology journal grounded in the Weight Tracker.
-7. Use [PORTFOLIO_TIMELINE.md](PORTFOLIO_TIMELINE.md) to distinguish original artifact creation, enhancement dates, and final publication activity.
+The original CS 320 service suite was created May 25, 2026. The original CS 360 Weight Tracker was created June 22, 2026. Those dates remain separate from the later CS 499 enhancement and publication dates.
 
 ## Artifact Continuity
 
-Module One initially identified the CS 250 SNHU Travel planning materials for the software-design category. Those materials remain useful Agile and stakeholder-planning context, but the code review established that they did not contain enough source code for the required code-level analysis and enhancement. The CS 320 Contact, Task, and Appointment Service Suite therefore became the concrete Category One artifact. The same suite then supports Category Two through a separate cumulative enhancement with clearly isolated search, filtering, sorting, and complexity work. The CS 360 Android Weight Tracker remains the independent database artifact.
+Module One initially selected CS 250 SNHU Travel planning work for the software-design category. During code review, I determined that the planning materials showed Agile and stakeholder skills but did not contain enough source for a meaningful code-level enhancement. The CS 320 Contact, Task, and Appointment Service Suite became the concrete Category One artifact. CS 250 remains verified context in the self-assessment and plan refinement.
 
-This refinement is stated openly so the portfolio does not silently substitute one artifact for another. It preserves the historical plan while keeping the final technical claims tied to inspectable code.
+The same CS 320 suite supports Category Two through a cumulative but isolated algorithm enhancement. The final algorithms package includes the unchanged original, the Week 3 design baseline, the Week 4 enhanced code, and a Week 3-to-4 diff. The CS 360 Android Weight Tracker remains the independent database artifact.
 
-## Evidence Standard
+## Verification Standard
 
-Each enhancement week includes:
+| Category | Executed result | Additional included assets |
+| --- | --- | --- |
+| Software Design and Engineering | 26/26 focused checks | 97 JUnit methods, Maven project, original integrity record, and full diff |
+| Algorithms and Data Structures | 19/19 focused checks | 103 cumulative JUnit methods, three-stage source history, and Week 3-to-4 diff |
+| Databases | 46/46 SQLite + 36/36 Java checks | Gradle project, JUnit sources, Android instrumentation tests, migration and query evidence |
 
-- an unchanged original baseline;
-- a separate enhanced implementation;
-- a Microsoft Word narrative;
-- a downloadable technical artifact ZIP;
-- a read-first guide and exact enhancement map;
-- repeatable verification scripts and recorded results;
-- integrity records for the original artifact; and
-- explicit limitations that distinguish executed evidence from included test assets.
+The three focused verifier paths record 127 passing checks. Dependency-based JUnit assets and Android tests are included but are not mislabeled as runs when the final preparation environment did not execute them. The database project was not presented as an APK build from an environment without the Android SDK and cached Gradle distribution.
 
-The Java service projects include 97 and 103 JUnit methods as reviewable test assets. Because those dependency-based suites were not executed in the publication environment, the portfolio does not report them as passing runs. Instead, the included dependency-free verifiers were compiled with Java 17 and executed: 26 checks passed for software design and 19 for algorithms. The database milestone separately passed 46 SQLite checks and 30 Java security/validation checks. The complete Android Studio project and instrumentation tests remain included, but an Android APK build is not claimed from the verification environment.
+## Code-Review Recording Status
+
+The complete narration script and exact chapter plan are present. No playable video file or public video URL was included in the supplied materials. The final Brightspace submission still requires the recorded review. Record at 1080p, export a standard H.264 MP4, upload it, download or open the uploaded copy in a signed-out browser, verify source readability and audio, then add the final link to `code-review.html` and the Brightspace submission.
 
 ## Repository Structure
 
 ```text
 CS499-ePortfolio/
 ├── index.html
+├── self-assessment.html
+├── code-review.html
+├── software-design.html
+├── algorithms.html
+├── databases.html
+├── outcomes.html
 ├── assets/styles.css
-├── OUTCOME_CROSSWALK.md
 ├── Week-1_Module-One-Planning/
+├── Week-2_Code-Review/
 ├── Week-3_Software-Design-and-Engineering/
 ├── Week-4_Algorithms-and-Data-Structures/
 ├── Week-5_Databases/
 ├── Week-6_Algorithms-Publication-and-Technology/
-└── PORTFOLIO_TIMELINE.md
+├── Week-7_Final-ePortfolio-and-Self-Assessment/
+├── OUTCOME_CROSSWALK.md
+├── PORTFOLIO_TIMELINE.md
+└── FINAL_PROJECT_RUBRIC_TRACEABILITY.md
 ```
-
-Within each enhancement week, `files` is extracted for browser-based review. Original and enhanced folders remain separate, and the submission ZIP is retained as a single-file download.
 
 ## Author
 

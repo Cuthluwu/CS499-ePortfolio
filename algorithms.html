@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Madison Parker's CS 499 algorithms and data structures enhancement of the CS 320 Contact, Task, and Appointment Service Suite.">
+  <title>Algorithms and Data Structures | Madison Parker CS 499 ePortfolio</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html" aria-label="Madison Parker CS 499 ePortfolio home"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a aria-current="page" href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
+  <main id="main">
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Category Two</p><p class="eyebrow">Algorithms and Data Structures · July 20, 2026</p><h1>Retrieval algorithms matched to the data they serve</h1><p>The cumulative CS 320 suite keeps efficient exact-ID operations and adds explicit search, filtering, deterministic ordering, immutable results, and honest complexity bounds.</p></div></section>
+    <section class="section">
+      <div class="shell content-layout">
+        <article class="content-main">
+          <div class="metric-grid" aria-label="Algorithms verification summary"><div class="metric"><strong>19/19</strong><span>focused checks passed</span></div><div class="metric"><strong>103</strong><span>cumulative JUnit methods</span></div><div class="metric"><strong>3</strong><span>new retrieval contracts</span></div></div>
+          <div class="artifact-links">
+            <a class="artifact-link" href="Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx"><strong>Download the narrative</strong><span>Selection, complexity, reflection, and outcomes</span></a>
+            <a class="artifact-link" href="Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip"><strong>Download the submitted artifact</strong><span>Original, enhanced code, documentation, and evidence</span></a>
+            <a class="artifact-link" href="Week-4_Algorithms-and-Data-Structures/Artifact_Contents/02_WEEK3_DESIGN_BASELINE/src/main/java/edu/snhu/cs499/service/ContactService.java"><strong>Open Week 3 baseline</strong><span>Category One design before algorithm additions</span></a>
+            <a class="artifact-link" href="Week-4_Algorithms-and-Data-Structures/Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/src/main/java/edu/snhu/cs499/service/ContactService.java"><strong>Open Week 4 enhanced source</strong><span>Contact search and deterministic ordering</span></a>
+          </div>
+
+          <h2 id="artifact">Artifact and category boundary</h2>
+          <p>The artifact is the same Java service suite created in May 2026 for CS 320 and reorganized during Category One. Reusing it is deliberate: the software-design foundation remains stable while the new work addresses a different question. Category One owns packages, validation, service contracts, state protection, atomic updates, and controlled time. Category Two adds four production deltas: shared search-term validation and one retrieval algorithm for each service.</p>
+          <p>The technical package makes this cumulative history visible. It contains the unchanged original CS 320 source, the Week 3 design baseline, the Week 4 algorithm-enhanced source, a focused Week 3-to-4 diff, documentation, and executable evidence. This prevents the earlier design work from being counted again as though it were a new algorithm enhancement.</p>
+
+          <h2 id="decision">Data-structure decision</h2>
+          <p><code>HashMap</code> remains the backing structure because the primary service operations address records by unique identifier. Under normal hash distribution, add, find, update, and delete by ID have expected <code>O(1)</code> behavior. Replacing the map solely to obtain display order would move ordering cost into every mutation and would not solve arbitrary substring search.</p>
+          <p>Each broader query instead traverses the values, filters the matches, copies each result, sorts only the matches, and returns an unmodifiable list. The design has one source of truth and keeps ordering specific to the caller's need. Secondary indexes remain a reasonable future choice only if data volume and profiling justify their update and memory costs.</p>
+
+          <h2 id="algorithms">Completed algorithms</h2>
+          <div class="chapter-table"><table><thead><tr><th>Service</th><th>New operation</th><th>Deterministic order</th></tr></thead><tbody>
+            <tr><td>Contacts</td><td>Case-insensitive last-name substring search</td><td>Last name, first name, contact ID</td></tr>
+            <tr><td>Tasks</td><td>Case-insensitive keyword search across name and description</td><td>Task name, task ID</td></tr>
+            <tr><td>Appointments</td><td>Inclusive start/end date-range filtering</td><td>Appointment date, appointment ID</td></tr>
+          </tbody></table></div>
+
+          <h3>Before and after: contact retrieval</h3>
+          <div class="comparison">
+            <section class="code-panel"><h3>Week 3 baseline</h3><pre><code>public Optional&lt;Contact&gt; findById(
+        String identifier) {
+    String normalized = Validation.identifier(
+        identifier, "Contact ID");
+    return Optional.ofNullable(
+        contacts.get(normalized))
+        .map(Contact::new);
+}
+
+// No cross-record contact search.</code></pre></section>
+            <section class="code-panel"><h3>Week 4 enhancement</h3><pre><code>public List&lt;Contact&gt; searchByLastName(
+        String query) {
+    String normalized = Validation.searchTerm(
+        query, "Last-name search")
+        .toLowerCase(Locale.ROOT);
+    return contacts.values().stream()
+        .filter(contact -&gt; contact.getLastName()
+            .toLowerCase(Locale.ROOT)
+            .contains(normalized))
+        .map(Contact::new)
+        .sorted(SEARCH_ORDER)
+        .toList();
+}</code></pre></section>
+          </div>
+          <p>The algorithm does not depend on map iteration order. It normalizes the query once, matches without locale-sensitive case errors, copies results before returning them, and establishes a complete comparator chain so equal last names still have a predictable order.</p>
+
+          <h3>Inclusive appointment range</h3>
+          <div class="code-panel"><h3>Category Two implementation</h3><pre><code>public List&lt;Appointment&gt; findByDateRange(
+        Date startInclusive, Date endInclusive) {
+    if (startInclusive == null || endInclusive == null) {
+        throw new IllegalArgumentException(
+            "Start and end dates are required.");
+    }
+    long startMillis = startInclusive.getTime();
+    long endMillis = endInclusive.getTime();
+    if (startMillis &gt; endMillis) {
+        throw new IllegalArgumentException(
+            "Start date cannot be after end date.");
+    }
+
+    return appointments.values().stream()
+        .filter(item -&gt; item.getAppointmentTimeMillis()
+                &gt;= startMillis
+            &amp;&amp; item.getAppointmentTimeMillis()
+                &lt;= endMillis)
+        .map(Appointment::new)
+        .sorted(DATE_ORDER)
+        .toList();
+}</code></pre></div>
+          <p>The method reads each range bound into an immutable primitive timestamp, rejects an inverted interval, includes appointments on either boundary, copies every matching model, and orders equal dates by identifier. A no-match query returns an empty unmodifiable list, not <code>null</code>.</p>
+
+          <h2 id="complexity">Complexity and trade-offs</h2>
+          <div class="chapter-table"><table><thead><tr><th>Operation</th><th>Expected time</th><th>Additional result space</th></tr></thead><tbody>
+            <tr><td>Exact-ID map access</td><td><code>O(1)</code> expected</td><td><code>O(1)</code></td></tr>
+            <tr><td>Contact last-name search</td><td><code>O(c + n + m log m)</code></td><td><code>O(m)</code></td></tr>
+            <tr><td>Task keyword search</td><td><code>O(c + n + m log m)</code></td><td><code>O(m)</code></td></tr>
+            <tr><td>Appointment date range</td><td><code>O(c + n + m log m)</code></td><td><code>O(m)</code></td></tr>
+          </tbody></table></div>
+          <p>Here, <code>c</code> is current map capacity, <code>n</code> is stored records, and <code>m</code> is matches. A no-match search still traverses the map but creates no snapshots and sorts an empty result. A query matching every record reaches <code>O(c + n log n)</code> time with <code>O(n)</code> result space. Filtering before sorting avoids comparisons for nonmatching records.</p>
+          <p>The final performance pass preserves those bounds while reducing temporary allocation. Comparator chains are reusable class constants; Java 17's <code>Stream.toList()</code> already returns an unmodifiable result, so the methods do not copy the completed list a second time; and appointment filtering and sorting use primitive timestamps instead of repeatedly allocating defensive <code>Date</code> copies. The defensive copy of every returned model remains in place.</p>
+          <p>A <code>TreeMap</code> keyed by last name would not make arbitrary substring matching constant time. An inverted task index would need tokenization and synchronization rules. A date index could locate a range more directly but would add duplicate-key and rescheduling maintenance. Those are appropriate alternatives only when an observed workload justifies their extra invariants.</p>
+
+          <h2 id="verification">Verification</h2>
+          <p>Six JUnit methods were added to the Category One suite, increasing the cumulative project from 97 to 103 test methods. They cover mixed-case matching, text found in task descriptions, blank-query rejection, inclusive date boundaries, inverted-range rejection, no-match behavior, deterministic order, result-list immutability, and defensive copies.</p>
+          <div class="status-note success"><p><strong>Executed evidence:</strong> the focused verifier completed 19 of 19 checks successfully. The package includes the exact Week 3-to-4 diff and keeps the original, baseline, and enhanced projects separately reviewable.</p></div>
+
+          <h2 id="reflection">Reflection</h2>
+          <p>The main correction to my earlier thinking was separating map lookup from map traversal. Saying “the service uses a <code>HashMap</code>, so access is constant time” is only accurate for identifier operations. Search across values is linear before sorting costs are considered. Writing the bounds forced me to connect each claim to the actual code path.</p>
+          <p>Deterministic order also became part of correctness. A collection can contain the right matches and still produce an unstable interface or a flaky test if equal primary fields have no tie-breaker. The final comparators continue until the immutable identifier, so the result contract is complete.</p>
+          <p>Finally, immutability required two decisions. <code>Stream.toList()</code> prevents structural changes to the returned list, but it does not protect mutable objects inside that list. Copying each model before sorting and returning it is what prevents a caller from using a result element to alter service state.</p>
+
+          <h2 id="outcomes">Skills and outcome alignment</h2>
+          <ul>
+            <li><strong>Outcome 3:</strong> this is the primary evidence: structure selection, traversal, filtering, comparator chains, complexity, result space, and alternative-index trade-offs.</li>
+            <li><strong>Outcome 4:</strong> Java streams, comparators, defensive models, executable tests, and documented bounds deliver useful retrieval behavior.</li>
+            <li><strong>Outcome 5:</strong> validated search criteria, immutable results, defensive copies, and explicit failure cases reduce misuse.</li>
+            <li><strong>Outcomes 1 and 2:</strong> the isolated cumulative delta, readable contracts, complexity document, and exact evidence make the decision reviewable by other developers and explainable to nontechnical stakeholders.</li>
+          </ul>
+          <a class="text-link" href="databases.html">Continue to Category Three: Databases <span aria-hidden="true">→</span></a>
+        </article>
+        <aside class="side-nav" aria-label="On this page"><strong>On this page</strong><a href="#artifact">Artifact boundary</a><a href="#decision">Structure decision</a><a href="#algorithms">Completed algorithms</a><a href="#complexity">Complexity</a><a href="#verification">Verification</a><a href="#reflection">Reflection</a><a href="#outcomes">Outcome alignment</a></aside>
+      </div>
+    </section>
+  </main>
+  <footer><div class="shell footer-inner"><p><strong>Madison Parker</strong><br>CS 499 Category Two<br><small>Algorithms and Data Structures</small></p><p><a href="software-design.html">Previous category</a><br><a href="databases.html">Next category</a></p></div></footer>
+</body>
+</html>
