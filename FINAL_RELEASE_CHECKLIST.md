@@ -15,11 +15,15 @@
 - [x] Word formatting and metadata are audited.
 - [x] Internal site links and archive contents are validated.
 - [x] Final rubric traceability is included.
+- [x] Static GitHub Pages deployment workflow is included.
+- [x] Exact Brightspace handoff identifies every required file and the one remaining media dependency.
 
 ## Required Before Brightspace Submission
 
 - [ ] Record and upload the code-review video.
 - [ ] Test the uploaded video from a downloaded copy or signed-out browser.
 - [ ] Add the final video link or file to `code-review.html`.
-- [ ] Verify the published GitHub Pages URL after repository publication.
+- [ ] Verify the published GitHub Pages URL after the first successful deployment workflow.
 - [ ] Submit the GitHub Pages URL, video URL/file, technical ZIPs, narratives, and professional self-assessment in Brightspace.
+
+See [FINAL_SUBMISSION_HANDOFF.md](FINAL_SUBMISSION_HANDOFF.md) for direct links and the final submission note.

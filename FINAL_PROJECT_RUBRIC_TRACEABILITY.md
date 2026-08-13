@@ -22,14 +22,16 @@ This file maps the final CS 499 critical elements to the exact portfolio locatio
 | Artifact description and creation date | Complete | Each category page and narrative identifies the artifact, original course, and May/June 2026 creation date |
 | Justification and specific enhancement skills | Complete | Category pages and narratives tie each selected artifact to source-level changes and verification |
 | Enhancement process, challenges, feedback, and improvements | Complete | Reflection sections in all narratives/pages; database narrative explicitly addresses packaging feedback and final security findings |
-| Outcome alignment: fully/partially met and not overclaimed | Complete | Each narrative and category page maps outcomes; crosswalk states collaboration limits and evidence scope |
+| Outcome alignment: fully/partially met without overstating evidence | Complete | Each narrative and category page maps outcomes; crosswalk states collaboration limits and evidence scope |
 | All five outcomes cumulatively demonstrated | Complete | `outcomes.html`, `OUTCOME_CROSSWALK.md`, self-assessment, code review, and category evidence |
 | UI/UX makes originals, enhancements, and narratives easy to find | Complete | Dedicated responsive pages, global navigation, artifact download cards, before/after code, side navigation, accessible labels, and mobile layout |
 | Technical artifacts submitted as files | Complete | Category ZIPs are retained and rebuilt from final extracted contents |
 | Word narratives and self-assessment | Complete | Four DOCX files; final database narrative and self-assessment use Times New Roman 12, double spacing, and one-inch margins throughout |
-| GitHub Pages URL | Publication step | Target: `https://cuthluwu.github.io/CS499-ePortfolio/`; verify after repository publication |
+| GitHub Pages URL | Deployment automation included | Static Pages workflow publishes `main`; verify `https://cuthluwu.github.io/CS499-ePortfolio/` after the first successful run |
 
 ## Final Brightspace Submission Set
+
+Use [FINAL_SUBMISSION_HANDOFF.md](FINAL_SUBMISSION_HANDOFF.md) for the exact linked files, final checks, and paste-ready Brightspace note.
 
 1. GitHub Pages URL.
 2. Code-review video URL or playable file.

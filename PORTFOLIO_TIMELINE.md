@@ -13,6 +13,7 @@ This timeline separates original coursework, capstone enhancements, and final pu
 | Week 5 databases | August 1, 2026 | Schema, ownership, migration, password verification, reporting, and query enhancement | `Week-5_Databases/` |
 | Week 6 publication and technology | August 3, 2026 | Algorithms publication and future Bluetooth/behavior-feedback evaluation | `Week-6_Algorithms-Publication-and-Technology/` |
 | Week 7 final portfolio | August 9, 2026 | Professional self-assessment, final web presentation, database security polish, traceability, and release QA | `Week-7_Final-ePortfolio-and-Self-Assessment/` |
+| Final publication QA | August 13, 2026 | Official-rubric reconciliation, spelling and wording audit, responsive review, submission handoff, and Pages deployment automation | Website, root review guides, and `.github/workflows/deploy-pages.yml` |
 
 ## Final Database Revision
 
