@@ -27,7 +27,7 @@ This file maps the final CS 499 critical elements to the exact portfolio locatio
 | UI/UX makes originals, enhancements, and narratives easy to find | Complete | Dedicated responsive pages, global navigation, artifact download cards, before/after code, side navigation, accessible labels, and mobile layout |
 | Technical artifacts submitted as files | Complete | Category ZIPs are retained and rebuilt from final extracted contents |
 | Word narratives and self-assessment | Complete | Four DOCX files; final database narrative and self-assessment use Times New Roman 12, double spacing, and one-inch margins throughout |
-| GitHub Pages URL | One-time repository setting required | Static workflow is included; set **Settings → Pages → Source** to **GitHub Actions**, rerun it, and verify `https://cuthluwu.github.io/CS499-ePortfolio/` |
+| GitHub Pages URL | Complete | Static workflow deployed successfully; `https://cuthluwu.github.io/CS499-ePortfolio/` was verified over HTTPS on August 13, 2026 |
 
 ## Final Brightspace Submission Set
 

@@ -57,7 +57,7 @@ The complete narration script and exact chapter plan are present. No playable vi
 
 ## GitHub Pages Publication
 
-The repository includes a static Pages deployment workflow at `.github/workflows/deploy-pages.yml`. GitHub requires the repository owner to enable Pages once: open **Settings → Pages** and set **Source** to **GitHub Actions**. Then rerun **Deploy static ePortfolio to GitHub Pages** from the Actions tab. Future changes to `main` deploy automatically. Verify the site URL in a signed-out browser before submitting it.
+The repository includes a static Pages deployment workflow at `.github/workflows/deploy-pages.yml`. Pages uses **GitHub Actions** as its source, and changes to `main` deploy automatically. The public site and final-submission page were verified over HTTPS on August 13, 2026.
 
 ## Repository Structure
 
