@@ -13,7 +13,6 @@ This timeline separates original coursework, capstone enhancements, and final pu
 | Week 5 databases | August 1, 2026 | Schema, ownership, migration, password verification, reporting, and query enhancement | `Week-5_Databases/` |
 | Week 6 publication and technology | August 3, 2026 | Algorithms publication and future Bluetooth/behavior-feedback evaluation | `Week-6_Algorithms-Publication-and-Technology/` |
 | Week 7 final portfolio | August 9, 2026 | Professional self-assessment, final web presentation, database security polish, traceability, and release QA | `Week-7_Final-ePortfolio-and-Self-Assessment/` |
-| Final publication QA | August 13, 2026 | Rubric check, wording edit, responsive review, final file page, and Pages deployment | Website, root review files, and `.github/workflows/deploy-pages.yml` |
 
 ## Final Database Revision
 
@@ -24,4 +23,4 @@ The August 9 final pass did not modify the original CS 360 artifact. It hardened
 - Category One and Category Two use the same original CS 320 artifact but isolate different enhancement claims and source deltas.
 - Week 6 does not invent a fourth technical artifact. Bluetooth synchronization and adaptive feedback remain proposed future work.
 - Commercial scale material establishes an automatic-sync and personalized-display precedent; it does not prove direct vendor interoperability or the exact proposed green/red logic.
-- I did not record the code-review video. The complete script is present, but there is no playable video or public link.
+- The code-review recording is not represented as complete. The script is present; a playable video or public URL must still be added before final submission.

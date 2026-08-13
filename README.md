@@ -1,12 +1,11 @@
 # Madison Parker — CS 499 Computer Science Capstone ePortfolio
 
-This is my final CS 499 ePortfolio. The self-assessment comes first, followed by the written code review, the original and revised artifacts, the three narratives, the program outcomes, and the checks I ran.
+This is the final CS 499 ePortfolio for Madison Parker. It presents the professional self-assessment first, then the code-review materials, original and enhanced artifacts, category narratives, outcome synthesis, and verification evidence.
 
 **Portfolio site:** [https://cuthluwu.github.io/CS499-ePortfolio/](https://cuthluwu.github.io/CS499-ePortfolio/)  
 **Professional self-assessment:** [Read the HTML version](self-assessment.html)  
 **Code review:** [Review the script, chapters, and recording status](code-review.html)  
-**Program outcomes:** [See where I addressed the five outcomes](outcomes.html)  
-**Final project files:** [Open the file list](FINAL_SUBMISSION_HANDOFF.md)
+**Program outcomes:** [Open the five-outcome synthesis](outcomes.html)
 
 ## Final Review Order
 
@@ -16,10 +15,9 @@ This is my final CS 499 ePortfolio. The self-assessment comes first, followed by
 4. [Algorithms and Data Structures](algorithms.html)
 5. [Databases](databases.html)
 6. [Five Program Outcomes](outcomes.html)
-7. [Final Project Rubric Checklist](FINAL_PROJECT_RUBRIC_TRACEABILITY.md)
-8. [Final Project Files](FINAL_SUBMISSION_HANDOFF.md)
+7. [Final Project Rubric Traceability](FINAL_PROJECT_RUBRIC_TRACEABILITY.md)
 
-The website explains each project and shows before-and-after code. The Word narratives and artifact ZIPs are also available as downloads.
+The website pages contain the substantive explanation and before/after evidence. The Word narratives and artifact ZIPs remain available as formal submission downloads rather than serving as the only interface.
 
 ## Portfolio Components
 
@@ -31,7 +29,7 @@ The website explains each project and shows before-and-after code. The Word narr
 | Week 4 | July 20, 2026 | Algorithms and Data Structures | Original, Week 3 baseline, isolated Week 4 delta, narrative, 103 cumulative JUnit methods, and 19/19 focused checks |
 | Week 5 | August 1, 2026; final revision August 9 | Databases | Original and enhanced CS 360 Weight Tracker, revised narrative, 46/46 SQLite checks, and 36/36 Java checks |
 | Week 6 | August 3, 2026 | Algorithms publication and disruptive-technology journal | Published algorithm evidence plus a researched future Bluetooth and behavior-aware feedback roadmap |
-| Week 7 | August 9, 2026; publication QA August 13 | Final ePortfolio and professional self-assessment | Self-assessment, final website, program outcome page, rubric checklist, Pages automation, and final link checks |
+| Week 7 | August 9, 2026 | Final ePortfolio and professional self-assessment | Self-assessment, final website, outcome synthesis, rubric traceability, and release verification |
 
 The original CS 320 service suite was created May 25, 2026. The original CS 360 Weight Tracker was created June 22, 2026. Those dates remain separate from the later CS 499 enhancement and publication dates.
 
@@ -53,11 +51,7 @@ The three focused verifier paths record 127 passing checks. Dependency-based JUn
 
 ## Code-Review Recording Status
 
-I completed the narration script and chapter plan, but I did not record the video. There is no playable video file or public video link in this repository. The rubric requires the recording, so that part of the final project is incomplete.
-
-## GitHub Pages Publication
-
-The repository includes a static Pages deployment workflow at `.github/workflows/deploy-pages.yml`. Pages uses **GitHub Actions** as its source, and changes to `main` deploy automatically. The public site and final-submission page were verified over HTTPS on August 13, 2026.
+The complete narration script and exact chapter plan are present. No playable video file or public video URL was included in the supplied materials. The final Brightspace submission still requires the recorded review. Record at 1080p, export a standard H.264 MP4, upload it, download or open the uploaded copy in a signed-out browser, verify source readability and audio, then add the final link to `code-review.html` and the Brightspace submission.
 
 ## Repository Structure
 
@@ -80,8 +74,7 @@ CS499-ePortfolio/
 ├── Week-7_Final-ePortfolio-and-Self-Assessment/
 ├── OUTCOME_CROSSWALK.md
 ├── PORTFOLIO_TIMELINE.md
-├── FINAL_PROJECT_RUBRIC_TRACEABILITY.md
-└── FINAL_SUBMISSION_HANDOFF.md
+└── FINAL_PROJECT_RUBRIC_TRACEABILITY.md
 ```
 
 ## Author

@@ -36,7 +36,7 @@
           <div class="chapter-table"><table><thead><tr><th>Design area</th><th>Original condition</th><th>Completed change</th></tr></thead><tbody>
             <tr><td>Structure</td><td>Three default-package folders</td><td>One Java 17/Maven project with model, service, validation, repository, and exception packages</td></tr>
             <tr><td>Validation</td><td>Repeated limits and null checks</td><td>Named model constants and one shared validation boundary</td></tr>
-            <tr><td>Service policy</td><td>Null lookups and general exceptions</td><td><code>Optional</code> for ordinary absence; specific duplicate and missing-record exceptions for commands</td></tr>
+            <tr><td>Service policy</td><td>Null lookups and general exceptions</td><td><code>Optional</code> for nonexceptional lookup; specific duplicate and missing-record exceptions for commands</td></tr>
             <tr><td>State ownership</td><td>Stored and returned caller-owned references</td><td>Copies on input and snapshot copies on output</td></tr>
             <tr><td>Updates</td><td>Direct mutation with partial-failure risk</td><td>Copy, validate, then replace only after the full change succeeds</td></tr>
             <tr><td>Time</td><td>Moving system time inside validation</td><td>Injectable <code>Clock</code> with the original constructor preserved</td></tr>

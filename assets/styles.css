@@ -234,18 +234,6 @@ th, td { padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.16); text-al
 th { color: #c8e6f8; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
 tbody tr:last-child td { border-bottom: 0; }
 
-.final-handoff { border-top: 1px solid var(--line); background: #f8fafc; }
-.readiness-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 2.25rem; }
-.readiness-card { padding: 2rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 8px 26px rgba(16,43,78,0.055); }
-.readiness-card h3 { margin-top: 1rem; }
-.readiness-card p, .readiness-card li { color: var(--muted); }
-.readiness-card ul { margin: 1rem 0 0; padding-left: 1.25rem; }
-.readiness-card li + li { margin-top: 0.45rem; }
-.pending-card { border-color: #e7bd82; background: linear-gradient(150deg, #ffffff 30%, #fffaf1 100%); }
-.status-badge { display: inline-flex; padding: 0.34rem 0.65rem; border-radius: 999px; font-size: 0.76rem; font-weight: 850; letter-spacing: 0.06em; text-transform: uppercase; }
-.status-badge.complete { color: #154c39; background: var(--success-soft); }
-.status-badge.pending { color: #6d3905; background: var(--warning-soft); }
-
 footer { padding: 2.7rem 0; border-top: 1px solid var(--line); background: var(--soft); }
 .footer-inner { display: flex; justify-content: space-between; align-items: end; gap: 2rem; }
 .footer-inner p { margin: 0; color: var(--muted); }
@@ -255,7 +243,7 @@ footer { padding: 2.7rem 0; border-top: 1px solid var(--line); background: var(-
   .header-inner { padding: 0.65rem 0; flex-wrap: wrap; gap: 0.65rem; }
   nav { width: 100%; gap: 1rem; padding-bottom: 0.2rem; overflow-x: auto; white-space: nowrap; }
   .hero { padding: 5.5rem 0 4.5rem; }
-  .hero-grid, .split, .evidence-grid, .feature-layout, .content-layout, .readiness-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .hero-grid, .split, .evidence-grid, .feature-layout, .content-layout { grid-template-columns: 1fr; gap: 2.5rem; }
   .summary-panel { max-width: 520px; }
   .card-grid, .card-grid.three { grid-template-columns: 1fr; }
   .review-path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -295,5 +283,5 @@ footer { padding: 2.7rem 0; border-top: 1px solid var(--line); background: var(-
   .hero, .evidence { color: #000; background: #fff; }
   .hero-copy, .evidence-grid > div:first-child p:last-child { color: #333; }
   .section, .hero { padding: 2rem 0; }
-  .card, .readiness-card { box-shadow: none; break-inside: avoid; }
+  .card { box-shadow: none; break-inside: avoid; }
 }
