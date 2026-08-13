@@ -6,7 +6,7 @@ For the responsive portfolio version, open [Final Submission Handoff](submission
 
 ## Required Brightspace submission
 
-- [ ] **GitHub Pages URL:** [Madison Parker CS 499 ePortfolio](https://cuthluwu.github.io/CS499-ePortfolio/). Open it in a signed-out browser after the deployment workflow finishes.
+- [ ] **GitHub Pages URL:** in the repository, open **Settings → Pages** and set **Source** to **GitHub Actions** once. Then rerun **Deploy static ePortfolio to GitHub Pages** from the Actions tab and open [Madison Parker CS 499 ePortfolio](https://cuthluwu.github.io/CS499-ePortfolio/) in a signed-out browser.
 - [ ] **Playable code-review video:** record from the [35-minute narration script](Week-2_Code-Review/Madison_Parker_CS499_Code_Review_Script.docx), upload it, test playback, and add the final URL to [code-review.html](code-review.html).
 - [x] **Software Design and Engineering:** [artifact ZIP](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Artifact.zip) and [narrative DOCX](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx).
 - [x] **Algorithms and Data Structures:** [artifact ZIP](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip) and [narrative DOCX](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx).

@@ -23,7 +23,8 @@
 - [ ] Record and upload the code-review video.
 - [ ] Test the uploaded video from a downloaded copy or signed-out browser.
 - [ ] Add the final video link or file to `code-review.html`.
-- [ ] Verify the published GitHub Pages URL after the first successful deployment workflow.
+- [ ] In repository **Settings → Pages**, set **Source** to **GitHub Actions** once, then rerun the Pages workflow.
+- [ ] Verify the published GitHub Pages URL in a signed-out browser after the successful workflow.
 - [ ] Submit the GitHub Pages URL, video URL/file, technical ZIPs, narratives, and professional self-assessment in Brightspace.
 
 See [FINAL_SUBMISSION_HANDOFF.md](FINAL_SUBMISSION_HANDOFF.md) for direct links and the final submission note.

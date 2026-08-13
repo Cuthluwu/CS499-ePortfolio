@@ -57,7 +57,7 @@ The complete narration script and exact chapter plan are present. No playable vi
 
 ## GitHub Pages Publication
 
-The repository includes a static Pages deployment workflow at `.github/workflows/deploy-pages.yml`. It publishes the repository root whenever `main` changes and can also be started manually. The first run attempts to enable Pages for the repository. After publication, verify the site URL in a signed-out browser before submitting it.
+The repository includes a static Pages deployment workflow at `.github/workflows/deploy-pages.yml`. GitHub requires the repository owner to enable Pages once: open **Settings → Pages** and set **Source** to **GitHub Actions**. Then rerun **Deploy static ePortfolio to GitHub Pages** from the Actions tab. Future changes to `main` deploy automatically. Verify the site URL in a signed-out browser before submitting it.
 
 ## Repository Structure
 
