@@ -2,7 +2,7 @@
 
 ## Artifact decision
 
-Module One selected the CS 250 SNHU Travel planning materials for Category One. During the code review, the planning materials proved useful for stakeholder context but did not contain enough source code for a meaningful code walkthrough. The Category One enhancement therefore uses the CS 320 contact, task, and appointment service suite as the multifaceted code artifact. CS 250 remains evidence of Agile planning, requirements, and audience awareness. This refinement is stated in the code-review script instead of being hidden.
+Module One selected the CS 250 SNHU Travel planning materials for Category One. During the code review, the planning materials proved useful for stakeholder context but did not contain enough source code for a meaningful code walkthrough. The Category One enhancement therefore uses the CS 320 contact, task, and appointment service suite. CS 250 remains evidence of Agile planning, requirements, and audience awareness. I recorded this change in the code-review script instead of hiding it.
 
 ## Before and after
 

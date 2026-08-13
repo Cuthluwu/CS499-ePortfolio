@@ -1,5 +1,5 @@
 # Week 7: Final ePortfolio and Professional Self-Assessment
 
-This folder contains the final professional self-assessment, dated August 9, 2026. The self-assessment is presented first on the ePortfolio website and serves as a holistic introduction to Madison Parker's professional direction, program skills, artifact evidence, and five-outcome alignment.
+This folder contains my final professional self-assessment, dated August 9, 2026. It appears first on the ePortfolio website and explains my professional direction, what I learned in the program, how the three artifacts connect, and where I addressed the five outcomes.
 
-The final website also adds dedicated HTML pages for the code review, each required enhancement category, and the program outcomes. These pages make the written analysis and before/after evidence usable in the browser instead of presenting only a list of downloads.
+The website also has separate pages for the written code review, each required enhancement category, and the program outcomes. The main explanations and before-and-after examples can be read in the browser without opening the Word files first.

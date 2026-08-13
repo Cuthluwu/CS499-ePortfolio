@@ -1,8 +1,8 @@
 # CS 499 Program Outcome Crosswalk
 
-This crosswalk connects the five Computer Science program outcomes to implemented behavior, design reasoning, and reviewable evidence. The complete reader-facing synthesis is available at [outcomes.html](outcomes.html).
+This file lists the work I used for each Computer Science program outcome. The easier-to-read version is available at [outcomes.html](outcomes.html).
 
-| Program outcome | Concrete evidence | Primary locations |
+| Program outcome | What I used | Primary locations |
 | --- | --- | --- |
 | **1. Collaborative environments and decision support** | CS 250 Agile context, user stories, acceptance criteria, transparent scope refinement, unchanged baselines, conventional project structure, repository contracts, decision logs, read-first guides, enhancement maps, and reproducible checks create a shared basis for review. Individual completion is stated honestly rather than described as a production team project. | [Self-assessment](self-assessment.html); Week 1 plan/refinement; Week 3 and Week 5 decision/evidence maps |
 | **2. Professional oral, written, and visual communication** | The website presents substantive before/after evidence without requiring downloads. Narratives explain limitation, exact change, rationale, trade-off, verification, feedback response, and remaining limitation. CS 465 and DAT 205 examples show audience and stakeholder adaptation outside the portfolio artifacts. The code-review script provides a complete 35-minute oral plan; the recording remains pending. | [Self-assessment](self-assessment.html); [code review](code-review.html); three category pages and DOCX narratives; Week 6 journal |

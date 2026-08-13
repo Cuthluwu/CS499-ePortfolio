@@ -1,14 +1,14 @@
-# Final Project Rubric Traceability
+# Final Project Rubric Checklist
 
-This file maps the final CS 499 critical elements to the exact portfolio location. It is a review aid; the website remains the primary ePortfolio interface.
+This checklist shows where I addressed each part of the CS 499 final project. The website is the main portfolio.
 
 | Rubric critical element | Status | Final evidence |
 | --- | --- | --- |
 | Professional self-assessment appears first | Complete | Home page hero leads directly to the Week 7 self-assessment; full HTML at `self-assessment.html`; formatted DOCX in Week 7 |
 | Strengths, goals, values, and employability | Complete | Self-assessment: “Professional Identity, Strengths, and Direction” and “Employability and Next Development Goals” |
 | Examples outside final artifacts | Complete | Self-assessment examples from CS 250 Scrum practice, CS 465 Travlr Getaways architecture/audiences, and DAT 205 Two Sisters donor analysis |
-| Team/collaborative environment | Complete | Self-assessment collaboration section; Outcome 1 synthesis; transparent statement that artifacts were individually completed |
-| Stakeholder communication | Complete | CS 465 public-customer/admin example, DAT 205 scope/privacy example, layered website/narrative strategy |
+| Team/collaborative environment | Complete | Self-assessment collaboration section; Outcome 1 page; clear statement that I completed the artifacts independently |
+| Stakeholder communication | Complete | CS 465 public-customer/admin example, DAT 205 scope/privacy example, website pages, and narratives |
 | Data structures and algorithms | Complete | `algorithms.html`, Week 4 narrative, complexity analysis, Week 3-to-4 diff, 19-check verifier |
 | Software engineering and databases | Complete | `software-design.html`, `databases.html`, enhanced source, narratives, schema/migration/query documentation |
 | Security | Complete | Defensive copies, explicit validation/failure policy, PBKDF2, bounded verifier metadata, ownership-scoped CRUD, constraints, migration audit, documented residual risks |
@@ -17,7 +17,7 @@ This file maps the final CS 499 critical elements to the exact portfolio locatio
 | Code review: structure, logic, efficiency, security, testing, comments/docs | Complete in script/page | Six review criteria and 17 timed chapters |
 | Code review: planned enhancements | Complete in script/page | Category-specific plan on `code-review.html` and full narration script |
 | Code review: skills and five outcomes | Complete in script/page | Code review conclusion and `outcomes.html` |
-| Playable code-review video | **Pending external media** | No video file or public URL was supplied. Record, upload, test, and add the link before Brightspace submission. |
+| Playable code-review video | **Missing** | I did not record the video. The 35-minute script is included, but there is no video file or public link. |
 | Original and enhanced artifacts | Complete | Week 3, Week 4, and Week 5 ZIPs plus extracted browser-review folders; originals remain separate and integrity records are included |
 | Artifact description and creation date | Complete | Each category page and narrative identifies the artifact, original course, and May/June 2026 creation date |
 | Justification and specific enhancement skills | Complete | Category pages and narratives tie each selected artifact to source-level changes and verification |
@@ -31,7 +31,7 @@ This file maps the final CS 499 critical elements to the exact portfolio locatio
 
 ## Final Brightspace Submission Set
 
-Use [FINAL_SUBMISSION_HANDOFF.md](FINAL_SUBMISSION_HANDOFF.md) for the exact linked files, final checks, and paste-ready Brightspace note.
+Use [FINAL_SUBMISSION_HANDOFF.md](FINAL_SUBMISSION_HANDOFF.md) for the direct file links.
 
 1. GitHub Pages URL.
 2. Code-review video URL or playable file.

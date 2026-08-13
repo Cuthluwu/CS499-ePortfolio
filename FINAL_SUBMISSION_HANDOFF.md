@@ -1,55 +1,39 @@
-# CS 499 Final Submission Handoff
+# CS 499 Final Project Files
 
-This is the exact handoff for the 700-point final. The academic work and portfolio evidence are complete. One required item still depends on Madison: the narrated code-review recording.
+I made this page to keep the final links and downloads in one place. My GitHub Pages site is live, and the three artifact packages, three narratives, and professional self-assessment are finished.
 
-For the responsive portfolio version, open [Final Submission Handoff](submission.html).
+I did not record the code-review video. The complete 35-minute script is included, but there is no video file or public video link. The rubric requires the recording, so I am leaving that item marked missing.
 
-## Required Brightspace submission
+The formatted version of this page is available at [Final Project Files](submission.html).
 
-- [x] **GitHub Pages URL:** [Madison Parker CS 499 ePortfolio](https://cuthluwu.github.io/CS499-ePortfolio/) was deployed through GitHub Actions and verified over HTTPS on August 13, 2026.
-- [ ] **Playable code-review video:** record from the [35-minute narration script](Week-2_Code-Review/Madison_Parker_CS499_Code_Review_Script.docx), upload it, test playback, and add the final URL to [code-review.html](code-review.html).
-- [x] **Software Design and Engineering:** [artifact ZIP](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Artifact.zip) and [narrative DOCX](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx).
-- [x] **Algorithms and Data Structures:** [artifact ZIP](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip) and [narrative DOCX](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx).
-- [x] **Databases:** [artifact ZIP](Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Artifact.zip) and [final narrative DOCX](Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Narrative.docx).
-- [x] **Professional self-assessment:** [final DOCX](Week-7_Final-ePortfolio-and-Self-Assessment/Madison_Parker_CS499_Professional_Self_Assessment.docx). It is also presented first in the [web portfolio](self-assessment.html).
+## Files
 
-Keep the Week 1 planning material and Week 6 journal in the repository as supporting context. Upload them separately only if the Brightspace instructions or instructor specifically request them.
+- [x] [GitHub Pages ePortfolio](https://cuthluwu.github.io/CS499-ePortfolio/)
+- [ ] Code-review video: **not recorded**
+- [x] [Code-review script](Week-2_Code-Review/Madison_Parker_CS499_Code_Review_Script.docx)
+- [x] Software Design and Engineering: [artifact ZIP](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Artifact.zip) and [narrative DOCX](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx)
+- [x] Algorithms and Data Structures: [artifact ZIP](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip) and [narrative DOCX](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx)
+- [x] Databases: [artifact ZIP](Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Artifact.zip) and [narrative DOCX](Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Narrative.docx)
+- [x] [Professional self-assessment DOCX](Week-7_Final-ePortfolio-and-Self-Assessment/Madison_Parker_CS499_Professional_Self_Assessment.docx)
 
-## Five-outcome readiness
+The self-assessment appears first on the website. Each category page includes the original code, my revised code, the narrative, examples of what changed, and the checks I ran. The [program outcomes page](outcomes.html) explains where I addressed all five outcomes.
 
-| Program outcome | Submission evidence | Readiness |
-| --- | --- | --- |
-| 1. Collaborative environments | CS 250 Agile context, scope refinement, read-first guides, decision logs, traceability, and repeatable checks | Complete |
-| 2. Professional communication | Full self-assessment, three narratives, seven-page visual portfolio, and timed code-review script | **Recording still required** |
-| 3. Algorithms and data structures | Retrieval contracts, comparator chains, immutable results, complexity analysis, index trade-offs, and 19 focused checks | Complete |
-| 4. Techniques, skills, and tools | Java 17, Maven, Android, SQLite, migration, PBKDF2, verification scripts, and 127 focused checks | Complete |
-| 5. Security mindset | Validation, defensive copying, ownership-scoped CRUD, credential protection, constraints, migration audit, and residual-risk analysis | Complete |
+## Checks I ran
 
-The detailed evidence map is in [FINAL_PROJECT_RUBRIC_TRACEABILITY.md](FINAL_PROJECT_RUBRIC_TRACEABILITY.md) and the reader-facing synthesis is in [outcomes.html](outcomes.html).
+| Category | Result |
+| --- | --- |
+| Software Design and Engineering | 26 of 26 checks passed |
+| Algorithms and Data Structures | 19 of 19 checks passed |
+| Databases | 46 of 46 SQLite checks and 36 of 36 Java checks passed |
 
-## Ten-minute final check
+That is 127 focused checks across the three categories. The repository also includes JUnit and Android instrumentation tests. I did not build an Android APK during the final preparation pass, and the Week 6 Bluetooth-scale idea is future work, not a finished feature.
 
-1. Open the GitHub Pages URL in a signed-out browser and confirm the self-assessment is the first portfolio component.
-2. Play the code-review video from the beginning, middle, and final minute. Confirm narration volume, source readability, seek controls, and total duration.
-3. Open each of the six required ZIP/DOCX links above from the published site.
-4. Check the home page and artifact pages at desktop and phone width. Confirm that navigation, tables, code panels, and download cards remain readable.
-5. Paste the Pages and video URLs into Brightspace. Upload the three artifact ZIPs, three narrative DOCX files, and professional self-assessment if the submission form provides separate upload fields.
+## Brightspace
 
-## Paste-ready Brightspace note
+The main link is:
 
 ```text
-Final CS 499 ePortfolio:
 https://cuthluwu.github.io/CS499-ePortfolio/
-
-Code-review video:
-[PASTE THE TESTED VIDEO URL HERE]
-
-The portfolio presents the professional self-assessment first, followed by the code review, original and enhanced artifacts, category narratives, verification evidence, and a crosswalk for all five Computer Science program outcomes.
 ```
 
-## Evidence boundaries
-
-- The portfolio reports 127 focused executable checks: 26 software-design, 19 algorithm, 46 SQLite, and 36 Java security/validation checks.
-- Included JUnit and Android instrumentation tests are identified separately from the checks executed in the final preparation environment.
-- The portfolio does not claim a completed Android APK build or physical Bluetooth-scale integration.
-- The Week 6 color-feedback and Bluetooth material remains a researched future roadmap, not an implemented feature.
+If Brightspace has separate upload fields, I will attach the three artifact ZIPs, three narrative DOCX files, and professional self-assessment listed above. The Week 1 planning files and Week 6 journal can stay in the repository unless the instructor asks for them separately.

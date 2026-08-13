@@ -6,7 +6,7 @@ Category One initially named the CS 250 planning materials and proposed turning 
 
 ## Code review refinement
 
-The CS 250 files support discussion of Agile planning, user stories, stakeholder communication, and acceptance criteria, but they do not provide enough source code for the code-review and enhancement requirements. The recorded code-review plan therefore identifies CS 320 as the concrete code artifact for Categories One and Two. One multifaceted artifact is examined through different concerns: design boundaries in Category One and search/filter/sort behavior in Category Two.
+The CS 250 files support discussion of Agile planning, user stories, stakeholder communication, and acceptance criteria, but they do not provide enough source code for the code-review and enhancement requirements. The recorded code-review plan therefore identifies CS 320 as the code artifact for Categories One and Two. I examine the same codebase from two directions: design boundaries in Category One and search, filtering, and sorting in Category Two.
 
 ## Milestone Two implementation
 
