@@ -1,13 +1,13 @@
-# CS 499 Program Outcome Crosswalk
+# CS 499 Program Outcome Guide
 
-This file points to the main work I used for each Computer Science program outcome. The full discussion is on [outcomes.html](outcomes.html).
+This file is a short guide to where I discuss each Computer Science program outcome. The longer explanation is on [outcomes.html](outcomes.html).
 
-| Program outcome | Main portfolio evidence |
+| Program outcome | Where I show it |
 | --- | --- |
-| **1. Collaborative environments** | CS 250 planning examples in the self-assessment, scope notes, version control, and organized original/enhanced artifact folders |
-| **2. Professional communication** | Professional self-assessment, code-review script, milestone narratives, and the ePortfolio pages |
-| **3. Algorithms and data structures** | Week 4 search/filter/order enhancement, complexity notes, and supporting database index work |
-| **4. Techniques, skills, and tools** | Java, Maven, JUnit, Android, SQLite, Gradle project structure, testing files, and GitHub Pages |
-| **5. Security mindset** | Week 3 validation and state-handling changes plus Week 5 password, ownership, database-constraint, and migration work |
+| **1. Collaborative environments** | CS 250 Agile examples in the self-assessment, version control, and the organization of the original and enhanced projects |
+| **2. Professional communication** | Professional self-assessment, code-review script, milestone narratives, and ePortfolio pages |
+| **3. Algorithms and data structures** | Week 4 search, filtering, sorting, and complexity work, plus the Weight Tracker history index |
+| **4. Techniques, skills, and tools** | Java, Maven, JUnit, Android, SQLite, Gradle, Git, and GitHub Pages across the capstone projects |
+| **5. Security mindset** | Week 3 input and stored-object changes and Week 5 password, user ownership, database constraints, and migration work |
 
-The detailed code and supporting notes are kept with each weekly artifact rather than repeated here.
+The project folders contain the code and supporting notes for each of these examples.
