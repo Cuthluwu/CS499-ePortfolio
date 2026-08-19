@@ -54,15 +54,22 @@ public Contact getContact(String contactId) {
     return contacts.get(contactId);
 }</code></pre></section>
         <section class="code-panel"><h3>Enhanced</h3><pre><code>public void add(Contact contact) {
-    String id = contact.getContactId();
-    if (contacts.containsKey(id)) {
-        throw new DuplicateRecordException("Contact", id);
+    if (contact == null) {
+        throw new IllegalArgumentException(
+            "Contact cannot be null.");
     }
-    contacts.put(id, new Contact(contact));
+    String identifier = contact.getContactId();
+    if (contacts.containsKey(identifier)) {
+        throw new DuplicateRecordException(
+            "Contact", identifier);
+    }
+    contacts.put(identifier, new Contact(contact));
 }
 
-public Optional&lt;Contact&gt; findById(String id) {
-    return Optional.ofNullable(contacts.get(id))
+public Optional&lt;Contact&gt; findById(String identifier) {
+    String normalized = Validation.identifier(
+        identifier, "Contact ID");
+    return Optional.ofNullable(contacts.get(normalized))
         .map(Contact::new);
 }</code></pre></section>
       </div>
