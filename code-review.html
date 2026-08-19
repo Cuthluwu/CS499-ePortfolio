@@ -3,110 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Madison Parker's CS 499 code review scope, chapter plan, original artifact analysis, planned enhancements, outcome alignment, and recording-readiness checklist.">
+  <meta name="description" content="Madison Parker's CS 499 code review and enhancement plan.">
   <title>Code Review | Madison Parker CS 499 ePortfolio</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
-  <header class="site-header">
-    <div class="shell header-inner">
-      <a class="brand" href="index.html" aria-label="Madison Parker CS 499 ePortfolio home"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a>
-      <nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a aria-current="page" href="code-review.html">Code Review</a><a href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav>
-    </div>
-  </header>
+  <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a aria-current="page" href="code-review.html">Code Review</a><a href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
   <main id="main">
-    <section class="page-hero">
-      <div class="shell">
-        <p class="breadcrumbs"><a href="index.html">Home</a> / Code Review</p>
-        <p class="eyebrow">Week 2 · 35-minute review plan</p>
-        <h1>Code review and enhancement plan</h1>
-        <p>The review establishes what the original artifacts do, identifies specific design and security gaps, and explains the planned changes before the enhanced evidence is presented.</p>
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Code Review</p><p class="eyebrow">Week 2</p><h1>Code Review and Enhancement Plan</h1><p>This section explains what I found in the original projects before I started the capstone enhancements.</p></div></section>
+    <section class="section"><div class="shell content-layout"><article class="content-main">
+      <div class="status-note warning"><p><strong>Video note:</strong> the repository contains the code-review script, but it does not contain the completed video.</p></div>
+      <div class="artifact-links">
+        <a class="artifact-link" href="Week-2_Code-Review/Madison_Parker_CS499_Code_Review_Script.docx"><strong>Download the code-review script</strong><span>Week 2 narration script</span></a>
+        <a class="artifact-link" href="https://github.com/Cuthluwu/CS499-ePortfolio"><strong>Open the repository</strong><span>Original and enhanced project files</span></a>
       </div>
-    </section>
-    <section class="section">
-      <div class="shell content-layout">
-        <article class="content-main">
-          <div class="status-note warning" id="video-status">
-            <p><strong>Final submission action required:</strong> no playable MP4, MOV, WebM, or public video URL was included in the supplied files. The complete narration script and timing plan are available below, but the rubric requires the recorded code-review video. Record or upload the video, test playback, then replace this notice with the final link or embed before submitting in Brightspace.</p>
-          </div>
 
-          <div class="artifact-links">
-            <a class="artifact-link" href="Week-2_Code-Review/Madison_Parker_CS499_Code_Review_Script.docx"><strong>Download the narration script</strong><span>35-minute Word document with scene-by-scene timing</span></a>
-            <a class="artifact-link" href="https://github.com/Cuthluwu/CS499-ePortfolio/tree/main"><strong>Open the source repository</strong><span>Originals, enhanced artifacts, narratives, and evidence</span></a>
-          </div>
+      <h2 id="review">What I reviewed</h2>
+      <p>I looked at both projects for the same basic things: what already worked, how the code was organized, where logic was repeated, how errors were handled, what tests existed, and whether there were obvious security or data problems.</p>
 
-          <h2 id="criteria">Review criteria</h2>
-          <p>The code review applies the same six criteria to both originals so the enhancement plan grows from evidence rather than from a predetermined rewrite.</p>
-          <div class="tag-row" aria-label="Code review criteria"><span class="tag">Existing functionality</span><span class="tag">Structure</span><span class="tag">Logic and efficiency</span><span class="tag">Security</span><span class="tag">Testing</span><span class="tag">Comments and documentation</span></div>
+      <h2 id="cs320">CS 320 service project</h2>
+      <p>The Contact, Task, and Appointment services already met the original course requirements. They used maps for ID-based CRUD and had JUnit tests for the required field rules.</p>
+      <p>The main weaknesses I found were repeated validation, inconsistent handling of missing records, mutable objects being stored and returned directly, multi-field updates that could partially succeed, and appointment tests that depended on the current system time. I also noticed that there was no useful way to search across records unless the caller already knew the ID.</p>
+      <p>I split the improvements into two categories. Category One focuses on design and maintainability. Category Two focuses on search, filtering, ordering, and complexity.</p>
 
-          <h2 id="artifacts">Original artifacts reviewed</h2>
-          <h3>CS 320 Contact, Task, and Appointment Services</h3>
-          <p>The original Java work satisfies the field-limit and basic CRUD requirements. It uses a <code>HashMap</code> for exact identifier access and includes model and service tests. The review identifies default-package fragmentation, repeated validation, inconsistent missing-record policies, returned mutable references, partial multi-field update risk, dependence on moving system time, and no user-oriented retrieval across records.</p>
-          <p>This one original supports two distinct enhancement categories. Category One addresses architecture, validation, service contracts, state ownership, and testability. Category Two retains that design and adds search, filtering, ordering, immutability, and complexity analysis.</p>
+      <h2 id="cs360">CS 360 Weight Tracker</h2>
+      <p>The original Weight Tracker could register a user, log in, and create or change weight records in SQLite. The biggest problems were in the database design. Passwords were stored as plain text, weight rows were not tied to a user account, a name was used as the row identity, weight and date were stored as text, and the upgrade method deleted the existing tables.</p>
+      <p>Those issues became the plan for the database milestone: redesign the schema, connect measurements to users, improve credential storage, preserve data during an upgrade, and add better history queries.</p>
 
-          <h3>CS 360 Android Weight Tracker</h3>
-          <p>The original Android application connects Java activities and XML layouts to SQLite and demonstrates registration, login, and weight CRUD. The review finds that passwords are stored as plaintext, weight rows do not have an account foreign key, record identity depends on a name, weight and date are stored as text, the history query returns every row, upgrade deletes tables, cursors are weakly handled, and template tests do not verify the database behavior.</p>
+      <h2 id="plan">Enhancement plan</h2>
+      <ul>
+        <li><strong>Software Design and Engineering:</strong> reorganize the Java project, reduce repeated validation, protect stored objects, improve update behavior, and make date testing more reliable.</li>
+        <li><strong>Algorithms and Data Structures:</strong> add contact search, task keyword search, appointment date-range filtering, stable ordering, and written complexity analysis.</li>
+        <li><strong>Databases:</strong> redesign the SQLite schema, add user ownership, change password storage, preserve old data during migration, and improve history/reporting queries.</li>
+      </ul>
 
-          <h2 id="chapters">Visual timeline</h2>
-          <div class="chapter-table">
-            <table>
-              <thead><tr><th>Time</th><th>Review section</th><th>Primary visual</th></tr></thead>
-              <tbody>
-                <tr><td>00:00–01:22</td><td>Introduction and review criteria</td><td>CS 499 code-review checklist</td></tr>
-                <tr><td>01:22–03:18</td><td>Artifact overview and category decisions</td><td>Selected artifacts and review focus</td></tr>
-                <tr><td>03:18–05:54</td><td>Contact model functionality and design</td><td><code>Contact.java</code></td></tr>
-                <tr><td>05:54–08:23</td><td>Contact service structure and API consistency</td><td><code>ContactService.java</code></td></tr>
-                <tr><td>08:23–10:41</td><td>Testing and documentation</td><td><code>ContactServiceTest.java</code></td></tr>
-                <tr><td>10:41–13:01</td><td>Repeated patterns and practical refactoring</td><td><code>Task.java</code> and <code>TaskService.java</code></td></tr>
-                <tr><td>13:01–15:13</td><td>Existing tests and algorithm gaps</td><td><code>TaskServiceTest.java</code></td></tr>
-                <tr><td>15:13–17:23</td><td>Appointment date handling</td><td><code>Appointment.java</code></td></tr>
-                <tr><td>17:23–19:26</td><td>Appointment service behavior and ordering</td><td><code>AppointmentServiceTest.java</code></td></tr>
-                <tr><td>19:26–21:28</td><td>Complexity and data-structure trade-offs</td><td>Current collection and cost model</td></tr>
-                <tr><td>21:28–23:10</td><td>Planned retrieval algorithms</td><td>Search, filter, and sorted retrieval plan</td></tr>
-                <tr><td>23:10–25:03</td><td>Android Weight Tracker overview</td><td>Project and original screenshots</td></tr>
-                <tr><td>25:03–27:04</td><td>Schema and database lifecycle</td><td>Original <code>DBHelper.java</code></td></tr>
-                <tr><td>27:04–29:02</td><td>CRUD, cursors, and query behavior</td><td>Original database methods</td></tr>
-                <tr><td>29:02–30:58</td><td>Login and credential security</td><td>Original <code>MainActivity.java</code></td></tr>
-                <tr><td>30:58–33:10</td><td>Weight CRUD and error handling</td><td>Original dashboard activity</td></tr>
-                <tr><td>33:10–35:00</td><td>Conclusion and course outcomes</td><td>Priorities and artifact map</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h2 id="plan">Planned enhancements</h2>
-          <ul class="check-list">
-            <li><strong>Software design:</strong> reorganize the suite into a Maven project, centralize validation, define a shared repository contract, replace null command behavior with specific policies, protect mutable state, make updates atomic, and inject a controllable clock.</li>
-            <li><strong>Algorithms:</strong> preserve map-based exact-ID access; add case-insensitive contact and task retrieval plus inclusive appointment date ranges; sort results explicitly; return immutable snapshots; and document time and space costs.</li>
-            <li><strong>Databases:</strong> normalize users and weight entries, add numeric keys and account ownership, store numeric weight and ISO dates, hash passwords, parameterize CRUD, preserve legacy data through migration, add progress queries and a targeted index, and verify the schema.</li>
-          </ul>
-
-          <h2 id="outcomes">Five-outcome alignment</h2>
-          <p>The review introduces all five outcomes before the enhancement pages supply final evidence: collaboration through reviewable contracts and traceability; communication through audience-aware explanations; algorithms through structure and complexity decisions; computing techniques through Java, Android, SQLite, and testing; and security through explicit input, state, credential, and ownership boundaries.</p>
-          <a class="text-link" href="outcomes.html">Trace the final evidence for each outcome <span aria-hidden="true">→</span></a>
-
-          <h2 id="recording">Recording and playback checklist</h2>
-          <ul class="check-list">
-            <li class="pending">Record narration while the source remains readable at 1080p.</li>
-            <li class="pending">Export as a common H.264 MP4 and confirm the full 35-minute duration.</li>
-            <li class="pending">Download the uploaded file or open the public URL in a signed-out browser.</li>
-            <li class="pending">Verify audio, source readability, seek controls, and the first and last minute.</li>
-            <li class="pending">Add the final video URL or file to this page and to the Brightspace submission.</li>
-          </ul>
-        </article>
-        <aside class="side-nav" aria-label="On this page">
-          <strong>On this page</strong>
-          <a href="#video-status">Video status</a>
-          <a href="#criteria">Criteria</a>
-          <a href="#artifacts">Original artifacts</a>
-          <a href="#chapters">Chapter plan</a>
-          <a href="#plan">Enhancement plan</a>
-          <a href="#outcomes">Outcomes</a>
-          <a href="#recording">Recording checklist</a>
-        </aside>
-      </div>
-    </section>
+      <h2 id="outcomes">Connection to the program outcomes</h2>
+      <p>The code review helped me decide where the five program outcomes would show up in the final portfolio. The strongest connections are algorithms in Category Two, software-development tools across all three categories, security in the database work, and communication through the review, narratives, and final website.</p>
+      <a class="text-link" href="software-design.html">Continue to Category One <span aria-hidden="true">→</span></a>
+    </article><aside class="side-nav"><strong>On this page</strong><a href="#review">What I reviewed</a><a href="#cs320">CS 320</a><a href="#cs360">CS 360</a><a href="#plan">Plan</a><a href="#outcomes">Outcomes</a></aside></div></section>
   </main>
-  <footer><div class="shell footer-inner"><p><strong>Madison Parker</strong><br>CS 499 Computer Science Capstone<br><small>Code-review materials dated July 2026</small></p><p><a href="index.html">Portfolio home</a><br><a href="software-design.html">Continue to Category One</a></p></div></footer>
+  <footer><div class="shell footer-inner"><p><strong>Madison Parker</strong><br>CS 499 Code Review</p><p><a href="index.html">Portfolio home</a><br><a href="software-design.html">Category One</a></p></div></footer>
 </body>
 </html>
