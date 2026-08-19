@@ -1,37 +1,26 @@
 # Week 4 — Algorithms and Data Structures
 
-Milestone Three builds cumulatively on the Week 3 service design while isolating the Category Two delta. The existing `HashMap` remains appropriate for exact-ID commands; three new retrieval algorithms traverse values, filter by category-specific criteria, copy matches, establish deterministic order, and return unmodifiable results.
+This milestone starts from the CS 320 service project I improved in Week 3 and adds ways to find records when the exact ID is not known.
 
-## Start Here
+## Files
 
-1. [Enhancement narrative](Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx)
-2. [`Artifact_Contents/00_READ_ME_FIRST.txt`](Artifact_Contents/00_READ_ME_FIRST.txt)
-3. [`Artifact_Contents/03_DOCUMENTATION/ALGORITHM_COMPLEXITY_AND_TRADEOFFS.md`](Artifact_Contents/03_DOCUMENTATION/ALGORITHM_COMPLEXITY_AND_TRADEOFFS.md)
-4. [`Artifact_Contents/04_EVIDENCE/ALGORITHMS_VERIFICATION_RESULTS.txt`](Artifact_Contents/04_EVIDENCE/ALGORITHMS_VERIFICATION_RESULTS.txt)
-5. [Downloadable technical artifact](Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip)
+- [Algorithms narrative](Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx)
+- [`Artifact_Contents/01_ORIGINAL_CS320/`](Artifact_Contents/01_ORIGINAL_CS320/) — original CS 320 project
+- [`Artifact_Contents/02_WEEK3_DESIGN_BASELINE/`](Artifact_Contents/02_WEEK3_DESIGN_BASELINE/) — Week 3 version before the algorithm changes
+- [`Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/`](Artifact_Contents/03_WEEK4_ALGORITHMS_ENHANCED/) — Week 4 version
+- [Downloadable artifact ZIP](Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip)
 
-## Algorithm Delta
+## What I added
 
-| Source method | Retrieval behavior | Deterministic order |
-| --- | --- | --- |
-| `ContactService.searchByLastName` | Case-insensitive substring search over last names | Last name, first name, contact ID |
-| `TaskService.searchByKeyword` | Case-insensitive search across task name or description | Task name, task ID |
-| `AppointmentService.findByDateRange` | Inclusive filtering across copied start and end dates | Appointment date, appointment ID |
+- `ContactService.searchByLastName` searches contact last names without requiring an exact ID.
+- `TaskService.searchByKeyword` checks task names and descriptions for a keyword.
+- `AppointmentService.findByDateRange` returns appointments inside an inclusive date range.
+- The results are sorted so the same data is returned in a predictable order.
 
-`Validation.searchTerm` rejects null and blank criteria and normalizes user input. Each algorithm creates record snapshots before sorting, then returns Java 17's unmodifiable `Stream.toList()` result so the caller cannot structurally modify the result or mutate the service's stored record through a returned element. Reusable comparator constants and primitive appointment timestamps reduce temporary allocations without changing the documented complexity bounds.
+I kept the existing `HashMap` because it still makes sense for exact-ID lookups. The new search methods have a different job: they scan the stored records, keep the matches, and sort those matches before returning them.
 
-## Complexity and Design Trade-Off
+If there are `n` stored records and `m` matches, the search-and-sort work is summarized as **O(n + m log m)** time with **O(m)** extra result space. For this small in-memory project, I did not add extra indexes because that would add more code to maintain without solving a problem the application currently has.
 
-For a map with capacity *c*, *n* stored records, and *m* matches, each retrieval performs a value traversal, copies the matches, and sorts only those matches. The precise bound is **O(c + n + m log m)** time and **O(m)** additional result space. With normal capacity proportional to record count, this is conventionally summarized as **O(n + m log m)**.
+## Testing
 
-The enhancement deliberately avoids secondary indexes at the current scale. A last-name structure would not make arbitrary substring matching constant time; a task-term index would require tokenization and synchronization rules; a date index would add maintenance for duplicate timestamps and updates. The documentation identifies those options as future work when measured collection size and access frequency justify their additional invariants.
-
-## Verification Boundary
-
-The cumulative source contains 103 JUnit methods, including six retrieval-focused additions. The dependency-free Java 17 verifier was compiled with `-Xlint:all` and executed; all **19 of 19** checks passed across mixed case, partial matches, tie-break ordering, inclusive boundaries, null/reversed input, empty results, immutable lists, and record snapshots.
-
-Run the recorded verifier with:
-
-```sh
-sh Artifact_Contents/04_EVIDENCE/run_algorithms_verification.sh
-```
+The tests cover cases such as mixed capitalization, partial matches, no matches, invalid search input, date-range boundaries, and result ordering. The test source and saved verification results are kept inside the artifact folder.
