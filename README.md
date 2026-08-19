@@ -2,6 +2,8 @@
 
 This repository contains my CS 499 capstone materials and the GitHub Pages version of the ePortfolio.
 
+> **Repository organization note:** I used GitHub tooling to help organize branches and repository files while putting the ePortfolio together. The coursework, project artifacts, and revisions shown here are based on my CS program work.
+
 ## Portfolio
 
 - [Professional Self-Assessment](self-assessment.html)
