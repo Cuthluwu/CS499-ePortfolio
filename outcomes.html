@@ -3,69 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Evidence crosswalk for Madison Parker's CS 499 ePortfolio and the five Computer Science program outcomes.">
+  <meta name="description" content="Program outcome summary for Madison Parker's CS 499 ePortfolio.">
   <title>Program Outcomes | Madison Parker CS 499 ePortfolio</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
-  <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html" aria-label="Madison Parker CS 499 ePortfolio home"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a href="index.html#artifacts">Artifacts</a><a aria-current="page" href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
+  <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a href="index.html#artifacts">Artifacts</a><a aria-current="page" href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
   <main id="main">
-    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Program Outcomes</p><p class="eyebrow">Final evidence synthesis</p><h1>Five outcomes, traced to specific decisions</h1><p>The portfolio does not rely on one artifact to prove everything. Each outcome is supported by complementary evidence across the self-assessment, code review, source, narratives, and verification.</p></div></section>
-    <section class="section">
-      <div class="shell content-layout">
-        <article class="content-main">
-          <div class="status-note success"><p><strong>Evidence model:</strong> the original establishes the starting point; the enhanced source establishes the change; the narrative explains the decision and reflection; the verifier checks the behavior; and the self-assessment connects the work to professional practice.</p></div>
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Program Outcomes</p><p class="eyebrow">CS 499</p><h1>Program Outcomes</h1><p>This page shows where I believe the capstone demonstrates each of the five Computer Science program outcomes.</p></div></section>
+    <section class="section"><div class="shell content-layout"><article class="content-main">
+      <h2 id="outcome-1">Outcome 1 · Collaboration</h2>
+      <p>Most of the final artifacts were individual projects, so I do not present them as team projects. My collaboration evidence comes from earlier Agile work in CS 250 and from the way I organized the capstone so another person can follow the changes. I kept original and enhanced versions separate, used Git for version control, and documented why the artifact choice changed after the first planning module.</p>
 
-          <h2 id="outcome-1">Outcome 1 · Collaborative environments</h2>
-          <p><strong>Employ strategies for building collaborative environments that enable diverse audiences to support organizational decision-making in the field of computer science.</strong></p>
-          <p>CS 250 supplied Agile context through user stories, acceptance criteria, sprint review, and retrospective practice. The capstone applies those habits through unchanged baselines, isolated enhancement deltas, decision logs, read-first guides, conventional project structure, traceability maps, and reproducible checks. These strategies let another developer or instructor review one choice without reconstructing the project history.</p>
-          <p>The work was completed independently, so the portfolio does not misstate it as a production team project. It demonstrates the practices that make later collaboration safer: visible scope, explicit contracts, reviewable evidence, and honest limitations.</p>
-          <div class="tag-row"><span class="tag">CS 250 Agile context</span><span class="tag">Plan refinement</span><span class="tag">Enhancement maps</span><span class="tag">Decision logs</span><span class="tag">Repeatable checks</span></div>
+      <h2 id="outcome-2">Outcome 2 · Communication</h2>
+      <p>The portfolio itself is part of this outcome. I had to explain the same work in several forms: a code-review script, milestone narratives, before-and-after code examples, and shorter web pages. Other courses also gave me practice changing an explanation depending on the audience, especially the public/admin split in CS 465 and the reporting decisions in DAT 205.</p>
 
-          <h2 id="outcome-2">Outcome 2 · Professional communication</h2>
-          <p><strong>Design, develop, and deliver professional-quality oral, written, and visual communications that are coherent, technically sound, and appropriately adapted to specific audiences and contexts.</strong></p>
-          <p>CS 465 required architecture for public travel customers and protected administrators. DAT 205 required scope, privacy, and terminology decisions for donor analysis. Those experiences shaped the portfolio's layered presentation: user problem first, then design decision, source location, test evidence, and limitation.</p>
-          <p>The public site makes each original and enhanced artifact understandable without requiring a Word download. The narratives provide the full academic analysis. Read-first guides, data dictionaries, complexity documents, diffs, and evidence tables support a technical reviewer. The code-review script supplies the complete oral structure; the recording itself remains the one media dependency to add before final submission.</p>
-          <div class="tag-row"><span class="tag">Self-assessment</span><span class="tag">35-minute review script</span><span class="tag">Narratives</span><span class="tag">Before/after web pages</span><span class="tag">Evidence guides</span></div>
+      <h2 id="outcome-3">Outcome 3 · Algorithms and Data Structures</h2>
+      <p>The main evidence is the Week 4 enhancement. I kept <code>HashMap</code> for exact-ID operations and added search and filtering methods for cases where an ID is not known. I compared the cost of direct lookup with scanning and sorting the collection and explained why I did not add more indexes to a small in-memory project.</p>
+      <p>The Weight Tracker also includes a database index for user history. That is a smaller supporting example of choosing a structure around the way the data is actually queried.</p>
 
-          <h2 id="outcome-3">Outcome 3 · Algorithms and data structures</h2>
-          <p><strong>Design and evaluate computing solutions that solve a given problem using algorithmic principles and computer science practices and standards appropriate to its solution, while managing the trade-offs involved in design choices.</strong></p>
-          <p>The Category Two artifact separates expected constant-time identifier access from traversal and sorting across map values. Contact, task, and appointment retrieval validates criteria, filters records, copies matches, applies complete comparator chains, and returns immutable lists. Complexity is reported as <code>O(c + n + m log m)</code> time and <code>O(m)</code> result space, with best, selective, and all-match cases.</p>
-          <p>The database category adds a related but distinct decision: a compound index matches the account-history query, and <code>EXPLAIN QUERY PLAN</code> verifies its use. Alternatives such as tree maps, inverted indexes, date indexes, and extra SQL indexes are evaluated against maintenance, memory, and current access patterns.</p>
-          <div class="tag-row"><span class="tag">HashMap trade-offs</span><span class="tag">Search and filtering</span><span class="tag">Comparator chains</span><span class="tag">Complexity bounds</span><span class="tag">Query-plan evidence</span></div>
+      <h2 id="outcome-4">Outcome 4 · Techniques, Skills, and Tools</h2>
+      <p>Across the capstone I used Java, Maven, JUnit, Android project structure, XML, SQLite, Gradle files, Git, and GitHub Pages. More important than the list of tools is how they were used. Maven helped organize the CS 320 project, SQLite handled persistent Weight Tracker data, and tests were added around the behavior I changed.</p>
 
-          <h2 id="outcome-4">Outcome 4 · Computing techniques and tools</h2>
-          <p><strong>Demonstrate an ability to use well-founded and innovative techniques, skills, and tools in computing practices for the purpose of implementing computer solutions that deliver value and accomplish industry-specific goals.</strong></p>
-          <p>The portfolio uses Java 17, Maven layout, JUnit assets, Android project structure, XML, SQLite, relational constraints, migrations, repositories, cryptographic APIs, Gradle project files, shell and Python verification, diffs, hashes, and GitHub Pages. The value comes from assigning each tool a responsibility rather than from listing technologies.</p>
-          <p>The service suite protects state and makes failure behavior predictable. The algorithms make retrieval useful and deterministic. The Weight Tracker connects authentication to record ownership, preserves legacy data, and gives the user ordered history and progress. The three focused verifiers record 127 passing checks across these category claims.</p>
-          <div class="tag-row"><span class="tag">Java 17</span><span class="tag">Maven</span><span class="tag">Android</span><span class="tag">SQLite</span><span class="tag">PBKDF2</span><span class="tag">Verification scripts</span></div>
+      <h2 id="outcome-5">Outcome 5 · Security</h2>
+      <p>The security work is easiest to see in the database artifact. The original Weight Tracker stored passwords in plaintext and did not tie weight rows to an account. The enhanced version hashes passwords, uses account IDs and foreign keys, scopes weight updates and deletes to the current user, adds database constraints, and removes the unused SMS permission.</p>
+      <p>The CS 320 enhancement also supports this outcome in a smaller way by validating input and preventing callers from directly changing objects stored inside a service.</p>
 
-          <h2 id="outcome-5">Outcome 5 · Security mindset</h2>
-          <p><strong>Develop a security mindset that anticipates adversarial exploits in software architecture and designs to expose potential system vulnerabilities, mitigate design flaws, and ensure privacy and enhanced security of data and resources.</strong></p>
-          <p>Category One treats mutable aliases, partial updates, invalid input, and ambiguous errors as misuse paths. Category Three begins with specific vulnerabilities: plaintext passwords, no row ownership, registration bypass, unrestricted history, destructive upgrades, weak constraints, unused permission, and backup exposure.</p>
-          <p>The final code uses centralized validation, defensive copies, specific exceptions, PBKDF2 with unique salts, bounded verifier metadata, randomized inaccessible migration credentials, constant-time comparison, parameter binding, authenticated ownership conditions, foreign-key enforcement, data constraints, migration auditing, disabled backup, and removal of the unused SMS permission. The narrative also records unresolved production risks instead of labeling the classroom app fully secure.</p>
-          <div class="tag-row"><span class="tag">Input boundaries</span><span class="tag">State isolation</span><span class="tag">Credential protection</span><span class="tag">Authorization</span><span class="tag">Migration audit</span><span class="tag">Residual risk</span></div>
+      <h2 id="summary">Where to look</h2>
+      <div class="chapter-table"><table><thead><tr><th>Portfolio section</th><th>Main outcomes</th></tr></thead><tbody>
+        <tr><td>Professional Self-Assessment</td><td>1, 2, 4, 5</td></tr>
+        <tr><td>Code Review</td><td>1–5</td></tr>
+        <tr><td>Software Design and Engineering</td><td>1, 2, 4, 5</td></tr>
+        <tr><td>Algorithms and Data Structures</td><td>2, 3, 4</td></tr>
+        <tr><td>Databases</td><td>2, 3, 4, 5</td></tr>
+      </tbody></table></div>
 
-          <h2 id="matrix">Outcome-to-evidence matrix</h2>
-          <div class="chapter-table"><table><thead><tr><th>Portfolio component</th><th>Primary outcomes</th><th>Concrete evidence</th></tr></thead><tbody>
-            <tr><td>Professional self-assessment</td><td>1, 2, 4, 5</td><td>Program examples, professional direction, audience strategy, security values, and portfolio synthesis</td></tr>
-            <tr><td>Code review</td><td>1–5</td><td>Review criteria, baseline analysis, planned enhancements, 35-minute chapter structure, and outcome introduction</td></tr>
-            <tr><td>Software design</td><td>1, 2, 4, 5</td><td>Packages, shared contract, validation, defensive copying, atomic updates, controlled time, and 26 focused checks</td></tr>
-            <tr><td>Algorithms</td><td>2, 3, 4, 5</td><td>Three retrieval contracts, deterministic order, immutable snapshots, complexity analysis, and 19 focused checks</td></tr>
-            <tr><td>Databases</td><td>2, 3, 4, 5</td><td>Normalized schema, ownership, constraints, migration, PBKDF2, index, reporting, and 82 focused checks</td></tr>
-            <tr><td>Week 6 roadmap</td><td>2, 3, 4, 5</td><td>Goal-aware accessibility, Bluetooth protocol path, privacy model, test plan, and explicit future-work boundary</td></tr>
-          </tbody></table></div>
-
-          <div class="artifact-links">
-            <a class="artifact-link" href="OUTCOME_CROSSWALK.md"><strong>Open the repository crosswalk</strong><span>File-level evidence and outcome scope notes</span></a>
-            <a class="artifact-link" href="FINAL_PROJECT_RUBRIC_TRACEABILITY.md"><strong>Open rubric traceability</strong><span>Critical elements mapped to final submission evidence</span></a>
-          </div>
-        </article>
-        <aside class="side-nav" aria-label="Outcome navigation"><strong>Program outcomes</strong><a href="#outcome-1">1 · Collaboration</a><a href="#outcome-2">2 · Communication</a><a href="#outcome-3">3 · Algorithms</a><a href="#outcome-4">4 · Techniques and tools</a><a href="#outcome-5">5 · Security</a><a href="#matrix">Evidence matrix</a></aside>
+      <div class="artifact-links">
+        <a class="artifact-link" href="OUTCOME_CROSSWALK.md"><strong>Repository outcome crosswalk</strong><span>Short file-location guide</span></a>
+        <a class="artifact-link" href="FINAL_PROJECT_RUBRIC_TRACEABILITY.md"><strong>Final project checklist</strong><span>Where the required pieces are located</span></a>
       </div>
-    </section>
+    </article><aside class="side-nav"><strong>Program outcomes</strong><a href="#outcome-1">1 · Collaboration</a><a href="#outcome-2">2 · Communication</a><a href="#outcome-3">3 · Algorithms</a><a href="#outcome-4">4 · Tools</a><a href="#outcome-5">5 · Security</a><a href="#summary">Summary</a></aside></div></section>
   </main>
-  <footer><div class="shell footer-inner"><p><strong>Madison Parker</strong><br>CS 499 Computer Science Capstone<br><small>Five program outcomes</small></p><p><a href="self-assessment.html">Professional self-assessment</a><br><a href="index.html">Portfolio home</a></p></div></footer>
+  <footer><div class="shell footer-inner"><p><strong>Madison Parker</strong><br>CS 499 Computer Science Capstone</p><p><a href="self-assessment.html">Self-assessment</a><br><a href="index.html">Portfolio home</a></p></div></footer>
 </body>
 </html>
