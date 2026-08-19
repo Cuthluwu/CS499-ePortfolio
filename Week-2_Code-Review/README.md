@@ -1,5 +1,5 @@
-# Week 2: Code Review
+# Week 2 — Code Review
 
-This folder contains Madison Parker's complete 35-minute narration script and visual timeline for the CS 499 code review.
+This folder contains my written CS 499 code-review script. I used the review to look back at the original CS 320 services and CS 360 Weight Tracker, identify problems I wanted to improve, and plan the three capstone enhancement categories.
 
-The final rubric also requires a playable video. No video file or public video URL was included in the supplied materials, so the recording is the one unresolved submission dependency. Record the review in 1080p, export a standard H.264 MP4, test the uploaded copy from beginning to end, and add the final link to `code-review.html` before Brightspace submission.
+The completed code-review video is not stored in this repository.
