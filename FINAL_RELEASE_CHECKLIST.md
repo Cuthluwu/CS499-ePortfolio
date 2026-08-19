@@ -1,25 +1,17 @@
 # Final Release Checklist
 
-## Complete
+## Repository
 
-- [x] Professional self-assessment is presented first on the site.
-- [x] Self-assessment addresses professional direction, strengths, values, employability, collaboration, stakeholder communication, algorithms, software engineering, databases, security, and all five outcomes.
-- [x] Examples outside the final artifacts are included.
-- [x] Code-review script and exact chapter plan are included.
-- [x] Original and enhanced artifacts remain separate.
-- [x] Three required category pages show substantive before/after evidence.
-- [x] All three narrative DOCX files are included.
-- [x] Database narrative includes the final security revision and 46 + 36 verification counts.
-- [x] Week 6 future work is not described as implemented.
-- [x] Focused verifier count is 127 across the portfolio.
-- [x] Word formatting and metadata are audited.
-- [x] Internal site links and archive contents are validated.
-- [x] Final rubric traceability is included.
+- [x] Professional self-assessment is linked first from the site.
+- [x] Code-review script is included.
+- [x] Original and enhanced artifacts are kept separately.
+- [x] Software Design and Engineering narrative and artifact are included.
+- [x] Algorithms and Data Structures narrative and artifact are included.
+- [x] Database narrative and artifact are included.
+- [x] Program-outcome page is included.
 
-## Required Before Brightspace Submission
+## Outside the repository
 
-- [ ] Record and upload the code-review video.
-- [ ] Test the uploaded video from a downloaded copy or signed-out browser.
-- [ ] Add the final video link or file to `code-review.html`.
-- [ ] Verify the published GitHub Pages URL after repository publication.
-- [ ] Submit the GitHub Pages URL, video URL/file, technical ZIPs, narratives, and professional self-assessment in Brightspace.
+- [ ] Complete and submit the required code-review video.
+- [ ] Confirm the final GitHub Pages link works.
+- [ ] Upload the files required by the Brightspace submission page.

@@ -1,39 +1,30 @@
 # CS 499 Final Project Files
 
-I made this page to keep the final links and downloads in one place. My GitHub Pages site is live, and the three artifact packages, three narratives, and professional self-assessment are finished.
+This page keeps the main final-project links in one place.
 
-I did not record the code-review video. The complete 35-minute script is included, but there is no video file or public video link. The rubric requires the recording, so I am leaving that item marked missing.
+## Portfolio and code review
 
-The formatted version of this page is available at [Final Project Files](submission.html).
+- [GitHub Pages ePortfolio](https://cuthluwu.github.io/CS499-ePortfolio/)
+- [Code-review page](code-review.html)
+- [Code-review script](Week-2_Code-Review/Madison_Parker_CS499_Code_Review_Script.docx)
+- Code-review video: not stored in this repository
 
-## Files
+## Required artifact files
 
-- [x] [GitHub Pages ePortfolio](https://cuthluwu.github.io/CS499-ePortfolio/)
-- [ ] Code-review video: **not recorded**
-- [x] [Code-review script](Week-2_Code-Review/Madison_Parker_CS499_Code_Review_Script.docx)
-- [x] Software Design and Engineering: [artifact ZIP](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Artifact.zip) and [narrative DOCX](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx)
-- [x] Algorithms and Data Structures: [artifact ZIP](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip) and [narrative DOCX](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx)
-- [x] Databases: [artifact ZIP](Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Artifact.zip) and [narrative DOCX](Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Narrative.docx)
-- [x] [Professional self-assessment DOCX](Week-7_Final-ePortfolio-and-Self-Assessment/Madison_Parker_CS499_Professional_Self_Assessment.docx)
+### Software Design and Engineering
+- [Artifact ZIP](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Artifact.zip)
+- [Narrative DOCX](Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx)
 
-The self-assessment appears first on the website. Each category page includes the original code, my revised code, the narrative, examples of what changed, and the checks I ran. The [program outcomes page](outcomes.html) explains where I addressed all five outcomes.
+### Algorithms and Data Structures
+- [Artifact ZIP](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Artifact.zip)
+- [Narrative DOCX](Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx)
 
-## Checks I ran
+### Databases
+- [Artifact ZIP](Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Artifact.zip)
+- [Narrative DOCX](Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Narrative.docx)
 
-| Category | Result |
-| --- | --- |
-| Software Design and Engineering | 26 of 26 checks passed |
-| Algorithms and Data Structures | 19 of 19 checks passed |
-| Databases | 46 of 46 SQLite checks and 36 of 36 Java checks passed |
+### Professional Self-Assessment
+- [Self-assessment DOCX](Week-7_Final-ePortfolio-and-Self-Assessment/Madison_Parker_CS499_Professional_Self_Assessment.docx)
+- [Web version](self-assessment.html)
 
-That is 127 focused checks across the three categories. The repository also includes JUnit and Android instrumentation tests. I did not build an Android APK during the final preparation pass, and the Week 6 Bluetooth-scale idea is future work, not a finished feature.
-
-## Brightspace
-
-The main link is:
-
-```text
-https://cuthluwu.github.io/CS499-ePortfolio/
-```
-
-If Brightspace has separate upload fields, I will attach the three artifact ZIPs, three narrative DOCX files, and professional self-assessment listed above. The Week 1 planning files and Week 6 journal can stay in the repository unless the instructor asks for them separately.
+Supporting planning, testing, and documentation files remain in their week folders.
