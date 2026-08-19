@@ -11,24 +11,24 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a href="index.html#artifacts">Artifacts</a><a aria-current="page" href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
   <main id="main">
-    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Program Outcomes</p><p class="eyebrow">CS 499</p><h1>Program Outcomes</h1><p>This page shows where I believe the capstone demonstrates each of the five Computer Science program outcomes.</p></div></section>
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Program Outcomes</p><p class="eyebrow">CS 499</p><h1>Program Outcomes</h1><p>This page connects the work in my capstone to the five Computer Science program outcomes.</p></div></section>
     <section class="section"><div class="shell content-layout"><article class="content-main">
       <h2 id="outcome-1">Outcome 1 · Collaboration</h2>
-      <p>Most of the final artifacts were individual projects, so I do not present them as team projects. My collaboration evidence comes from earlier Agile work in CS 250 and from the way I organized the capstone so another person can follow the changes. I kept original and enhanced versions separate, used Git for version control, and documented why the artifact choice changed after the first planning module.</p>
+      <p>Most of the final artifacts are individual projects, so I do not describe them as team projects. For collaboration, I draw from my earlier Agile work in CS 250 and from the way I kept the capstone organized for someone else to review. I kept the original and enhanced projects separate, used Git for version control, and documented the change I made to my original artifact plan.</p>
 
       <h2 id="outcome-2">Outcome 2 · Communication</h2>
-      <p>The portfolio itself is part of this outcome. I had to explain the same work in several forms: a code-review script, milestone narratives, before-and-after code examples, and shorter web pages. Other courses also gave me practice changing an explanation depending on the audience, especially the public/admin split in CS 465 and the reporting decisions in DAT 205.</p>
+      <p>The portfolio gave me practice explaining the same work in different ways. I wrote a code-review script, milestone narratives, before-and-after explanations, and shorter pages for the website. Earlier courses also gave me practice changing how I explain technical work depending on who will use it.</p>
 
       <h2 id="outcome-3">Outcome 3 · Algorithms and Data Structures</h2>
-      <p>The main evidence is the Week 4 enhancement. I kept <code>HashMap</code> for exact-ID operations and added search and filtering methods for cases where an ID is not known. I compared the cost of direct lookup with scanning and sorting the collection and explained why I did not add more indexes to a small in-memory project.</p>
-      <p>The Weight Tracker also includes a database index for user history. That is a smaller supporting example of choosing a structure around the way the data is actually queried.</p>
+      <p>The clearest example is the Week 4 enhancement. I kept <code>HashMap</code> for exact-ID operations and added search and filtering methods for cases where the ID is not known. I compared direct lookup with scanning and sorting the stored records and explained why I did not add more indexing to a small in-memory project.</p>
+      <p>The Weight Tracker also uses a database index for user history, which is another example of choosing a structure based on how the data is actually searched.</p>
 
       <h2 id="outcome-4">Outcome 4 · Techniques, Skills, and Tools</h2>
-      <p>Across the capstone I used Java, Maven, JUnit, Android project structure, XML, SQLite, Gradle files, Git, and GitHub Pages. More important than the list of tools is how they were used. Maven helped organize the CS 320 project, SQLite handled persistent Weight Tracker data, and tests were added around the behavior I changed.</p>
+      <p>Across the capstone I worked with Java, Maven, JUnit, Android project files, XML, SQLite, Gradle, Git, and GitHub Pages. I used Maven to organize the CS 320 project, SQLite for the Weight Tracker data, and tests to check the behavior I changed instead of only listing the tools I have used.</p>
 
       <h2 id="outcome-5">Outcome 5 · Security</h2>
-      <p>The security work is easiest to see in the database artifact. The original Weight Tracker stored passwords in plaintext and did not tie weight rows to an account. The enhanced version hashes passwords, uses account IDs and foreign keys, scopes weight updates and deletes to the current user, adds database constraints, and removes the unused SMS permission.</p>
-      <p>The CS 320 enhancement also supports this outcome in a smaller way by validating input and preventing callers from directly changing objects stored inside a service.</p>
+      <p>The database project shows this outcome most clearly. The original Weight Tracker stored passwords in plain text and did not connect weight rows to a user account. The enhanced version hashes passwords, uses account IDs and foreign keys, limits weight changes to the signed-in user, adds database constraints, and removes an unused SMS permission.</p>
+      <p>The CS 320 work also relates to this outcome because the services validate input and return copies instead of giving outside code the same mutable objects stored inside the service.</p>
 
       <h2 id="summary">Where to look</h2>
       <div class="chapter-table"><table><thead><tr><th>Portfolio section</th><th>Main outcomes</th></tr></thead><tbody>
@@ -40,7 +40,7 @@
       </tbody></table></div>
 
       <div class="artifact-links">
-        <a class="artifact-link" href="OUTCOME_CROSSWALK.md"><strong>Repository outcome crosswalk</strong><span>Short file-location guide</span></a>
+        <a class="artifact-link" href="OUTCOME_CROSSWALK.md"><strong>Program outcome guide</strong><span>Short file-location guide</span></a>
         <a class="artifact-link" href="FINAL_PROJECT_RUBRIC_TRACEABILITY.md"><strong>Final project checklist</strong><span>Where the required pieces are located</span></a>
       </div>
     </article><aside class="side-nav"><strong>Program outcomes</strong><a href="#outcome-1">1 · Collaboration</a><a href="#outcome-2">2 · Communication</a><a href="#outcome-3">3 · Algorithms</a><a href="#outcome-4">4 · Tools</a><a href="#outcome-5">5 · Security</a><a href="#summary">Summary</a></aside></div></section>
