@@ -1,5 +1,5 @@
-# Week 7: Final ePortfolio and Professional Self-Assessment
+# Week 7 — Final ePortfolio and Professional Self-Assessment
 
-This folder contains the final professional self-assessment, dated August 9, 2026. The self-assessment is presented first on the ePortfolio website and serves as a holistic introduction to Madison Parker's professional direction, program skills, artifact evidence, and five-outcome alignment.
+This folder contains my final professional self-assessment for CS 499.
 
-The final website also adds dedicated HTML pages for the code review, each required enhancement category, and the program outcomes. These pages make the written analysis and before/after evidence usable in the browser instead of presenting only a list of downloads.
+The ePortfolio website puts the self-assessment first, followed by the code review, the three enhancement categories, and the program outcomes. The website is meant to make it easier to move between the written explanations and the original and enhanced project files.
