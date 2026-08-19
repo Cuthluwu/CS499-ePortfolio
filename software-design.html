@@ -11,7 +11,7 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a aria-current="page" href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
   <main id="main">
-    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Category One</p><p class="eyebrow">Software Design and Engineering</p><h1>CS 320 Contact, Task, and Appointment Services</h1><p>I went back to an earlier Java project and focused on making the code easier to maintain, test, and reason about.</p></div></section>
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Category One</p><p class="eyebrow">Software Design and Engineering</p><h1>CS 320 Contact, Task, and Appointment Services</h1><p>I went back to an earlier Java project and focused on making the code easier to maintain, test, and understand.</p></div></section>
     <section class="section"><div class="shell content-layout"><article class="content-main">
       <div class="artifact-links">
         <a class="artifact-link" href="Week-3_Software-Design-and-Engineering/Madison_Parker_CS499_Milestone2_Software_Design_Narrative.docx"><strong>Download the narrative</strong><span>Milestone reflection and references</span></a>
@@ -21,16 +21,16 @@
       </div>
 
       <h2 id="artifact">Why I chose this project</h2>
-      <p>This project came from CS 320. It contains contact, task, and appointment classes, service classes, and JUnit tests. The original version worked for the course requirements, but the three services repeated a lot of the same ideas and handled errors differently.</p>
-      <p>I chose it because the code was small enough that I could clearly show the difference between simply making something work and making it easier to maintain. I also wanted to improve an older project instead of replacing it with something completely new.</p>
+      <p>This project came from CS 320. It contains contact, task, and appointment classes, service classes, and JUnit tests. The original version worked for the course requirements, but looking at it again showed me several places where similar rules were repeated and where the service behavior could be clearer.</p>
+      <p>I chose it because the code was small enough to compare directly before and after. I also wanted to improve an older project instead of replacing it with something completely new.</p>
 
       <h2 id="changes">What I changed</h2>
       <div class="chapter-table"><table><thead><tr><th>Area</th><th>Change</th></tr></thead><tbody>
-        <tr><td>Project structure</td><td>Moved the code into one Maven project with clear packages for models, services, validation, repositories, and exceptions.</td></tr>
-        <tr><td>Validation</td><td>Moved repeated validation rules into shared code instead of copying the same checks into several classes.</td></tr>
-        <tr><td>Stored objects</td><td>Added defensive copies so outside code cannot change a stored object without going through the service.</td></tr>
-        <tr><td>Updates</td><td>Changed multi-field updates so a failed validation does not leave half of the update applied.</td></tr>
-        <tr><td>Missing records</td><td>Made lookup and command failures more consistent instead of mixing null values and general exceptions.</td></tr>
+        <tr><td>Project structure</td><td>Moved the code into one Maven project with packages for models, services, validation, repositories, and exceptions.</td></tr>
+        <tr><td>Validation</td><td>Moved common checks used by the model classes into shared validation methods.</td></tr>
+        <tr><td>Stored objects</td><td>Added copies so outside code cannot change a stored object just by keeping or receiving a reference to it.</td></tr>
+        <tr><td>Updates</td><td>Added combined update methods that validate a copied object before replacing the stored version.</td></tr>
+        <tr><td>Missing records</td><td>Changed direct lookups to use <code>Optional</code> and used specific exceptions for missing or duplicate command operations.</td></tr>
         <tr><td>Date testing</td><td>Added a controllable clock so appointment tests do not depend on the exact current time.</td></tr>
       </tbody></table></div>
 
@@ -56,18 +56,18 @@ public Optional&lt;Contact&gt; findById(String id) {
         .map(Contact::new);
 }</code></pre></section>
       </div>
-      <p>The important difference is that the service no longer keeps and returns the exact object that another part of the program gave it. That makes the service responsible for its own data instead of allowing outside code to change it accidentally.</p>
+      <p>The original service kept the same <code>Contact</code> object that was passed into it and returned that object from <code>getContact()</code>. In the enhanced version, the service stores a copy and returns a copy. This means changes to an outside object do not automatically change the object inside the service.</p>
 
       <h2 id="testing">Testing</h2>
-      <p>I kept the original tests and added tests for the new behavior. I specifically checked copying, invalid updates, duplicate records, missing records, shared validation, and appointment dates. I also used a small focused verifier while reviewing the final code.</p>
+      <p>I kept the original test ideas and added tests for the behavior I changed, including copying, invalid updates, duplicate and missing records, shared validation, and appointment dates. The repository also contains a small Java verification script used during the final review.</p>
 
       <h2 id="reflection">What I learned</h2>
-      <p>The biggest lesson from this enhancement was that private fields alone do not guarantee good encapsulation. If a service stores the same mutable object it receives and then gives that same object back, other code can still change its state.</p>
-      <p>I also became more careful about updates. In the original style of code it was possible to change one field and then fail while validating the second field. Copying the object first and replacing the stored version only after the full update succeeds is safer and easier to test.</p>
-      <p>I did not try to turn this into a production framework. It is still an in-memory school project. My goal was to improve the structure and behavior without hiding what the project actually is.</p>
+      <p>The biggest lesson from this enhancement was that private fields alone do not guarantee good encapsulation. If a service stores the same mutable object it receives and gives that same object back, other code can still change the service's data.</p>
+      <p>I also thought more carefully about updates when I added methods that can change more than one field. I wanted the whole change to be valid before replacing the stored record, instead of saving part of a change first.</p>
+      <p>I did not try to turn this into a production framework. It is still an in-memory school project. My goal was to make a project I had already written cleaner and safer while keeping its original purpose recognizable.</p>
 
       <h2 id="outcomes">Program outcomes</h2>
-      <p>This artifact mainly supports the outcomes for software-development techniques, communication, collaboration habits, and security. The clearest examples are the improved project structure, shared rules, more predictable service behavior, added tests, and protection against unintended changes to stored data.</p>
+      <p>This project connects most clearly to software-development techniques, communication, and the security mindset outcome. The changes I can point to are the reorganized project, shared validation, clearer missing-record behavior, added tests, and storing and returning copies instead of the same mutable objects.</p>
       <a class="text-link" href="algorithms.html">Continue to Algorithms and Data Structures <span aria-hidden="true">→</span></a>
     </article><aside class="side-nav"><strong>On this page</strong><a href="#artifact">Why I chose it</a><a href="#changes">What I changed</a><a href="#testing">Testing</a><a href="#reflection">What I learned</a><a href="#outcomes">Outcomes</a></aside></div></section>
   </main>
