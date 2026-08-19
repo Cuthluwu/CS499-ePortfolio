@@ -11,7 +11,7 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a aria-current="page" href="code-review.html">Code Review</a><a href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
   <main id="main">
-    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Code Review</p><p class="eyebrow">Week 2</p><h1>Code Review and Enhancement Plan</h1><p>This section explains what I found in the original projects before I started the capstone enhancements.</p></div></section>
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Code Review</p><p class="eyebrow">Week 2</p><h1>Code Review and Enhancement Plan</h1><p>This section explains what I noticed when I went back through the original projects before making the capstone changes.</p></div></section>
     <section class="section"><div class="shell content-layout"><article class="content-main">
       <div class="status-note warning"><p><strong>Video note:</strong> the repository contains the code-review script, but it does not contain the completed video.</p></div>
       <div class="artifact-links">
@@ -20,26 +20,26 @@
       </div>
 
       <h2 id="review">What I reviewed</h2>
-      <p>I looked at both projects for the same basic things: what already worked, how the code was organized, where logic was repeated, how errors were handled, what tests existed, and whether there were obvious security or data problems.</p>
+      <p>I looked at what the projects already did, how the classes were organized, how invalid input and missing records were handled, what the tests covered, and what I would change now after taking more computer science courses.</p>
 
       <h2 id="cs320">CS 320 service project</h2>
-      <p>The Contact, Task, and Appointment services already met the original course requirements. They used maps for ID-based CRUD and had JUnit tests for the required field rules.</p>
-      <p>The main weaknesses I found were repeated validation, inconsistent handling of missing records, mutable objects being stored and returned directly, multi-field updates that could partially succeed, and appointment tests that depended on the current system time. I also noticed that there was no useful way to search across records unless the caller already knew the ID.</p>
-      <p>I split the improvements into two categories. Category One focuses on design and maintainability. Category Two focuses on search, filtering, ordering, and complexity.</p>
+      <p>The Contact, Task, and Appointment services already met the requirements of the original class. Each service used a <code>HashMap</code> to store records by ID, and the project included JUnit tests for the field rules.</p>
+      <p>When I reviewed the source again, I noticed that the model classes repeated similar validation checks. The service methods also handled missing records in different ways: a direct getter could return <code>null</code>, while operations that used the private find methods threw a general <code>IllegalArgumentException</code>. The services stored and returned the same mutable objects they were given, so code outside the service could change stored data without using an update method.</p>
+      <p>The original project also relied on exact IDs. That worked for the assignment, but there was no way to search contacts, tasks, or appointments when the caller did not already know the ID. These observations became the basis for the first two capstone categories.</p>
 
       <h2 id="cs360">CS 360 Weight Tracker</h2>
-      <p>The original Weight Tracker could register a user, log in, and create or change weight records in SQLite. The biggest problems were in the database design. Passwords were stored as plain text, weight rows were not tied to a user account, a name was used as the row identity, weight and date were stored as text, and the upgrade method deleted the existing tables.</p>
-      <p>Those issues became the plan for the database milestone: redesign the schema, connect measurements to users, improve credential storage, preserve data during an upgrade, and add better history queries.</p>
+      <p>The original Weight Tracker could register a user, check a login, and create or change weight records in SQLite. Its database was simple: the <code>users</code> table stored the username and password, and <code>Userdetails</code> stored name, weight, and date.</p>
+      <p>The main problems were easy to see in <code>DBHelper</code>. Passwords were compared directly as stored text, weight rows had no user ID connecting them to an account, the person's name was the primary key for a weight row, weight and date were text fields, the history query selected every row, and <code>onUpgrade()</code> dropped both tables.</p>
 
       <h2 id="plan">Enhancement plan</h2>
       <ul>
-        <li><strong>Software Design and Engineering:</strong> reorganize the Java project, reduce repeated validation, protect stored objects, improve update behavior, and make date testing more reliable.</li>
-        <li><strong>Algorithms and Data Structures:</strong> add contact search, task keyword search, appointment date-range filtering, stable ordering, and written complexity analysis.</li>
-        <li><strong>Databases:</strong> redesign the SQLite schema, add user ownership, change password storage, preserve old data during migration, and improve history/reporting queries.</li>
+        <li><strong>Software Design and Engineering:</strong> organize the Java project, share common validation, return copies instead of stored mutable objects, make missing-record behavior clearer, improve updates, and make appointment-date testing repeatable.</li>
+        <li><strong>Algorithms and Data Structures:</strong> add contact last-name search, task keyword search, appointment date-range filtering, predictable sorting, and complexity analysis.</li>
+        <li><strong>Databases:</strong> redesign the SQLite tables, connect weight entries to users, improve password storage, migrate old data instead of dropping it, and add user-specific history queries.</li>
       </ul>
 
       <h2 id="outcomes">Connection to the program outcomes</h2>
-      <p>The code review helped me decide where the five program outcomes would show up in the final portfolio. The strongest connections are algorithms in Category Two, software-development tools across all three categories, security in the database work, and communication through the review, narratives, and final website.</p>
+      <p>The review helped me decide which part of the work fit each program outcome. The algorithms work is easiest to see in Category Two, the database project carries most of the security work, and all three categories gave me material to explain through the narratives and final website.</p>
       <a class="text-link" href="software-design.html">Continue to Category One <span aria-hidden="true">→</span></a>
     </article><aside class="side-nav"><strong>On this page</strong><a href="#review">What I reviewed</a><a href="#cs320">CS 320</a><a href="#cs360">CS 360</a><a href="#plan">Plan</a><a href="#outcomes">Outcomes</a></aside></div></section>
   </main>
