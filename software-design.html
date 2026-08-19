@@ -37,6 +37,16 @@
       <h3>Example: protecting stored data</h3>
       <div class="comparison">
         <section class="code-panel"><h3>Original</h3><pre><code>public void addContact(Contact contact) {
+    if (contact == null) {
+        throw new IllegalArgumentException(
+            "Contact cannot be null.");
+    }
+
+    if (contacts.containsKey(contact.getContactId())) {
+        throw new IllegalArgumentException(
+            "A contact with this ID already exists.");
+    }
+
     contacts.put(contact.getContactId(), contact);
 }
 
@@ -56,7 +66,7 @@ public Optional&lt;Contact&gt; findById(String id) {
         .map(Contact::new);
 }</code></pre></section>
       </div>
-      <p>The original service kept the same <code>Contact</code> object that was passed into it and returned that object from <code>getContact()</code>. In the enhanced version, the service stores a copy and returns a copy. This means changes to an outside object do not automatically change the object inside the service.</p>
+      <p>The original service already checked for a null contact and duplicate IDs. The problem I focused on here is different: after those checks, it stored the same mutable <code>Contact</code> object it received and returned that object from <code>getContact()</code>. In the enhanced version, the service stores a copy and returns a copy, so outside changes do not automatically change the record held by the service.</p>
 
       <h2 id="testing">Testing</h2>
       <p>I kept the original test ideas and added tests for the behavior I changed, including copying, invalid updates, duplicate and missing records, shared validation, and appointment dates. The repository also contains a small Java verification script used during the final review.</p>
