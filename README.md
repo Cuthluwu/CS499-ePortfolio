@@ -2,7 +2,7 @@
 
 This repository contains my CS 499 capstone materials and the GitHub Pages version of the ePortfolio.
 
-> **Repository organization note:** I used GitHub tooling to help organize branches and repository files while putting the ePortfolio together. The coursework, project artifacts, and revisions shown here are based on my CS program work.
+> **Repository organization note:** I used GitHub's repository tools to help organize branches and files while I assembled the ePortfolio. The projects in the portfolio come from my CS coursework, and the original and enhanced versions are kept in the repository for comparison.
 
 ## Portfolio
 
@@ -20,12 +20,12 @@ Published site: https://cuthluwu.github.io/CS499-ePortfolio/
 ### Week 1 — Planning
 `Week-1_Module-One-Planning/`
 
-Contains the original artifact-selection plan and later scope notes.
+Contains my original artifact plan and the note explaining the later project change.
 
 ### Week 2 — Code Review
 `Week-2_Code-Review/`
 
-Contains the code-review script and supporting material. The repository does not contain a completed code-review video.
+Contains the written code-review script. The completed video is not stored in this repository.
 
 ### Week 3 — Software Design and Engineering
 `Week-3_Software-Design-and-Engineering/`
@@ -35,35 +35,35 @@ Contains the original CS 320 service project, the enhanced version, tests, the m
 ### Week 4 — Algorithms and Data Structures
 `Week-4_Algorithms-and-Data-Structures/`
 
-Contains the original/baseline code, the algorithms enhancement, tests, complexity notes, and the milestone narrative.
+Contains the original CS 320 code, the Week 3 version used as the starting point, the Week 4 search enhancement, tests, and the milestone narrative.
 
 ### Week 5 — Databases
 `Week-5_Databases/`
 
-Contains the original CS 360 Android Weight Tracker, the enhanced database version, tests, database documentation, and the milestone narrative.
+Contains the original CS 360 Android Weight Tracker, the enhanced database version, tests, database notes, and the milestone narrative.
 
 ### Week 6 — Emerging Technology
 `Week-6_Algorithms-Publication-and-Technology/`
 
-Contains the Week 6 publication material and the emerging-technology journal.
+Contains the Module Six journal and future-feature research for the Weight Tracker.
 
 ### Week 7 — Final ePortfolio
 `Week-7_Final-ePortfolio-and-Self-Assessment/`
 
 Contains the professional self-assessment and final portfolio material.
 
-## Main code I enhanced
+## Main projects
 
 The capstone uses two earlier course projects:
 
-1. **CS 320 Contact, Task, and Appointment services** for the software-design and algorithms categories.
-2. **CS 360 Android Weight Tracker** for the database category.
+1. **CS 320 Contact, Task, and Appointment services** for the Software Design and Algorithms categories.
+2. **CS 360 Android Weight Tracker** for the Database category.
 
-The original copies are kept separately from the enhanced copies so the changes can be compared directly.
+I kept the original copies separate from the enhanced copies so the changes are easy to compare.
 
-## Notes about verification
+## Testing
 
-The repository contains test source, focused verification scripts, and saved results from the capstone work. These are supporting materials, not a substitute for reading the code. Where an Android build or external recording was not completed, the portfolio should not describe it as completed.
+The repository contains the test source and saved test or verification output used while reviewing the enhancements. The Android project is included, but I did not complete a full APK build in the final preparation environment. The code-review video is also not stored in the repository.
 
 ## Author
 
