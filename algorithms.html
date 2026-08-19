@@ -11,7 +11,7 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a aria-current="page" href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
   <main id="main">
-    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Category Two</p><p class="eyebrow">Algorithms and Data Structures</p><h1>Search, filtering, and ordering in the CS 320 services</h1><p>This enhancement adds useful ways to search the service data and explains the cost of those operations.</p></div></section>
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Category Two</p><p class="eyebrow">Algorithms and Data Structures</p><h1>Search, filtering, and ordering in the CS 320 services</h1><p>This enhancement adds ways to search the service data when the exact record ID is not already known.</p></div></section>
     <section class="section"><div class="shell content-layout"><article class="content-main">
       <div class="artifact-links">
         <a class="artifact-link" href="Week-4_Algorithms-and-Data-Structures/Madison_Parker_CS499_Milestone3_Algorithms_Narrative.docx"><strong>Download the narrative</strong><span>Milestone reflection and complexity discussion</span></a>
@@ -51,7 +51,7 @@
       <p>The search is not constant time just because the service uses a <code>HashMap</code>. It still has to look through the stored contacts. That distinction was one of the main things I wanted to show in this milestone.</p>
 
       <h2 id="complexity">Complexity</h2>
-      <p>Exact-ID access is expected <code>O(1)</code>. The new searches are different because they scan the collection and then sort the matches. In the general case I describe that as <code>O(n + m log m)</code>, where <code>n</code> is the number of stored records and <code>m</code> is the number of matches. The returned results also require <code>O(m)</code> additional space.</p>
+      <p>Exact-ID access is expected <code>O(1)</code>. The new searches are different because they scan the collection and then sort the matches. I describe that as <code>O(n + m log m)</code>, where <code>n</code> is the number of stored records and <code>m</code> is the number of matches. The returned results also use <code>O(m)</code> additional space.</p>
       <p>I considered extra indexes, but I did not think they were justified for a small classroom collection. An index could make some searches faster, but it would also add more code that has to stay synchronized every time a record changes.</p>
 
       <h2 id="testing">Testing</h2>
@@ -63,7 +63,7 @@
       <p>I kept the solution simple on purpose. A more complicated data structure is not automatically a better choice if the project does not need it.</p>
 
       <h2 id="outcomes">Program outcomes</h2>
-      <p>This artifact is my main evidence for the algorithms and data structures outcome. It shows the difference between key lookup and collection search, includes written complexity analysis, and explains why I kept the existing map instead of adding extra indexing without a clear need.</p>
+      <p>This project is my clearest example for the algorithms and data structures outcome. It shows the difference between key lookup and collection search, includes complexity analysis, and explains why I kept the existing map instead of adding extra indexing without a clear need.</p>
       <a class="text-link" href="databases.html">Continue to Databases <span aria-hidden="true">→</span></a>
     </article><aside class="side-nav"><strong>On this page</strong><a href="#artifact">Why this project</a><a href="#structure">HashMap decision</a><a href="#changes">What I added</a><a href="#complexity">Complexity</a><a href="#testing">Testing</a><a href="#reflection">What I learned</a><a href="#outcomes">Outcomes</a></aside></div></section>
   </main>
