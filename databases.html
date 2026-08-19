@@ -3,156 +3,80 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Madison Parker's final CS 499 database enhancement of the CS 360 Android Weight Tracker, including normalized SQLite design, ownership, migration, security, reporting, and verification.">
+  <meta name="description" content="Madison Parker's CS 499 database enhancement of the CS 360 Android Weight Tracker.">
   <title>Databases | Madison Parker CS 499 ePortfolio</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
-  <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html" aria-label="Madison Parker CS 499 ePortfolio home"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a aria-current="page" href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
+  <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">MP</span><span><strong>Madison Parker</strong><small>CS 499 ePortfolio</small></span></a><nav aria-label="Primary navigation"><a href="self-assessment.html">Self-Assessment</a><a href="code-review.html">Code Review</a><a aria-current="page" href="index.html#artifacts">Artifacts</a><a href="outcomes.html">Outcomes</a><a href="https://github.com/Cuthluwu/CS499-ePortfolio">Repository</a></nav></div></header>
   <main id="main">
-    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Category Three</p><p class="eyebrow">Databases · Milestone August 1 · final revision August 9, 2026</p><h1>CS 360 Android Weight Tracker</h1><p>A persistence-layer redesign centered on data meaning, authenticated ownership, safe migration, measurable query behavior, and precise security claims.</p></div></section>
-    <section class="section">
-      <div class="shell content-layout">
-        <article class="content-main">
-          <div class="metric-grid" aria-label="Database verification summary"><div class="metric"><strong>46/46</strong><span>SQLite checks passed</span></div><div class="metric"><strong>36/36</strong><span>Java checks passed</span></div><div class="metric"><strong>78</strong><span>original files unchanged</span></div></div>
-          <div class="artifact-links">
-            <a class="artifact-link" href="Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Narrative.docx"><strong>Download the final narrative</strong><span>August 9 revision with security hardening and reflection</span></a>
-            <a class="artifact-link" href="Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Artifact.zip"><strong>Download the technical artifact</strong><span>Original, enhanced Android project, documentation, and evidence</span></a>
-            <a class="artifact-link" href="Week-5_Databases/Artifact_Contents/01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/DBHelper.java"><strong>Open original DBHelper</strong><span>Unmodified CS 360 schema and CRUD baseline</span></a>
-            <a class="artifact-link" href="Week-5_Databases/Artifact_Contents/02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/DatabaseContract.java"><strong>Open enhanced database contract</strong><span>Version-two schema, constraints, relationship, and index</span></a>
-          </div>
+    <section class="page-hero"><div class="shell"><p class="breadcrumbs"><a href="index.html">Home</a> / Category Three</p><p class="eyebrow">Databases</p><h1>CS 360 Android Weight Tracker</h1><p>I used this project to improve the database structure, connect records to users, and fix several security and migration problems from the original version.</p></div></section>
+    <section class="section"><div class="shell content-layout"><article class="content-main">
+      <div class="artifact-links">
+        <a class="artifact-link" href="Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Narrative.docx"><strong>Download the narrative</strong><span>Database milestone reflection</span></a>
+        <a class="artifact-link" href="Week-5_Databases/Madison_Parker_CS499_Milestone4_Database_Artifact.zip"><strong>Download the artifact</strong><span>Original and enhanced Android project</span></a>
+        <a class="artifact-link" href="Week-5_Databases/Artifact_Contents/01_ORIGINAL_ARTIFACT_UNMODIFIED/Project2/app/src/main/java/com/example/project/DBHelper.java"><strong>Original DBHelper</strong><span>CS 360 database code</span></a>
+        <a class="artifact-link" href="Week-5_Databases/Artifact_Contents/02_ENHANCED_DATABASE_ARTIFACT/Project2/app/src/main/java/com/example/project/data/DatabaseContract.java"><strong>Enhanced DatabaseContract</strong><span>CS 499 database schema</span></a>
+      </div>
 
-          <h2 id="artifact">Artifact and selection</h2>
-          <p>The artifact is the Android Weight Tracker I created in June 2026 for CS 360 Mobile Architecture and Programming. It uses Java activities, XML layouts, and local SQLite storage for registration, login, and weight CRUD. I selected it because persistence is the application's central responsibility. The product succeeds only if it can store multiple measurements, associate them with the correct account, order them, update the intended row, preserve them through an upgrade, and summarize progress accurately.</p>
-          <p>The original is preserved without modification. The enhanced work lives in a separate Android Studio project. Documentation and evidence are separate from both source trees, so an instructor can compare the actual baseline to the final implementation without guessing which files changed.</p>
+      <h2 id="artifact">Why I chose the Weight Tracker</h2>
+      <p>The Weight Tracker came from CS 360. The original application used Java activities, XML layouts, and SQLite for registration, login, and weight records. I chose it because the database is central to the application. If the data is stored incorrectly, attached to the wrong account, or lost during an update, the rest of the app does not matter much.</p>
 
-          <h2 id="baseline">Original condition</h2>
-          <ul>
-            <li><strong>Credential exposure:</strong> the <code>users</code> table stores passwords as plaintext, and login compares the submitted value directly in SQL.</li>
-            <li><strong>No record ownership:</strong> <code>Userdetails</code> has no account identifier or foreign key; history returns every row.</li>
-            <li><strong>Wrong row identity:</strong> a name is the primary key, so the same person cannot have a realistic series of measurements.</li>
-            <li><strong>Weak types:</strong> weight and date are unrestricted text.</li>
-            <li><strong>Destructive lifecycle:</strong> <code>onUpgrade</code> drops both tables.</li>
-            <li><strong>Thin evidence:</strong> template tests do not check schema, ownership, security, ordering, migration, or reporting.</li>
-          </ul>
+      <h2 id="problems">Problems in the original database</h2>
+      <ul>
+        <li>Passwords were stored as plain text.</li>
+        <li>Weight rows were not tied to a specific user account.</li>
+        <li>A name was used as the primary key for a weight record.</li>
+        <li>Weight and date were stored as unrestricted text.</li>
+        <li>The history query could return records from every user.</li>
+        <li>The database upgrade method dropped the existing tables.</li>
+      </ul>
+      <p>These were more than formatting issues. They affected privacy, data integrity, and whether the application could realistically store a history of measurements.</p>
 
-          <h3>Before: schema and upgrade</h3>
-          <div class="code-panel"><h3>Original DBHelper.java</h3><pre><code>public void onCreate(SQLiteDatabase database) {
-    database.execSQL(
-        "create Table users(" +
-        "username TEXT primary key, password TEXT)");
-    database.execSQL(
-        "create Table Userdetails(" +
-        "name TEXT primary key, weight TEXT, date TEXT)");
-}
-
-public void onUpgrade(SQLiteDatabase database,
-        int oldVersion, int newVersion) {
-    database.execSQL("drop Table if exists users");
-    database.execSQL("drop Table if exists Userdetails");
-}</code></pre></div>
-
-          <h2 id="schema">Normalized version-two schema</h2>
-          <p>The new model separates accounts from measurements. A numeric <code>user_id</code> identifies an account, and each <code>weight_entries</code> row has its own numeric <code>entry_id</code> plus a required account foreign key. Weight has <code>REAL</code> affinity, dates use ISO <code>YYYY-MM-DD</code>, and constraints reject invalid states at the database boundary.</p>
-          <div class="code-panel"><h3>Enhanced DatabaseContract.java</h3><pre><code>CREATE TABLE weight_entries (
+      <h2 id="schema">Schema changes</h2>
+      <p>The enhanced version separates users from weight entries. Users have a numeric <code>user_id</code>, weight records have a numeric <code>entry_id</code>, and every weight record contains the ID of its owner. A foreign key connects the two tables.</p>
+      <p>Weight is stored as a numeric value instead of free-form text, and dates use a consistent <code>YYYY-MM-DD</code> format. I also added database constraints so obviously invalid values can be rejected even if a future screen forgets to validate them first.</p>
+      <div class="code-panel"><pre><code>CREATE TABLE weight_entries (
     entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    weight REAL NOT NULL
-        CHECK(weight &gt; 0 AND weight &lt;= 1500),
-    entry_date TEXT NOT NULL
-        CHECK(length(entry_date) = 10
-            AND date(entry_date) = entry_date),
-    note TEXT NOT NULL DEFAULT ''
-        CHECK(length(note) &lt;= 250),
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
+    weight REAL NOT NULL CHECK(weight &gt; 0 AND weight &lt;= 1500),
+    entry_date TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
     FOREIGN KEY(user_id) REFERENCES users(user_id)
         ON DELETE CASCADE
-);
+);</code></pre></div>
 
-CREATE INDEX idx_weight_entries_user_date
-ON weight_entries(user_id, entry_date DESC, entry_id DESC);</code></pre></div>
-          <p>Foreign-key enforcement is enabled in <code>DBHelper.onConfigure()</code> for every connection. <code>ON DELETE CASCADE</code> prevents orphaned measurements. Java validation produces understandable messages before a write, while <code>NOT NULL</code>, <code>UNIQUE</code>, <code>CHECK</code>, and foreign-key constraints remain the final protection against invalid state.</p>
-
-          <h2 id="security">Credentials, authentication, and authorization</h2>
-          <p>The enhanced password helper uses PBKDF2-HMAC-SHA-256 with a unique 16-byte salt, a 256-bit derived value, and 600,000 iterations. The database stores the Base64 hash, salt, algorithm, and work factor. Authentication retrieves one verifier record and uses <code>MessageDigest.isEqual</code> for comparison. Password character arrays are cleared after use.</p>
-          <p>The final capstone pass tightened two edge cases found during review. Blank legacy credentials had been replaced with a predictable username-derived value, and damaged iteration metadata could request an unreasonable amount of PBKDF2 work. The final code creates an independently randomized 256-bit inaccessible credential for a blank legacy value, rejects iteration counts above 1,200,000, and checks decoded salt and hash dimensions before derivation.</p>
-          <div class="code-panel"><h3>Final PasswordHasher verification boundary</h3><pre><code>if (!ALGORITHM.equals(algorithm)
-        || iterations &lt;= 0
-        || iterations &gt; MAX_ACCEPTED_ITERATIONS) {
-    return false;
-}
-try {
-    byte[] salt = Base64.getDecoder().decode(encodedSalt);
-    byte[] expected = Base64.getDecoder().decode(encodedHash);
-    if (salt.length != SALT_BYTES
-            || expected.length != KEY_LENGTH_BITS / Byte.SIZE) {
-        return false;
-    }
-    byte[] actual = derive(
-        candidate, salt, iterations, algorithm);
-    return MessageDigest.isEqual(expected, actual);
-} catch (IllegalArgumentException exception) {
-    return false;
-}</code></pre></div>
-          <p>This remains a classroom-local identity design, not a complete production platform. The artifact does not claim account recovery, breach-password screening, server-side throttling, a hardware-protected pepper, or encrypted database storage.</p>
-
-          <h3>Ownership-scoped CRUD</h3>
-          <p>Authentication establishes the current <code>user_id</code>. Authorization continues inside every measurement operation. Update and delete conditions require both the row ID and the authenticated owner ID:</p>
-          <div class="code-panel"><h3>Ownership condition</h3><pre><code>UPDATE weight_entries
+      <h2 id="security">Password and account changes</h2>
+      <p>The original project stored passwords directly in SQLite. The enhanced version uses PBKDF2 with a random salt and stores the resulting hash information instead of the original password. I also changed the login flow so successful authentication is what establishes the current user session.</p>
+      <p>Weight updates and deletes include both the entry ID and the current user ID in the database condition. That means knowing another row's numeric ID is not enough to change it.</p>
+      <div class="code-panel"><pre><code>UPDATE weight_entries
 SET weight = ?, entry_date = ?, note = ?, updated_at = ?
-WHERE entry_id = ? AND user_id = ?;
-
-DELETE FROM weight_entries
 WHERE entry_id = ? AND user_id = ?;</code></pre></div>
-          <p>A user who learns another row's numeric identifier still receives a zero-row result. Registration no longer opens the dashboard directly; a new account returns to login, and only successful authentication supplies the stable account session.</p>
+      <p>This is still a classroom application, not a complete production identity system. A real release would need more work around account recovery, rate limiting, encrypted device storage, and application lifecycle behavior.</p>
 
-          <h2 id="migration">Data-preserving migration</h2>
-          <p>The database version rises from one to two. Upgrade renames the legacy tables, creates the complete version-two schema, converts accounts, normalizes readable measurements, records migration problems, and drops the renamed tables only after conversion completes. The callback runs inside the transaction managed by <code>SQLiteOpenHelper</code>, so a structural failure rolls back instead of leaving half of the new schema.</p>
-          <p>The original database never recorded an account ID for a weight row, so perfect ownership cannot be reconstructed. The migration uses one conservative rule: an exact case-insensitive name-to-username match may establish ownership. A readable unmatched row is preserved under a separate import account, and an unreadable date or weight is written to <code>migration_issues</code> with the original values and a reason. The migration does not guess which real user owns ambiguous health data.</p>
+      <h2 id="migration">Migration</h2>
+      <p>The original <code>onUpgrade()</code> deleted the tables. I changed the database version and added a migration that renames the old tables, creates the new schema, and then moves usable data into the new format.</p>
+      <p>The difficult part was that the old weight table did not actually store a user ID. That means there is no perfect way to reconstruct ownership for every old record. When a record can be matched safely, the migration uses that account. Readable records that cannot be matched are kept under a separate import account instead of being assigned to a random person. Values that cannot be converted are recorded in a migration-issues table.</p>
+      <p>This was one of the more important decisions in the project because it would have been easy to make the migration look complete by guessing. I would rather preserve uncertainty than silently attach private data to the wrong user.</p>
 
-          <h2 id="reporting">History, index, and progress value</h2>
-          <p>History filters by authenticated <code>user_id</code> and orders by date descending, then entry ID descending. The tie-breaker makes same-date output deterministic. The latest query uses the same order with <code>LIMIT 1</code>. The progress summary returns count, first measurement, latest measurement, and the signed change between those endpoints; an empty history produces a zero-count summary.</p>
-          <p>The compound index follows the actual access path: account restriction first, then the requested date and entry-ID order. The verification harness uses <code>EXPLAIN QUERY PLAN</code> and confirms that SQLite selects this index. I did not index note or weight because the application does not query globally by those fields; unnecessary indexes would increase write and storage cost.</p>
+      <h2 id="queries">History and reporting</h2>
+      <p>The history query now filters by the current <code>user_id</code> and sorts by date, with the entry ID used as a tie-breaker when two records share a date. I also added a compound index that starts with the user ID because every history request belongs to one account.</p>
+      <p>The project includes a progress summary based on the first and latest measurements. I kept the query work focused on what the application actually uses instead of adding indexes for fields that are never searched globally.</p>
 
-          <h2 id="verification">Verification and evidence boundaries</h2>
-          <p>The package includes local JUnit tests and Android instrumentation tests for credentials, validation, ownership, CRUD, history, progress, cascade deletion, and migration. The final preparation environment did not include an Android SDK or cached Gradle distribution, so I do not claim an APK build that did not occur there.</p>
-          <p>Two independent executable paths were run successfully. The SQLite harness created and exercised the schema through 46 checks. The pure-Java helper suite compiled for Java 17 with lint enabled and completed 36 checks, including the final malformed-verifier and inaccessible-credential cases. XML/resource and original-integrity evidence from the milestone is included separately.</p>
-          <div class="status-note success"><p><strong>Executed evidence:</strong> 46 of 46 SQLite checks and 36 of 36 standalone Java checks passed. The full Android project, Gradle wrapper, JUnit sources, and instrumentation tests remain included for Android Studio review.</p></div>
-          <div class="artifact-links">
-            <a class="artifact-link" href="Week-5_Databases/Artifact_Contents/04_INSTRUCTOR_EVIDENCE/DATABASE_VERIFICATION_RESULTS.txt"><strong>SQLite verification output</strong><span>46 recorded schema and behavior checks</span></a>
-            <a class="artifact-link" href="Week-5_Databases/Artifact_Contents/04_INSTRUCTOR_EVIDENCE/JAVA_SECURITY_VALIDATION_RESULTS.txt"><strong>Java verification output</strong><span>36 recorded security, validation, and migration checks</span></a>
-            <a class="artifact-link" href="Week-5_Databases/Artifact_Contents/04_INSTRUCTOR_EVIDENCE/ORIGINAL_TO_ENHANCED.diff"><strong>Original-to-enhanced diff</strong><span>Complete code and resource comparison</span></a>
-            <a class="artifact-link" href="Week-5_Databases/Artifact_Contents/03_DATABASE_DOCUMENTATION/DATABASE_SCHEMA_AND_DATA_DICTIONARY.md"><strong>Schema and data dictionary</strong><span>Keys, types, constraints, index, and relationships</span></a>
-          </div>
+      <h2 id="testing">Testing</h2>
+      <p>I added checks for the schema, constraints, account ownership, weight CRUD, history order, migration, password verification, and invalid data. The repository also contains Android test source for the project. During the final preparation pass I did not claim a full Android APK build from an environment that did not have the Android SDK available.</p>
 
-          <h2 id="reflection">Reflection and response to feedback</h2>
-          <p>The largest conceptual change was learning that persistence does not automatically mean good database design. The original project stored information, but one row did not represent a well-defined measurement owned by a well-defined account. Redesigning the meaning of each key and relationship mattered more than adding another button.</p>
-          <p>The migration was the hardest part because the old schema did not contain enough ownership information. Assigning every row to the first account would have made the demonstration look complete while inventing private data. The import-account and audit-table approach is less convenient, but it preserves what can be proven and makes uncertainty visible.</p>
-          <p>Testing changed the implementation. Cross-user tests forced ownership into the SQL <code>WHERE</code> clause. Same-date checks required the entry-ID tie-breaker. Invalid legacy data led to the migration audit table. The final security review exposed the guessable blank-password fallback and the unbounded work factor. Those findings are examples of verification improving the design rather than simply confirming it.</p>
-          <p>Earlier feedback and file-delivery problems also changed the packaging. The artifact now opens to a read-first guide, separates original and enhanced projects, includes exact evidence locations, keeps the narrative outside the technical ZIP, and distinguishes executed checks from included Android tests. Professional communication includes whether a reviewer can actually find and open the work.</p>
-          <p>The main remaining engineering limitation is synchronous database work from an activity. A production revision should move I/O off the main thread or adopt Room with lifecycle-aware components. Other future work includes account recovery, rate limiting, encrypted sensitive storage, and a deliberate reminder feature rather than an unused permission.</p>
+      <h2 id="reflection">What I learned</h2>
+      <p>The biggest lesson from this milestone was that using a database does not automatically mean the data model is good. The original project could save rows, but the rows did not have a clear relationship to the account that owned them. Fixing the meaning of the tables was more important than adding another screen or feature.</p>
+      <p>I also learned that migration exposes weaknesses in the original design very quickly. If an old schema never stored a relationship, new code cannot magically recover it later. That made me think more carefully about what information needs to be represented when the schema is first designed.</p>
+      <p>The security work changed the project in practical ways too. Replacing plain-text passwords was important, but it was not enough by itself. User ownership also had to be enforced in the database operations, and the project still has limitations that would need to be addressed before a real release.</p>
 
-          <h2 id="technology">Week 6 extension: documented as future work</h2>
-          <p>The supporting Week 6 journal proposes a Bluetooth smart-scale import path and goal-aware progress feedback. It is a researched roadmap, not a claim of completed Bluetooth or adaptive-color code. The proposal includes neutral insufficient-data states, non-color text and icon cues, goal choices for loss, maintenance, gain, or no goal, user control, privacy boundaries, packet-validation tests, and physical-device acceptance criteria.</p>
-          <p>Commercial material is used only as a precedent for automatic scale synchronization and personalized display behavior. It does not prove that an existing product implements the exact green-for-progress and red-for-attention logic proposed here; that interaction remains my design for a future iteration.</p>
-          <a class="text-link" href="Week-6_Algorithms-Publication-and-Technology/Madison_Parker_CS499_Module6_Disruptive_Technology_Journal.docx">Download the Week 6 journal <span aria-hidden="true">→</span></a>
-
-          <h2 id="outcomes">Skills and outcome alignment</h2>
-          <ul>
-            <li><strong>Outcome 4:</strong> Android structure, Java, SQLite, relational constraints, repository boundaries, migration, query design, indexes, cryptographic APIs, and repeatable checks produce clear user and reviewer value.</li>
-            <li><strong>Outcome 5:</strong> the artifact addresses plaintext credentials, registration bypass, record authorization, parameter binding, malformed verifier metadata, blank legacy credentials, destructive upgrade, backup exposure, unused permission, and residual risk.</li>
-            <li><strong>Outcome 3:</strong> the compound index, deterministic history order, progress queries, and alternatives demonstrate database-related structure and cost decisions without presenting them as a second algorithm milestone.</li>
-            <li><strong>Outcome 2:</strong> the narrative, schema dictionary, migration analysis, security analysis, query-plan discussion, evidence map, and honest build boundary communicate the same system at different technical levels.</li>
-            <li><strong>Outcome 1:</strong> the unchanged baseline, centralized contracts, traceable decisions, repeatable checks, and review instructions support collaborative evaluation while the individually completed nature of the artifact remains explicit.</li>
-          </ul>
-          <a class="text-link" href="outcomes.html">Review the complete five-outcome synthesis <span aria-hidden="true">→</span></a>
-        </article>
-        <aside class="side-nav" aria-label="On this page"><strong>On this page</strong><a href="#artifact">Artifact and selection</a><a href="#baseline">Original condition</a><a href="#schema">Schema</a><a href="#security">Security</a><a href="#migration">Migration</a><a href="#reporting">Reporting and index</a><a href="#verification">Verification</a><a href="#reflection">Reflection</a><a href="#technology">Week 6 extension</a><a href="#outcomes">Outcome alignment</a></aside>
-      </div>
-    </section>
+      <h2 id="outcomes">Program outcomes</h2>
+      <p>This artifact is my strongest example for the security outcome and also supports the software-development and algorithms outcomes. It shows relational database design, migration, account ownership, password handling, query ordering, indexing, and testing inside one application.</p>
+      <a class="text-link" href="outcomes.html">Review all five program outcomes <span aria-hidden="true">→</span></a>
+    </article><aside class="side-nav"><strong>On this page</strong><a href="#artifact">Why I chose it</a><a href="#problems">Original problems</a><a href="#schema">Schema</a><a href="#security">Security</a><a href="#migration">Migration</a><a href="#queries">Queries</a><a href="#testing">Testing</a><a href="#reflection">What I learned</a><a href="#outcomes">Outcomes</a></aside></div></section>
   </main>
-  <footer><div class="shell footer-inner"><p><strong>Madison Parker</strong><br>CS 499 Category Three<br><small>Databases</small></p><p><a href="algorithms.html">Previous category</a><br><a href="outcomes.html">Outcome synthesis</a></p></div></footer>
+  <footer><div class="shell footer-inner"><p><strong>Madison Parker</strong><br>CS 499 Category Three</p><p><a href="algorithms.html">Previous category</a><br><a href="outcomes.html">Program outcomes</a></p></div></footer>
 </body>
 </html>
